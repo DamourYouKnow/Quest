@@ -1,4 +1,4 @@
 # Quest
-Bailey D'Amour (DamourYouKnow)
-kelvin choi
+Bailey D'Amour (DamourYouKnow)  
+kelvin choi  
 Guy Cloutier (guclouti)
