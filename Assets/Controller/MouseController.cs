@@ -76,8 +76,12 @@ public class MouseController : MonoBehaviour {
 		if (Physics.Raycast (ray, out hit)) {
 			selectedGameObject = hit.transform.gameObject;
 			if (selectedGameObject != null) {
-				selectedGameObjectOffset = selectedGameObject.transform.position-currPosition;
+				selectedGameObjectOffset = selectedGameObject.transform.position - currPosition;
 			}
+		}
+		//if miss, clear previous hit
+		else {
+			selectedGameObject = null;
 		}
 	}
 }
