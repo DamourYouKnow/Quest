@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cards {
+namespace Quest.Core {
     public abstract class Card {
         protected string name;
     }
@@ -43,13 +43,11 @@ namespace Cards {
 
     }
 
-    public class Hand {
-        public List<Card> Cards;
-    }
-
+    /// <summary>
+    /// Deck of cards of a specific type.
+    /// </summary>
     public class Deck {
-        // Intended to be used seperately for each card type.
-        private Stack<Card> cards;
+        protected Stack<Card> cards = new Stack<Card>();
 
         public int Count {
             get { return cards.Count; }
@@ -57,6 +55,10 @@ namespace Cards {
 
         public Card Draw() {
             return cards.Pop();
+        }
+
+        public void Push(Card card) {
+            cards.Push(card);
         }
 
         public void Shuffle() {
@@ -73,14 +75,24 @@ namespace Cards {
             this.deck = deck;
         }
 
+        // TODO: Consider changing Hand to Player later on.
         public void Deal(List<Hand> hands, int count) {
             count = Math.Max(count, deck.Count - count);
             deck.Shuffle();
 
             foreach (Hand hand in hands) {
                 for (int i = 1; i <= count; i++) {
-                    hand.Cards.Add(deck.Draw());
+                    hand.Add(deck.Draw());
                 }
+            }
+        }
+
+        public void Deal(Hand hand, int count) {
+            count = Math.Max(count, deck.Count - count);
+            deck.Shuffle();
+
+            for (int i = 1; i <= count; i++) {
+                hand.Add(deck.Draw());
             }
         }
     }

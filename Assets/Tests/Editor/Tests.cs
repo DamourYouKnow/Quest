@@ -4,25 +4,28 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 
-using Cards;
+using Quest.Core;
 
-namespace Tests {
-    public class CardDeckTests {
-        // A UnityTest behaves like a coroutine in PlayMode
-        // and allows you to yield null to skip a frame in EditMode
-        [UnityTest]
-        public IEnumerator DealCards() {
-            // Deal an even deck of cards between two hands and check sizes
-            // FIXME: This is inteded to fail for testing purposes. The collection in these classes aren't created.
+namespace NUnitTesting {
+    [TestFixture]
+    public class CardTests {
+        [Test]
+        public void TestTest() {
+            // If this doesn't pass things are bad.
+            Assert.Pass();
+        }
 
-            Hand hand1 = new Hand();
-            Hand hand2 = new Hand();
+        [Test]
+        public void TransferCards() {
+            // Transfer cards from player hand to battle area.
+            AllyCard testCard = new AllyCard();
+            Hand playerHand = new Hand();
+            BattleArea battleArea = new BattleArea();
+            playerHand.Add(testCard);
+            playerHand.Transfer(battleArea, testCard);
 
-            Deck deck = new Deck();
-            // TODO: Build deck, deal and assert equal.
-
-            yield return null;
-            Assert.AreEqual(hand1.Cards.Count, hand2.Cards.Count);
+            Assert.AreEqual(playerHand.Count, 0);
+            Assert.AreEqual(battleArea.Count, 1);
         }
     }
 }
