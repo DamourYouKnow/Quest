@@ -11,5 +11,29 @@ namespace Utils {
                 list[i] = temp;
             }
         }
-    }
+	}
+	//Registers to a Subject to recieve updates
+	public abstract class Observer
+	{
+		abstract public void update ();
+	}
+	//Notifies registered Observers on update
+	public abstract class Subject
+	{
+		protected HashSet<Observer> observers;
+
+		public void notify(){
+			foreach (Observer obs in observers) {
+				obs.update();
+			}
+		}
+
+		public void register (Observer observer){
+			observers.Add (observer);
+		}
+
+		public void unregister(Observer observer){
+			observers.Remove (observer);
+		}
+	}
 }
