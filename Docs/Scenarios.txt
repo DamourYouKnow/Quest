@@ -1,0 +1,165 @@
+Scenario: 3 player game
+-game is set up for 3 players
+
+-player 1 gets their starting hand
+
+-player 2 gets their starting hand
+
+-player 3 gets their starting hand
+
+-player 1 flips an tournament (3 bonus shields)
+-players 1 and 2 accept
+-both players draw a adventure card
+-both players play their cards
+-player 1 wins, gets 5 shields, and becomes a knight
+
+-player 2 flips an event card (chivalrous deed)
+-player 2 and 3 get three shields
+
+-player 3 flips a quest card (3 stage slay the dragon)
+-player 3 declines to sponsor the quest
+-player 1 sponsors the quest
+-player 1 places a foe card for stage 1, a foe corresponding to the quest with a weapon for stage 2 and test for stage 3
+-both player 2 and 3 decide to join the quest and get an adventure card
+-player 1 announces the type of stages there are (foe, foe, test)
+-player 2 and 3 play their adventure cards and the foe is revealed
+-both players successfully pass this stage and discard their played weapon cards
+-players 2 and 3 get another adventure card
+-both players play their adventure cards and the foe is revealed
+-player 3 passes this stage, player 2 does not and both discard their played weapon cards
+-players 2 and 3 get another adventure card
+-a test is encountered
+-player three bids 3 cards worth
+-player 3 gets 3 shields, becomes a knight, and draws an adventure card
+-all cards used for the quest are discarded
+-player 1 gets new cards equal to the amount he played + the amount of stages
+
+-player 1 flips a quest card(5 stage)
+-all players decline to sponsor the quest so it is discarded
+
+-player 2 flips a tournament card (2 bonus)
+-all players accept to go into the tournament
+-all players draw an adventure card
+-all players show their cards
+-player 2 wins and gets 5 shields and becomes a champion knight
+
+-player 3 flips a quest ( search for the questing beast 4 stage) and accepts to sponsor it
+-player 3 chooses foe for each stage
+-for this quest all foes correspond to the quest
+-players 1 and 3 accept the quest and get an adventure card
+-player 3 announces the types of stages
+-player 1 and 3 play their adventure cards and the foe is revealed
+-both players successfully pass this stage and discard their played weapon cards
+-players 1 and 3 get another adventure card
+-player 1 and 3 play their adventure cards and the foe is revealed
+-both players successfully pass this stage and discard their played weapon cards
+-players 1 and 3 get another adventure card
+-player 1 and 3 play their adventure cards and the foe is revealed
+-both players successfully pass this stage and discard their played weapon cards
+-players 1 and 3 get another adventure card
+-player 1 and 3 play their adventure cards and the foe is revealed
+-both players successfully pass this stage and discard their played weapon cards
+-players 1 and 3 get another adventure card
+-player 1 and 3 gets 4 shields and both become a champion knight
+-all quest cards are discarded
+-player 3 gets new cards equal to the amount he played + the amount of stages
+-player 3 needs to discard an adventure card because he has over 12
+
+-player 1 flips a quest card (2 stage)
+-player 1 chooses a foe and test card for this quest
+-player 2 declines the quest
+-player 3 accepts the quest and gets an adventure card
+-player 1 announces the types of stages
+-player 3 plays their adventure cards and the foe corresponding to the quest is revealed
+-player 3 fails the quest
+-all quest cards are discarded
+-player 3 gets new cards equal to the amount he played + the amount of stages
+
+-player 2 flips a tournament card (1 bonus)
+-all players accept to go into the tournament
+-all players draw an adventure card
+-all players show their cards
+-player 1 and 2 tie
+-players 1 and 2 tie again and both get 4 shields
+
+-both players 1 and 2 become knights of the round table
+-both players win
+
+Scenario: 3 player game
+Player1 is a Knight (10bp)
+Player2 is a Squire (5bp)
+Player3 is a Champion Knight (20bp)
+
+Player1s hand: King Arthur, Excalibur, Amour
+Player2s hand: Test of Temptation, Test of Morgan LeFay, Horse, Battleax, Dagger, Dagger, Green Knight, Robber Knight, Saxon Knight
+Player3s hand: Sir Gawain, Horse, Lance, Sword, Saxon, Thieves
+
+Player1 draws Test of the Green Knight, declines sponsor
+Player2 accepts sponsor
+Player3 participates
+Player1 participates
+
+Stage1: Robber Knight (15bp)
+Stage2: Saxon Knight(15bp), Battleax(15bp), Horse(10bp)
+Stage3: Test of Morgan LeFay(min 3bi)
+Stage4: Green Knight(40bp), Dagger(5bp)
+
+Player1 receives Sword from the Adventure deck
+Player3 receives Mordred
+
+Player1 plays King Arthur(10bp,2bi)/Amour(10bp,1bi)
+Player3 plays nothing
+
+Both players pass Robber Knight
+
+Player1 receives Sword from the Adventure deck
+Player3 receives Test of Valor from the Adventure deck
+
+Player1 plays Sword(10bp)
+Player3 plays Mordred and forces Player1 to discard King Arthur
+
+Player1 does not pass Saxon knight
+Player3 passes Saxon knight
+
+Player3 receives Amour from the Adventure deck
+Player3 plays Amour
+Player3 discards Sword and Thieves
+
+Player3 passes Test of Morgan LeFay
+
+Player3 receives Excalibur(30bp) from Adventure deck
+Player3 plays Excalibur and Sir Gawain
+
+Player3 passes Quest and receives 4 shields
+
+Player2 draws 11 cards from the Adventure deck, must discard 1 card
+
+Scenario: 4 player game
+Player1 has 4 cards
+Player2 has 3 cards
+Player3 has 7 cards
+Player4 sponsored quest
+
+They encounter a Test
+Player1 plays King Arthur (2bi)
+Player2 plays Amour (1bi)
+
+Bidding starts
+Player1 bids 2 cards
+Player2 cannot top a bid of 4 so drops out
+Player3 bids 5 cards
+Player1 bids 1 card
+Player3 bids 2 cards
+Player1 cannot top a bid of 7 so drops out
+Player3 continues Quest alone
+
+Scenario: 2 player game
+Player1 is a Squire
+Player2 is a Knight
+
+Player1 draws Tournament card
+Both players choose to participate
+Both players draw an Adventure card
+Players choose which cards to play
+Player1 wins tournament
+Player1 becomes a Knight
