@@ -1,4 +1,6 @@
-﻿namespace Quest.Core {
+﻿using System;
+
+namespace Quest.Core {
     public enum PlayerRank {
         Squire,
         Knight,
@@ -8,6 +10,7 @@
 
     public class Player {
         private string username;
+        private PlayerBehaviour behaviour;
         private RankCard rankCard;
         private int shields;
         private Hand hand;
@@ -28,5 +31,19 @@
         }
     }
 
+    internal abstract class PlayerBehaviour {
+        public abstract void HandleTurn();
+    }
 
+    internal class HumanPlayer : PlayerBehaviour {
+        public override void HandleTurn() {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class SimpleBot : PlayerBehaviour {
+        public override void HandleTurn() {
+            throw new NotImplementedException();
+        }
+    }
 }
