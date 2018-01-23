@@ -2,37 +2,50 @@
 using System.Collections.Generic;
 
 namespace Quest.Core {
+    public abstract class BattleBehaviour {
+
+    }
+
+    // TODO: Find better name for these bahaviour classes.
+    public class CanBattle {
+        private int battlePoints
+    }
+
+    public class NoBattle {
+
+    }
+
     public abstract class Card {
         protected string name;
         protected string imageFilename;
+        protected BattleBehaviour battleBehaviour;
     }
 
-    public abstract class BattleCard : Card {
-        // For cards that use battle points (ally, foe, amour, weapon).
-        protected int battlePoints; // Change type to struct later to support sponsored cards.
+    public abstract class AdventureCard : Card {
+       
     }
 
     public abstract class StoryCard: Card {
 
     }
 
-    public class AllyCard : BattleCard {
+    public class AllyCard : AdventureCard {
 
     }
 
-    public class FoeCard : BattleCard {
+    public class FoeCard : AdventureCard {
     
     }
 
-    public class WeaponCard : BattleCard {
+    public class WeaponCard : AdventureCard {
 
     }
 
-    public class AmourCard : BattleCard {
+    public class AmourCard : AdventureCard {
 
     }
 
-    public class RankCard : BattleCard {
+    public class RankCard : AdventureCard {
         private PlayerRank rank;
 
         public PlayerRank Rank {
