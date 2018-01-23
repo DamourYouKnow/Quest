@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.TestTools;
-using NUnit.Framework;
+using System;
 using System.Collections;
+using NUnit.Framework;
 
 using Quest.Core;
 
@@ -26,6 +27,20 @@ namespace NUnitTesting {
 
             Assert.AreEqual(playerHand.Count, 0);
             Assert.AreEqual(battleArea.Count, 1);
+        }
+    }
+
+    public class PlayerTests {
+        [Test]
+        public void SetupGame() {
+            GameManager game = new GameManager();
+            game.AddPlayer(new Player("Test Player 1"));
+            game.AddPlayer(new Player("Test Player 2"));
+            game.AddPlayer(new Player("Test Player 3"));
+
+            // TODO: Test dealing required cards across players.
+            // TODO: Validate game state.
+            throw new NotImplementedException();
         }
     }
 }

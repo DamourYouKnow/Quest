@@ -1,0 +1,22 @@
+Features:
+  General Gameplay:
+    Card Draw/Play/Discard
+    12 card limit
+    Shield/Rank system
+    Players can choose to sponsor quests or not.
+    Players can choose to participate in quests or not
+    Players can drop out or complete quests
+    Players pass test or not
+    Battle point comparison
+    Handle battle point ties
+    Turn cycle
+  Story Deck:
+    Quest: Specific Foe, All Foes, Range of Foes, No Foes
+    Event: Add shields, remove shields, draw cards, discard cards
+    Tournament: Bonus shields, no bonus shields
+  Adventure Deck:
+    Foe: Normal Foe, Quest Foe, Mordred
+    Ally: Regular Ally, Quest Ally, Sir Tristan/Queen Iseult, Merlin
+    Test: Minimum Bid, No minimum Bid
+    Weapon
+    Amour
