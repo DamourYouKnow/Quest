@@ -4,11 +4,16 @@ using System.Collections.Generic;
 namespace Quest.Core {
     public abstract class Card {
         protected string name;
+        protected string imageFilename;
     }
 
     public abstract class BattleCard : Card {
         // For cards that use battle points (ally, foe, amour, weapon).
         protected int battlePoints; // Change type to struct later to support sponsored cards.
+    }
+
+    public abstract class StoryCard: Card {
+
     }
 
     public class AllyCard : BattleCard {
@@ -28,7 +33,11 @@ namespace Quest.Core {
     }
 
     public class RankCard : BattleCard {
+        private PlayerRank rank;
 
+        public PlayerRank Rank {
+            get { return this.rank; }
+        }
     }
 
     public class EventCard : Card {
@@ -40,7 +49,7 @@ namespace Quest.Core {
     }
 
     public class TestCard : Card {
-
+        private int minBid;
     }
 
     /// <summary>
@@ -50,21 +59,21 @@ namespace Quest.Core {
         protected Stack<Card> cards = new Stack<Card>();
 
         public int Count {
-            get { return cards.Count; }
+            get { return this.cards.Count; }
         }
 
         public Card Draw() {
-            return cards.Pop();
+            return this.cards.Pop();
         }
 
         public void Push(Card card) {
-            cards.Push(card);
+            this.cards.Push(card);
         }
 
         public void Shuffle() {
-            List<Card> shuffleList = new List<Card>(cards);
+            List<Card> shuffleList = new List<Card>(this.cards);
             Utils.Random.Shuffle<Card>(shuffleList);
-            cards = new Stack<Card>(shuffleList);
+            this.cards = new Stack<Card>(shuffleList);
         }
     }
 
@@ -77,22 +86,22 @@ namespace Quest.Core {
 
         // TODO: Consider changing Hand to Player later on.
         public void Deal(List<Hand> hands, int count) {
-            count = Math.Max(count, deck.Count - count);
-            deck.Shuffle();
+            count = Math.Max(count, this.deck.Count - count);
+            this.deck.Shuffle();
 
             foreach (Hand hand in hands) {
                 for (int i = 1; i <= count; i++) {
-                    hand.Add(deck.Draw());
+                    hand.Add(this.deck.Draw());
                 }
             }
         }
 
         public void Deal(Hand hand, int count) {
-            count = Math.Max(count, deck.Count - count);
-            deck.Shuffle();
+            count = Math.Max(count, this.deck.Count - count);
+            this.deck.Shuffle();
 
             for (int i = 1; i <= count; i++) {
-                hand.Add(deck.Draw());
+                hand.Add(this.deck.Draw());
             }
         }
     }
