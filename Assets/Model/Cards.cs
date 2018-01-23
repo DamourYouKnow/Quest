@@ -6,19 +6,10 @@ namespace Quest.Core {
 
     }
 
-    // TODO: Find better name for these bahaviour classes.
-    public class CanBattle {
-        private int battlePoints
-    }
-
-    public class NoBattle {
-
-    }
-
     public abstract class Card {
         protected string name;
         protected string imageFilename;
-        protected BattleBehaviour battleBehaviour;
+        protected int battlePoints;
     }
 
     public abstract class AdventureCard : Card {
