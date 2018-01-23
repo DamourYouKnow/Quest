@@ -16,7 +16,7 @@ namespace Quest.Core {
     }
 
     public class FoeCard : BattleCard {
-
+    
     }
 
     public class WeaponCard : BattleCard {
