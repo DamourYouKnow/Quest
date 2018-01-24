@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine.TestTools;
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 using Quest.Core;
@@ -11,9 +11,13 @@ namespace NUnitTesting {
     [TestFixture]
     public class CardTests {
         [Test]
-        public void TestTest() {
-            // If this doesn't pass things are bad.
-            Assert.Pass();
+        public void TestDeal() {
+            RankDeck deck = new RankDeck();
+            Player player = new Player("Test Player");
+
+            deck.Deal(player, 10);
+            Assert.AreEqual(player.Hand.Count, 10);
+            Assert.AreEqual(deck.Count, RankDeck.deckSize - 10);
         }
 
         [Test]
@@ -30,17 +34,30 @@ namespace NUnitTesting {
         }
     }
 
-    public class PlayerTests {
+    public class GameManagerTests {
         [Test]
         public void SetupGame() {
             GameManager game = new GameManager();
-            game.AddPlayer(new Player("Test Player 1"));
-            game.AddPlayer(new Player("Test Player 2"));
-            game.AddPlayer(new Player("Test Player 3"));
 
-            // TODO: Test dealing required cards across players.
-            // TODO: Validate game state.
-            throw new NotImplementedException();
+            // TODO: Write code for generating preset scenarios.
+            List<Player> players = new List<Player>();
+            players.Add(new Player("Test Player 1"));
+            players.Add(new Player("Test Player 2"));
+            players.Add(new Player("Test Player 3"));
+
+            foreach (Player player in players) {
+                game.AddPlayer(player);
+            }
+
+            game.Setup();
+
+            // Test if each player has 12 adventure cards.
+            foreach (Player player in players) {
+                Assert.AreEqual(player.Hand.Count, Constants.MaxHandSize);
+                foreach (Card card in player.Hand.Cards) {
+                    Assert.IsInstanceOf(typeof(AdventureCard), card);
+                }
+            }
         }
     }
 }
