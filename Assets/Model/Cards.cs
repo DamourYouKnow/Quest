@@ -59,8 +59,15 @@ namespace Quest.Core {
     /// <summary>
     /// Deck of cards of a specific type.
     /// </summary>
-    public class Deck {
+    public abstract class Deck {
         protected Stack<Card> cards = new Stack<Card>();
+
+        public Deck() {
+            this.Init();
+            this.shuffle();
+        }
+
+        public abstract void Init();
 
         public int Count {
             get { return this.cards.Count; }
@@ -74,39 +81,61 @@ namespace Quest.Core {
             this.cards.Push(card);
         }
 
-        public void Shuffle() {
+        /// <summary>
+        /// Deals count number of cards from this deck to a player.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="count"></param>
+        public void Deal(Player player, int count) {
+            count = Math.Max(count, this.cards.Count);
+            for (int i = 0; i < count; i++) {
+                player.Hand.Add(this.Draw());
+            }
+        }
+
+        protected void shuffle() {
             List<Card> shuffleList = new List<Card>(this.cards);
             Utils.Random.Shuffle<Card>(shuffleList);
             this.cards = new Stack<Card>(shuffleList);
         }
     }
 
-    public class CardDealer {
-        private Deck deck;
+    public class RankDeck : Deck {
+        private const int deckSize = 12;
 
-        public CardDealer(Deck deck) {
-            this.deck = deck;
-        }
-
-        // TODO: Consider changing Hand to Player later on.
-        public void Deal(List<Hand> hands, int count) {
-            count = Math.Max(count, this.deck.Count - count);
-            this.deck.Shuffle();
-
-            foreach (Hand hand in hands) {
-                for (int i = 1; i <= count; i++) {
-                    hand.Add(this.deck.Draw());
-                }
+        public override void Init() {
+            // TODO: Init deck with proper cards.
+            for (int i = 0; i < deckSize; i++) {
+                this.cards.Push(new RankCard());
             }
         }
+    }
 
-        public void Deal(Hand hand, int count) {
-            count = Math.Max(count, this.deck.Count - count);
-            this.deck.Shuffle();
+    public class StoryDeck : Deck {
+        private const int deckSize = 28;
 
-            for (int i = 1; i <= count; i++) {
-                hand.Add(this.deck.Draw());
+        public override void Init() {
+            // TODO: Init deck with proper cards.
+            for (int i = 0; i < deckSize; i++) {
+                this.cards.Push(new TestCard());
             }
+        }
+    }
+
+    public class AdventureDeck : Deck {
+        private const int deckSize = 125;
+
+        public override void Init() {
+            // TODO: Init deck with proper cards.
+            for (int i = 0; i < deckSize; i++) {
+                this.cards.Push(new FoeCard());
+            }
+        }
+    }
+
+    public class DiscardPile : Deck {
+        public override void Init() {
+            return;
         }
     }
 }

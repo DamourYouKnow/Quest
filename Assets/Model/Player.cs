@@ -29,6 +29,10 @@ namespace Quest.Core {
         public Hand Hand {
             get { return hand; }
         }
+
+        public void Promote() {
+
+        }
     }
 
     internal abstract class PlayerBehaviour {

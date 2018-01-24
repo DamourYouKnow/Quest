@@ -6,8 +6,7 @@ namespace Quest.Core {
     public class GameManager {
         private Board board;
         private List<Player> players;
-        private CardDealer dealer;
-
+        
         public GameManager() {
             this.board = new Board();
             this.players = new List<Player>();
@@ -19,6 +18,12 @@ namespace Quest.Core {
 
         public void AddPlayer(Player player) {
             this.players.Add(player);
+        }
+
+        public void Setup() {
+            foreach (Player player in this.players) {
+
+            }
         }
     }
 
@@ -33,10 +38,26 @@ namespace Quest.Core {
         private Deck discardPile;
 
         public Board() {
-            this.rankDeck = new Deck();
-            this.storyDeck = new Deck();
-            this.adventureDeck = new Deck();
-            this.discardPile = new Deck();
+            this.rankDeck = new RankDeck();
+            this.storyDeck = new StoryDeck();
+            this.adventureDeck = new AdventureDeck();
+            this.discardPile = new DiscardPile();
+        }
+
+        public Deck RankDeck {
+            get { return this.rankDeck; }
+        }
+
+        public Deck StoryDeck {
+            get { return this.rankDeck; }
+        }
+
+        public Deck AdventureDeck {
+            get { return this.rankDeck; }
+        }
+
+        public Deck DiscardPile {
+            get { return this.rankDeck; }
         }
     }
 
