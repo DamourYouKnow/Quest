@@ -87,7 +87,7 @@ namespace Quest.Core {
         /// <param name="player"></param>
         /// <param name="count"></param>
         public void Deal(Player player, int count) {
-            count = Math.Max(count, this.cards.Count);
+            count = Math.Min(count, this.cards.Count);
             for (int i = 0; i < count; i++) {
                 player.Hand.Add(this.Draw());
             }
@@ -101,7 +101,7 @@ namespace Quest.Core {
     }
 
     public class RankDeck : Deck {
-        private const int deckSize = 12;
+        public const int deckSize = 12;
 
         public override void Init() {
             // TODO: Init deck with proper cards.
@@ -112,7 +112,7 @@ namespace Quest.Core {
     }
 
     public class StoryDeck : Deck {
-        private const int deckSize = 28;
+        public const int deckSize = 28;
 
         public override void Init() {
             // TODO: Init deck with proper cards.
@@ -123,7 +123,7 @@ namespace Quest.Core {
     }
 
     public class AdventureDeck : Deck {
-        private const int deckSize = 125;
+        public const int deckSize = 125;
 
         public override void Init() {
             // TODO: Init deck with proper cards.

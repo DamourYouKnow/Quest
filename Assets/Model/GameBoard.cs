@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 
 namespace Quest.Core {
+    public static class Constants {
+        public const int MaxHandSize = 12;
+    }
 
     public class GameManager {
         private Board board;
@@ -21,8 +24,9 @@ namespace Quest.Core {
         }
 
         public void Setup() {
+            // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
-
+                this.board.AdventureDeck.Deal(player, Constants.MaxHandSize);
             }
         }
     }
@@ -32,10 +36,10 @@ namespace Quest.Core {
     /// Play area.
     /// </summary>
     public class Board {
-        private Deck rankDeck;
-        private Deck storyDeck;
-        private Deck adventureDeck;
-        private Deck discardPile;
+        private RankDeck rankDeck;
+        private StoryDeck storyDeck;
+        private AdventureDeck adventureDeck;
+        private DiscardPile discardPile;
 
         public Board() {
             this.rankDeck = new RankDeck();
@@ -49,15 +53,15 @@ namespace Quest.Core {
         }
 
         public Deck StoryDeck {
-            get { return this.rankDeck; }
+            get { return this.storyDeck; }
         }
 
         public Deck AdventureDeck {
-            get { return this.rankDeck; }
+            get { return this.adventureDeck; }
         }
 
         public Deck DiscardPile {
-            get { return this.rankDeck; }
+            get { return this.discardPile; }
         }
     }
 
@@ -67,6 +71,10 @@ namespace Quest.Core {
 
         public int Count {
             get { return this.cards.Count; }
+        }
+
+        public List<Card> Cards {
+            get { return this.cards; }
         }
 
         public void Add(Card card) {
