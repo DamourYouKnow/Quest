@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Quest.Core;
 
+//I call this a change
 namespace Quest.Core {
 	public class GameController : MonoBehaviour {
 		GameManager gm;
