@@ -171,7 +171,7 @@ SpriteRenderer:
   m_Size: {x: 10.24, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
 --- !u!4 &9610105
 Transform:
@@ -291,7 +291,6 @@ GameObject:
   m_Component:
   - component: {fileID: 352906270}
   - component: {fileID: 352906269}
-  - component: {fileID: 352906271}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -323,17 +322,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &352906271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 352906268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c5c1d71068ce9d4b9f725bba764d005, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &373561656
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,7 +421,7 @@ SpriteRenderer:
   m_Size: {x: 7.5, y: 10.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
 --- !u!4 &463755086
 Transform:
