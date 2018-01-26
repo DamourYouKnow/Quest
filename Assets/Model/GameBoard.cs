@@ -7,10 +7,12 @@ namespace Quest.Core {
     }
 
     public class GameManager {
+        private Logger logger;
         private Board board;
         private List<Player> players;
         
         public GameManager() {
+            this.logger = new Logger();
             this.board = new Board();
             this.players = new List<Player>();
         }
@@ -21,6 +23,7 @@ namespace Quest.Core {
 
         public void AddPlayer(Player player) {
             this.players.Add(player);
+            this.logger.Log("Player " + player.Username + " added to game");
         }
 
         public void Setup() {
