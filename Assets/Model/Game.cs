@@ -8,11 +8,11 @@ namespace Quest.Core {
         public const int MaxHandSize = 12;
     }
 
-    public class GameManager {
+    public class QuestMatch {
         private Board board;
         private List<Player> players;
         
-        public GameManager() {
+        public QuestMatch() {
             this.board = new Board();
             this.players = new List<Player>();
         }

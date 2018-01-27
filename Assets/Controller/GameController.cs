@@ -7,7 +7,7 @@ using Quest.Core;
 //I call this a change
 namespace Quest.Core {
 	public class GameController : MonoBehaviour {
-		GameManager gm;
+		QuestMatch gm;
 		Logger Logger;
 		public Logger log {
 			get { return this.Logger; }
@@ -15,7 +15,7 @@ namespace Quest.Core {
 
 		//Awake is called before Start function, guaranteeing we'll have it setup for other scripts
 		void Awake(){
-			gm = new GameManager();
+			gm = new QuestMatch();
 			Logger = new Logger ();
 			Logger.Log ("GameController.Awake()");
 		}

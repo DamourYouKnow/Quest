@@ -7,6 +7,7 @@ namespace Quest.Core.Cards {
         protected string name;
         protected string imageFilename;
         protected int battlePoints;
+        protected QuestMatch match;
 
         public Card() {
 

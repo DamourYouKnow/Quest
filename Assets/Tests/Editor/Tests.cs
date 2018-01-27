@@ -39,7 +39,7 @@ namespace NUnitTesting {
     public class GameManagerTests {
         [Test]
         public void SetupGame() {
-            GameManager game = new GameManager();
+            QuestMatch game = new QuestMatch();
 
             // TODO: Write code for generating preset scenarios.
             List<Player> players = new List<Player>();
