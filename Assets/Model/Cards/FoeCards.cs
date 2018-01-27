@@ -5,6 +5,10 @@ namespace Quest.Core.Cards {
 	public abstract class FoeCard : AdventureCard {
 		
 		protected int bonusBP;
+
+        public FoeCard() {
+
+        }
 		
         public FoeCard(string name, string imageFilename, int battlePoints, int bonusBP)
             : base(name, imageFilename, battlePoints) {

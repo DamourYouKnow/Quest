@@ -51,16 +51,6 @@ namespace Quest.Core.Cards {
 
         }
     }
-
-	/*
-	//implemented in FoeCards.cs (leaving this here for now just in case)
-    public class FoeCard : AdventureCard {
-        public FoeCard(string name, string imageFilename, int battlePoints)
-            : base(name, imageFilename, battlePoints) {
-
-        }
-    }
-	*/
 	
     public class WeaponCard : AdventureCard {
         public WeaponCard(string name, string imageFilename, int battlePoints)
@@ -184,7 +174,7 @@ namespace Quest.Core.Cards {
 
             // TODO: Init deck with proper cards.
             for (int i = 0; i < 50; i++) {
-                this.cards.Push(new FoeCard(null, null, 1));
+                this.cards.Push(new BlackKnight());
             }
         }
     }
