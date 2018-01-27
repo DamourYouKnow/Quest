@@ -12,12 +12,12 @@ namespace NUnitTesting {
     public class CardTests {
         [Test]
         public void TestDeal() {
-            RankDeck deck = new RankDeck();
+            AdventureDeck deck = new AdventureDeck();
             Player player = new Player("Test Player");
 
             deck.Deal(player, 10);
             Assert.AreEqual(player.Hand.Count, 10);
-            Assert.AreEqual(deck.Count, RankDeck.deckSize - 10);
+            Assert.AreEqual(deck.Count, AdventureDeck.deckSize - 10);
         }
 
         [Test]

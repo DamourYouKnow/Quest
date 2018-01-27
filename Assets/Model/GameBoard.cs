@@ -36,20 +36,14 @@ namespace Quest.Core {
     /// Play area.
     /// </summary>
     public class Board {
-        private RankDeck rankDeck;
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
 
         public Board() {
-            this.rankDeck = new RankDeck();
             this.storyDeck = new StoryDeck();
             this.adventureDeck = new AdventureDeck();
             this.discardPile = new DiscardPile();
-        }
-
-        public Deck RankDeck {
-            get { return this.rankDeck; }
         }
 
         public Deck StoryDeck {

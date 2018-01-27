@@ -96,17 +96,6 @@ namespace Quest.Core {
         }
     }
 
-    public class RankDeck : Deck {
-        public const int deckSize = 12;
-
-        public override void Init() {
-            // TODO: Init deck with proper cards.
-            for (int i = 0; i < deckSize; i++) {
-                this.cards.Push(new RankCard());
-            }
-        }
-    }
-
     public class StoryDeck : Deck {
         public const int deckSize = 28;
 
