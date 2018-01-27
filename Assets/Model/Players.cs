@@ -18,7 +18,7 @@ namespace Quest.Core.Players {
 
         public Player(string username) {
             this.username = username;
-            this.rankCard = new RankCard();
+            this.rankCard = new RankCard(null, null);
             this.shields = 0;
             this.hand = new Hand();
         }

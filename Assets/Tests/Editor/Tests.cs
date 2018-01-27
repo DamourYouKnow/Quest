@@ -19,13 +19,13 @@ namespace NUnitTesting {
 
             deck.Deal(player, 10);
             Assert.AreEqual(player.Hand.Count, 10);
-            Assert.AreEqual(deck.Count, AdventureDeck.deckSize - 10);
+            Assert.AreEqual(deck.Count, deck.DeckSize - 10);
         }
 
         [Test]
         public void TransferCards() {
             // Transfer cards from player hand to battle area.
-            AllyCard testCard = new AllyCard();
+            KingArthur testCard = new KingArthur();
             Hand playerHand = new Hand();
             BattleArea battleArea = new BattleArea();
             playerHand.Add(testCard);
