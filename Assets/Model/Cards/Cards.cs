@@ -8,28 +8,42 @@ namespace Quest.Core.Cards {
         protected string imageFilename;
         protected int battlePoints;
         protected QuestMatch match;
+
+        public Card(QuestMatch match) {
+
+        }
     }
 
     public abstract class AdventureCard : Card {
-        public AdventureCard() {
+        public AdventureCard(QuestMatch match) : base(match) {
 
         }
     }
 
     public abstract class StoryCard: Card {
+        public StoryCard(QuestMatch match) : base(match) {
 
+        }
     }
 	
     public class WeaponCard : AdventureCard {
+        public WeaponCard(QuestMatch match) : base(match) {
 
+        }
     }
 
     public class AmourCard : AdventureCard {
+        public AmourCard(QuestMatch match) : base(match) {
 
+        }
     }
 
     public class RankCard : Card {
         private PlayerRank rank;
+
+        public RankCard(QuestMatch match) : base(match) {
+
+        }
 
         public PlayerRank Rank {
             get { return this.rank; }
@@ -37,26 +51,35 @@ namespace Quest.Core.Cards {
     }
 
     public class EventCard : StoryCard {
+        public EventCard(QuestMatch match) : base(match) {
 
+        }
     }
 
     public class TournamentCard : StoryCard {
+        public TournamentCard(QuestMatch match) : base(match) {
 
+        }
     }
 
     public class TestCard : StoryCard {
         private int minBid;
 
+        public TestCard(QuestMatch match) : base(match) {
+
+        }
     }
 
     /// <summary>
     /// Deck of cards of a specific type.
     /// </summary>
     public abstract class Deck {
+        protected QuestMatch match;
         protected int deckSize;
         protected Stack<Card> cards = new Stack<Card>();
 
-        public Deck() {
+        public Deck(QuestMatch match) {
+            this.match = match;
             this.Init();
             this.deckSize = this.cards.Count;
             this.shuffle();
@@ -100,33 +123,45 @@ namespace Quest.Core.Cards {
     }
 
     public class StoryDeck : Deck {
+        public StoryDeck(QuestMatch match) : base(match) {
+
+        }
+
         public override void Init() {
             // TODO: Init deck with proper cards.
             for (int i = 0; i < 50; i++) {
-                this.cards.Push(new TestCard());
+                this.cards.Push(new TestCard(this.match));
             }
         }
     }
 
     public class AdventureDeck : Deck {
+        public AdventureDeck(QuestMatch match) : base(match) {
+
+        }
+
         public override void Init() {
             // Create ally cards.
-            this.cards.Push(new KingArthur());
-            this.cards.Push(new KingPellinore());
-            this.cards.Push(new SirGalahad());
-            this.cards.Push(new SirGawain());
-            this.cards.Push(new SirLancelot());
-            this.cards.Push(new SirPercival());
-            this.cards.Push(new SirTristan());
+            this.cards.Push(new KingArthur(this.match));
+            this.cards.Push(new KingPellinore(this.match));
+            this.cards.Push(new SirGalahad(this.match));
+            this.cards.Push(new SirGawain(this.match));
+            this.cards.Push(new SirLancelot(this.match));
+            this.cards.Push(new SirPercival(this.match));
+            this.cards.Push(new SirTristan(this.match));
 
             // TODO: Init deck with proper cards.
             for (int i = 0; i < 50; i++) {
-                this.cards.Push(new BlackKnight());
+                this.cards.Push(new BlackKnight(this.match));
             }
         }
     }
 
     public class DiscardPile : Deck {
+        public DiscardPile(QuestMatch match) : base(match) {
+
+        }
+
         public override void Init() {
             return;
         }

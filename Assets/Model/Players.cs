@@ -10,15 +10,17 @@ namespace Quest.Core.Players {
     };
 
     public class Player {
+        private QuestMatch match;
         private string username;
         private PlayerBehaviour behaviour;
         private RankCard rankCard;
         private int shields;
         private Hand hand;
 
-        public Player(string username) {
+        public Player(QuestMatch match, string username) {
+            this.match = match;
             this.username = username;
-            this.rankCard = new RankCard(null, null);
+            this.rankCard = new RankCard(match);
             this.shields = 0;
             this.hand = new Hand();
         }

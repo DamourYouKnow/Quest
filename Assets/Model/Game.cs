@@ -9,43 +9,16 @@ namespace Quest.Core {
     }
 
     public class QuestMatch {
-        private Board board;
         private List<Player> players;
-        
-        public QuestMatch() {
-            this.board = new Board();
-            this.players = new List<Player>();
-        }
-
-        public Board Board {
-            get { return this.Board; }
-        }
-
-        public void AddPlayer(Player player) {
-            this.players.Add(player);
-        }
-
-        public void Setup() {
-            // Deal startingHandSize adventure cards to each player.
-            foreach (Player player in this.players) {
-                this.board.AdventureDeck.Deal(player, Constants.MaxHandSize);
-            }
-        }
-    }
-
-
-    /// <summary>
-    /// Play area.
-    /// </summary>
-    public class Board {
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
 
-        public Board() {
-            this.storyDeck = new StoryDeck();
-            this.adventureDeck = new AdventureDeck();
-            this.discardPile = new DiscardPile();
+        public QuestMatch() {
+            this.players = new List<Player>();
+            this.storyDeck = new StoryDeck(this);
+            this.adventureDeck = new AdventureDeck(this);
+            this.discardPile = new DiscardPile(this);
         }
 
         public Deck StoryDeck {
@@ -58,6 +31,17 @@ namespace Quest.Core {
 
         public Deck DiscardPile {
             get { return this.discardPile; }
+        }
+
+        public void AddPlayer(Player player) {
+            this.players.Add(player);
+        }
+
+        public void Setup() {
+            // Deal startingHandSize adventure cards to each player.
+            foreach (Player player in this.players) {
+                this.AdventureDeck.Deal(player, Constants.MaxHandSize);
+            }
         }
     }
 

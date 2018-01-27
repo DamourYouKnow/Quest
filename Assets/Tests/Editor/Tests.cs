@@ -14,8 +14,8 @@ namespace NUnitTesting {
     public class CardTests {
         [Test]
         public void TestDeal() {
-            AdventureDeck deck = new AdventureDeck();
-            Player player = new Player("Test Player");
+            AdventureDeck deck = new AdventureDeck(null);
+            Player player = new Player(null, "Test Player");
 
             deck.Deal(player, 10);
             Assert.AreEqual(player.Hand.Count, 10);
@@ -25,7 +25,7 @@ namespace NUnitTesting {
         [Test]
         public void TransferCards() {
             // Transfer cards from player hand to battle area.
-            KingArthur testCard = new KingArthur();
+            KingArthur testCard = new KingArthur(null);
             Hand playerHand = new Hand();
             BattleArea battleArea = new BattleArea();
             playerHand.Add(testCard);
@@ -43,9 +43,9 @@ namespace NUnitTesting {
 
             // TODO: Write code for generating preset scenarios.
             List<Player> players = new List<Player>();
-            players.Add(new Player("Test Player 1"));
-            players.Add(new Player("Test Player 2"));
-            players.Add(new Player("Test Player 3"));
+            players.Add(new Player(null, "Test Player 1"));
+            players.Add(new Player(null, "Test Player 2"));
+            players.Add(new Player(null, "Test Player 3"));
 
             foreach (Player player in players) {
                 game.AddPlayer(player);
