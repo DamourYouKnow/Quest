@@ -8,72 +8,28 @@ namespace Quest.Core.Cards {
         protected string imageFilename;
         protected int battlePoints;
         protected QuestMatch match;
-
-        public Card() {
-
-        }
-
-        public Card(string name, string imageFilename, int battlePoints) {
-            this.name = name;
-            this.imageFilename = imageFilename;
-            this.battlePoints = battlePoints;
-        }
-
-        public Card(string name, string imageFilename) {
-            this.name = name;
-            this.imageFilename = imageFilename;
-            this.battlePoints = 0;
-        }
     }
 
     public abstract class AdventureCard : Card {
         public AdventureCard() {
 
         }
-
-        public AdventureCard(string name, string imageFilename, int battlePoints) 
-            :base(name, imageFilename, battlePoints) {
-            
-        }
-
-        public AdventureCard(string name, string imageFilename)
-            : base(name, imageFilename) {
-
-        }
     }
 
     public abstract class StoryCard: Card {
-        public StoryCard() {
 
-        }
-
-        public StoryCard(string name, string imageFilename)
-            :base(name, imageFilename) { 
-
-        }
     }
 	
     public class WeaponCard : AdventureCard {
-        public WeaponCard(string name, string imageFilename, int battlePoints)
-            : base(name, imageFilename, battlePoints) {
 
-        }
     }
 
     public class AmourCard : AdventureCard {
-        public AmourCard(string name, string imageFilename, int battlePoints)
-            : base(name, imageFilename, battlePoints) {
 
-        }
     }
 
     public class RankCard : Card {
         private PlayerRank rank;
-
-        public RankCard(string name, string imageFilename)
-            : base(name, imageFilename) {
-
-        }
 
         public PlayerRank Rank {
             get { return this.rank; }
@@ -81,26 +37,16 @@ namespace Quest.Core.Cards {
     }
 
     public class EventCard : StoryCard {
-        public EventCard(string name, string imageFilename)
-            : base(name, imageFilename) {
 
-        }
     }
 
     public class TournamentCard : StoryCard {
-        public TournamentCard(string name, string imageFilename)
-            : base(name, imageFilename) {
 
-        }
     }
 
     public class TestCard : StoryCard {
         private int minBid;
 
-        public TestCard(string name, string imageFilename)
-            : base(name, imageFilename) {
-
-        }
     }
 
     /// <summary>
@@ -157,7 +103,7 @@ namespace Quest.Core.Cards {
         public override void Init() {
             // TODO: Init deck with proper cards.
             for (int i = 0; i < 50; i++) {
-                this.cards.Push(new TestCard(null, null));
+                this.cards.Push(new TestCard());
             }
         }
     }
