@@ -52,13 +52,16 @@ namespace Quest.Core.Cards {
         }
     }
 
+	/*
+	//implemented in FoeCards.cs (leaving this here for now just in case)
     public class FoeCard : AdventureCard {
         public FoeCard(string name, string imageFilename, int battlePoints)
             : base(name, imageFilename, battlePoints) {
 
         }
     }
-
+	*/
+	
     public class WeaponCard : AdventureCard {
         public WeaponCard(string name, string imageFilename, int battlePoints)
             : base(name, imageFilename, battlePoints) {
