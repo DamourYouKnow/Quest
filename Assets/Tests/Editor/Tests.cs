@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 using Quest.Core;
+using Quest.Core.Cards;
+using Quest.Core.Players;
 
 namespace NUnitTesting {
     [TestFixture]

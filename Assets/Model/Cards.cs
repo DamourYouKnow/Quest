@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Quest.Core.Players;
 
-namespace Quest.Core {
+namespace Quest.Core.Cards {
     public abstract class Card {
         protected string name;
         protected string imageFilename;

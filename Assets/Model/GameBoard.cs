@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Quest.Core.Cards;
+using Quest.Core.Players;
 
 namespace Quest.Core {
     public static class Constants {

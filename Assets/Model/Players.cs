@@ -1,6 +1,7 @@
 ﻿using System;
+using Quest.Core.Cards;
 
-namespace Quest.Core {
+namespace Quest.Core.Players {
     public enum PlayerRank {
         Squire,
         Knight,
