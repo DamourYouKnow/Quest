@@ -55,7 +55,10 @@ namespace Quest.Core {
 		/// Will create file, but not directory structure.
 		/// </note>
 		public Logger(string path) {
-			using (File.Create (path)) {
+			if (!File.Exists (path)) {
+				File.Create (path);
+			}
+			if (File.Exists (path)) {
 				this.LogPath = path;
 			}
 		}
