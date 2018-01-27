@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 
 namespace Quest.Core {
-    public abstract class BattleBehaviour {
-
-    }
-
     public abstract class Card {
         protected string name;
         protected string imageFilename;
@@ -36,7 +32,7 @@ namespace Quest.Core {
 
     }
 
-    public class RankCard : AdventureCard {
+    public class RankCard : Card {
         private PlayerRank rank;
 
         public PlayerRank Rank {
