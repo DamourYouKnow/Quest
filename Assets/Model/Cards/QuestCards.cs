@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Quest.Core.Cards{
 	public abstract class QuestCard:StoryCard {
 		public int stages;
-		public List questFoes;
+		public List<FoeCard> questFoes;
 
 		public QuestCard(QuestMatch match):base(match) {
 			
