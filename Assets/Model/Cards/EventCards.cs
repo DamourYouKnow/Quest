@@ -2,7 +2,7 @@
 using Quest.Core.Cards;
 using Quest.Core.Players;
 
-namespace Quest.Core.Events {
+namespace Quest.Core.Cards {
     public abstract class EventCard : StoryCard {
         public EventCard(QuestMatch match) : base(match) {
 
