@@ -103,7 +103,7 @@ namespace Quest.Core.Players {
         private Hand hand;
 		private BattleArea battleArea;
 
-        public Player(QuestMatch match, string username) {
+        public Player(string username, QuestMatch match=null) {
             this.match = match;
             this.username = username;
             this.rank = new PlayerRank();

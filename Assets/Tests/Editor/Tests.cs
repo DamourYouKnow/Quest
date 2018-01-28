@@ -16,7 +16,7 @@ namespace NUnitTesting {
         [Test]
         public void TestDraw() {
             AdventureDeck deck = new AdventureDeck(null);
-            Player player = new Player(null, "Test Player");
+            Player player = new Player("Test Player");
 
             player.Draw(deck, 10);
             Assert.AreEqual(player.Hand.Count, 10);
@@ -89,7 +89,7 @@ namespace NUnitTesting {
     public class PlayerTests {
         [Test]
         public void Ranking() {
-            Player player = new Player(null, "Test Player");
+            Player player = new Player("Test Player");
             Assert.AreEqual(Rank.Squire, player.Rank.Value);
             Assert.AreEqual(0, player.Rank.Shields);
 
