@@ -20,6 +20,7 @@ namespace Quest.Core {
             this.storyDeck = new StoryDeck(this);
             this.adventureDeck = new AdventureDeck(this);
             this.discardPile = new DiscardPile(this);
+			this.currentStory = null;
         }
 
         public List<Player> Players {

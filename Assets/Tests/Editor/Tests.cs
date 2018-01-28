@@ -36,6 +36,17 @@ namespace NUnitTesting {
             Assert.AreEqual(battleArea.Count, 1);
         }
 
+		[Test]
+		public void QuestCardRunTest(){
+			QuestMatch match = new QuestMatch ();
+
+			Assert.IsTrue (match.CurrentStory == null);
+
+			BoarHunt boarhunt = new BoarHunt(match);
+			boarhunt.run ();
+
+			Assert.IsTrue (match.CurrentStory == boarhunt);
+		}
     }
 
     public class GameManagerTests {
