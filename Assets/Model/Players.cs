@@ -16,6 +16,7 @@ namespace Quest.Core.Players {
         private RankCard rankCard;
         private int shields;
         private Hand hand;
+		private BattleArea battleArea;
 
         public Player(QuestMatch match, string username) {
             this.match = match;
@@ -23,6 +24,7 @@ namespace Quest.Core.Players {
             this.rankCard = new RankCard(match);
             this.shields = 0;
             this.hand = new Hand();
+			this.battleArea = new BattleArea();
         }
 
         public string Username {
@@ -47,6 +49,10 @@ namespace Quest.Core.Players {
             this.hand.Remove(card);
             this.match.DiscardPile.Push(card);
         }
+		
+		public void Play(Card card){
+			this.hand.Transfer(battleArea, card);
+		}
     }
 
     internal abstract class PlayerBehaviour {
