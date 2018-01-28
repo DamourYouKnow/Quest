@@ -9,7 +9,7 @@ namespace Quest.Core.Cards {
         protected QuestMatch match;
 
         public Card(QuestMatch match) {
-
+            this.match = match;
         }
 
 		public static bool operator ==(Card first, Card second){

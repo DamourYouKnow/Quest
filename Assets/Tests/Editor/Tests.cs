@@ -9,7 +9,6 @@ using Quest.Core;
 using Quest.Core.Cards;
 using Quest.Core.Players;
 using Quest.Core.Scenarios;
-using Quest.Core.Cards;
 
 namespace NUnitTesting {
     [TestFixture]
