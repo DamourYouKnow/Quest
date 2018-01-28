@@ -46,7 +46,24 @@ namespace Quest.Core.Players {
 				this.rankCard.Rank = PlayerRank.KnightOfTheRoundTable;
 			}
         }
-
+		
+		public void AddShields(int shields){
+			this.shields += shields;
+			
+			if ((this.rankCard.Rank == PlayerRank.Squire)&&(this.shields >= 5)){
+				this.shields -= 5;
+				Promote();
+			}
+			else if ((this.rankCard.Rank == PlayerRank.Knight)&&(this.shields >= 7)){
+				this.shields -= 7;
+				Promote();
+			}
+			else if ((this.rankCard.Rank == PlayerRank.ChampionKnight)&&(this.shields >= 10)){
+				this.shields -= 10;
+				Promote();
+			}
+		}
+		
         public void Draw(Deck deck, int count=1) {
             for (int i = 0; i < count; i++) {
                 this.Hand.Add(deck.Draw());
