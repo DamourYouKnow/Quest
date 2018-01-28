@@ -40,6 +40,7 @@ namespace Quest.Core {
 
 		public StoryCard CurrentStory {
 			get { return this.currentStory; }
+			set { this.currentStory = value; }
 		}
 
         public void AddPlayer(Player player) {
