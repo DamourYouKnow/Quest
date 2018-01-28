@@ -1,50 +1,50 @@
 ﻿using System;
+using Quest.Core.Cards;
 
 namespace Quest.Core.Events {
-    interface IEvent {
-        void RunEvent();
+    public abstract class EventCard {
+        abstract public void RunEvent();
     }
 
-    public class ChivalrousDeedEvent : IEvent {
-        public void RunEvent() {
+    public class ChivalrousDeedEvent : EventCard {
+        public override void RunEvent() {
             throw new NotImplementedException();
         }
     }
 
-    public class CourtCalledEvent : IEvent {
-        public void RunEvent() {
+    public class CourtCalledEvent : EventCard {
+        public override void RunEvent() {
             throw new NotImplementedException();
         }
     }
 
-    public class CallToArmsEvent : IEvent {
-        public void RunEvent() {
+    public class CallToArmsEvent : EventCard {
+        public override void RunEvent() {
             throw new NotImplementedException();
         }
     }
 
-    public class RecognitionEvent : IEvent {
-        public void RunEvent() {
+    public class RecognitionEvent : EventCard {
+        public override void RunEvent() {
             throw new NotImplementedException();
         }
     }
 
-    public class PlagueEvent : IEvent {
-        public void RunEvent() {
+    public class PlagueEvent : EventCard {
+        public override void RunEvent() {
             throw new NotImplementedException();
         }
     }
 
-    public class PoxEvent : IEvent {
-        public void RunEvent() {
+    public class PoxEvent : EventCard {
+        public override void RunEvent() {
             throw new NotImplementedException();
         }
     }
 
-    public class ProsperityEvent : IEvent {
-        public void RunEvent() {
+    public class ProsperityEvent : EventCard {
+        public override void RunEvent() {
             throw new NotImplementedException();
         }
     }
-    
 }

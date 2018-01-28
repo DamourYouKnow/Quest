@@ -50,12 +50,6 @@ namespace Quest.Core.Cards {
         }
     }
 
-    public class EventCard : StoryCard {
-        public EventCard(QuestMatch match) : base(match) {
-
-        }
-    }
-
     public class TournamentCard : StoryCard {
         public TournamentCard(QuestMatch match) : base(match) {
 
