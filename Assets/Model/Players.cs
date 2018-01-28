@@ -36,6 +36,17 @@ namespace Quest.Core.Players {
         public void Promote() {
 
         }
+
+        public void Draw(Deck deck, int count=1) {
+            for (int i = 0; i < count; i++) {
+                this.Hand.Add(deck.Draw());
+            }
+        }
+
+        public void Discard(Card card) {
+            this.hand.Remove(card);
+            this.match.DiscardPile.Push(card);
+        }
     }
 
     internal abstract class PlayerBehaviour {

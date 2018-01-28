@@ -13,11 +13,11 @@ namespace NUnitTesting {
     [TestFixture]
     public class CardTests {
         [Test]
-        public void TestDeal() {
+        public void TestDraw() {
             AdventureDeck deck = new AdventureDeck(null);
             Player player = new Player(null, "Test Player");
 
-            deck.Deal(player, 10);
+            player.Draw(deck, 10);
             Assert.AreEqual(player.Hand.Count, 10);
             Assert.AreEqual(deck.Count, deck.DeckSize - 10);
         }
