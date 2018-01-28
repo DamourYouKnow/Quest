@@ -11,6 +11,13 @@ namespace Quest.Core.Cards {
         public Card(QuestMatch match) {
 
         }
+
+		public static bool operator ==(Card first, Card second){
+			return (first.name == second.name);
+		}
+		public static bool operator !=(Card first, Card second){
+			return (first.name != second.name);
+		}
     }
 
 	public abstract class AdventureCard : Card {
