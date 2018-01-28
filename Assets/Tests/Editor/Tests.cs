@@ -36,27 +36,6 @@ namespace NUnitTesting {
             Assert.AreEqual(battleArea.Count, 1);
         }
 
-		[Test]
-		public void EqualTest(){
-			KingArthur king = new KingArthur (null);
-			SearchForTheHolyGrail grail1 = new SearchForTheHolyGrail (null);
-			SearchForTheHolyGrail grail2 = new SearchForTheHolyGrail (null);
-
-			Assert.IsTrue (king == king);
-			Assert.IsTrue (grail1 == grail2);
-			Assert.IsFalse (king == grail1);
-		}
-
-		[Test]
-		public void NotEqualTest(){
-			KingArthur king = new KingArthur (null);
-			SearchForTheHolyGrail grail1 = new SearchForTheHolyGrail (null);
-			SearchForTheHolyGrail grail2 = new SearchForTheHolyGrail (null);
-
-			Assert.IsFalse (king != king);
-			Assert.IsFalse (grail1 != grail2);
-			Assert.IsTrue (king != grail1);
-		}
     }
 
     public class GameManagerTests {
