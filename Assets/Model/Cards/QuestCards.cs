@@ -31,7 +31,7 @@ namespace Quest.Core.Cards{
 	public class RepelTheSaxonRaiders : QuestCard{
 		public RepelTheSaxonRaiders(QuestMatch match) : base(match) {
 			this.name = "Repel the Saxon Raiders";
-			this.imageFilename = "quest_repel_the_saxon_raiders.png"
+            this.imageFilename = "quest_repel_the_saxon_raiders.png";
 		}
 	}
 	public class RescueTheFairMaiden : QuestCard{
