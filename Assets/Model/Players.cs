@@ -44,10 +44,12 @@ namespace Quest.Core.Players {
                 this.Hand.Add(deck.Draw());
             }
 			
-			//not sure how to implement this 'limit' right now.
+			//not sure how to fully implement this 'limit' right now.
 			//player needs to choose whether to discard or play,
 			//if play, players needs to choose which cards,
-			//and some cards are unplayable
+			//and some cards are unplayable.
+			//also there may be syntax errors, idk how to test right now
+			/*
 			if (this.hand.Count > maxHandSize){
 				for (int i = this.hand.Count; i>maxHandSize; i--){
 					//discards the most recently drawn cards
@@ -55,6 +57,8 @@ namespace Quest.Core.Players {
 					Discard(this.hand.Cards[i]);
 				}
 			}
+			*/
+			
         }
 
         public void Discard(Card card) {
