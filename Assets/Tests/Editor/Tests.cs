@@ -40,12 +40,17 @@ namespace NUnitTesting {
 		public void QuestCardRunTest(){
 			QuestMatch match = new QuestMatch ();
 
+			//match has no story to start
 			Assert.IsTrue (match.CurrentStory == null);
 
 			BoarHunt boarhunt = new BoarHunt(match);
 			boarhunt.run ();
 
+			//match currentstory is initiated after quest.run
 			Assert.IsTrue (match.CurrentStory == boarhunt);
+
+			//questFoes are initialized
+			Assert.IsTrue (boarhunt.QuestFoes.Contains (typeof(Boar)));
 		}
     }
 

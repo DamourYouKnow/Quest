@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Quest.Core.Cards;
 using Quest.Core.Players;
@@ -13,7 +13,7 @@ namespace Quest.Core {
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
-		private StoryCard currentStory;
+        private StoryCard currentStory;
 
         public QuestMatch() {
             this.players = new List<Player>();
