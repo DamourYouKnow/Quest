@@ -76,10 +76,9 @@ namespace Quest.Core.Cards {
             this.match = match;
             this.Init();
             this.deckSize = this.cards.Count;
-            this.shuffle();
         }
 
-        public abstract void Init();
+        protected abstract void Init();
 
         public int DeckSize {
             get { return this.deckSize; }
@@ -97,18 +96,6 @@ namespace Quest.Core.Cards {
             this.cards.Push(card);
         }
 
-        /// <summary>
-        /// Deals count number of cards from this deck to a player.
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="count"></param>
-        public void Deal(Player player, int count) {
-            count = Math.Min(count, this.cards.Count);
-            for (int i = 0; i < count; i++) {
-                player.Hand.Add(this.Draw());
-            }
-        }
-
         protected void shuffle() {
             List<Card> shuffleList = new List<Card>(this.cards);
             Utils.Random.Shuffle<Card>(shuffleList);
@@ -121,7 +108,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void Init() {
+        protected override void Init() {
             // TODO: Init deck with proper cards.
             for (int i = 0; i < 50; i++) {
                 this.cards.Push(new TestCard(this.match));
@@ -134,7 +121,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void Init() {
+        protected override void Init() {
             // Create ally cards.
             this.cards.Push(new KingArthur(this.match));
             this.cards.Push(new KingPellinore(this.match));
@@ -156,7 +143,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void Init() {
+        protected override void Init() {
             return;
         }
     }

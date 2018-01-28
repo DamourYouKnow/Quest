@@ -21,6 +21,10 @@ namespace Quest.Core {
             this.discardPile = new DiscardPile(this);
         }
 
+        public List<Player> Players {
+            get { return this.players; }
+        }
+
         public Deck StoryDeck {
             get { return this.storyDeck; }
         }
@@ -40,7 +44,7 @@ namespace Quest.Core {
         public void Setup() {
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
-                this.AdventureDeck.Deal(player, Constants.MaxHandSize);
+                player.Draw(this.adventureDeck, Constants.MaxHandSize);
             }
         }
     }
@@ -59,6 +63,13 @@ namespace Quest.Core {
 
         public void Add(Card card) {
             this.cards.Add(card);
+        }
+
+        public void Remove(Card card) {
+            if (!this.cards.Contains(card)) {
+                throw new Exception("Card not in area.");
+            }
+            this.cards.Remove(card);
         }
 
         public void Transfer(CardArea target, Card card) {
