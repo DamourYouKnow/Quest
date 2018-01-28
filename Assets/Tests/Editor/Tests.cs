@@ -8,6 +8,8 @@ using NUnit.Framework;
 using Quest.Core;
 using Quest.Core.Cards;
 using Quest.Core.Players;
+using Quest.Core.Scenarios;
+using Quest.Core.Cards;
 
 namespace NUnitTesting {
     [TestFixture]
@@ -39,13 +41,7 @@ namespace NUnitTesting {
     public class GameManagerTests {
         [Test]
         public void SetupGame() {
-            QuestMatch game = new QuestMatch();
-
-            // TODO: Write code for generating preset scenarios.
-            game.AddPlayer(new Player(game, "Test Player 1"));
-            game.AddPlayer(new Player(game, "Test Player 2"));
-            game.AddPlayer(new Player(game, "Test Player 3"));
-            game.Setup();
+            QuestMatch game = ScenarioCreator.GameWithDeal(3);
 
             // Test if each player has 12 adventure cards.
             foreach (Player player in game.Players) {
@@ -60,12 +56,17 @@ namespace NUnitTesting {
     public class EventTests {
         [Test]
         public void Prosperity() {
-            QuestMatch game = new QuestMatch();
-            game.AddPlayer(new Player(game, "Test Player 1"));
-            game.AddPlayer(new Player(game, "Test Player 2"));
-            game.AddPlayer(new Player(game, "Test Player 3"));
+            QuestMatch game = ScenarioCreator.GameNoDeal(3);
+            ProsperityEvent eventCard = new ProsperityEvent(game);
+            eventCard.RunEvent();
 
-            // Player pulls event, run handler on draw.
+            // TODO: Player pulls event, run handler on draw.
+            foreach (Player player in game.Players) {
+                Assert.AreEqual(2, player.Hand.Count);
+                foreach (Card card in player.Hand.Cards) {
+                    Assert.IsInstanceOf(typeof(AdventureCard), card);
+                }
+            } 
         }
     }
 }
