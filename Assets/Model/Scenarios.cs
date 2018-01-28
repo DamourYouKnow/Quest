@@ -6,7 +6,7 @@ namespace Quest.Core.Scenarios {
         public static QuestMatch GameNoDeal(int playerCount) {
             QuestMatch game = new QuestMatch();
             for (int i = 1; i <= playerCount; i++) {
-                game.AddPlayer(new Player(game, "Test Player " + i));
+                game.AddPlayer(new Player("Test Player " + i, game));
             }
             return game;
         }
