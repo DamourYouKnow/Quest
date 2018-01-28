@@ -42,24 +42,30 @@ namespace NUnitTesting {
             QuestMatch game = new QuestMatch();
 
             // TODO: Write code for generating preset scenarios.
-            List<Player> players = new List<Player>();
-            players.Add(new Player(null, "Test Player 1"));
-            players.Add(new Player(null, "Test Player 2"));
-            players.Add(new Player(null, "Test Player 3"));
-
-            foreach (Player player in players) {
-                game.AddPlayer(player);
-            }
-
+            game.AddPlayer(new Player(game, "Test Player 1"));
+            game.AddPlayer(new Player(game, "Test Player 2"));
+            game.AddPlayer(new Player(game, "Test Player 3"));
             game.Setup();
 
             // Test if each player has 12 adventure cards.
-            foreach (Player player in players) {
+            foreach (Player player in game.Players) {
                 Assert.AreEqual(player.Hand.Count, Constants.MaxHandSize);
                 foreach (Card card in player.Hand.Cards) {
                     Assert.IsInstanceOf(typeof(AdventureCard), card);
                 }
             }
+        }
+    }
+
+    public class EventTests {
+        [Test]
+        public void Prosperity() {
+            QuestMatch game = new QuestMatch();
+            game.AddPlayer(new Player(game, "Test Player 1"));
+            game.AddPlayer(new Player(game, "Test Player 2"));
+            game.AddPlayer(new Player(game, "Test Player 3"));
+
+            // Player pulls event, run handler on draw.
         }
     }
 }
