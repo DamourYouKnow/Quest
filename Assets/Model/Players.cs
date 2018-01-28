@@ -36,7 +36,15 @@ namespace Quest.Core.Players {
         }
 
         public void Promote() {
-
+			if (rankCard.Rank == PlayerRank.Squire){
+				rankCard.Rank = PlayerRank.Knight;
+			}
+			else if (rankCard.Rank == PlayerRank.Knight){
+				rankCard.Rank = PlayerRank.ChampionKnight;
+			}
+			else {
+				rankCard.Rank = PlayerRank.KnightOfTheRoundTable;
+			}
         }
 
         public void Draw(Deck deck, int count=1) {

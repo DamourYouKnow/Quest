@@ -47,6 +47,7 @@ namespace Quest.Core.Cards {
 
         public PlayerRank Rank {
             get { return this.rank; }
+			set { this.rank = value;}
         }
     }
 
