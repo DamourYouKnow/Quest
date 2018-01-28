@@ -13,6 +13,7 @@ namespace Quest.Core {
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
+		private StoryCard currentStory;
 
         public QuestMatch() {
             this.players = new List<Player>();
