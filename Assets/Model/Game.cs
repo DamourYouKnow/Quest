@@ -34,9 +34,13 @@ namespace Quest.Core {
             get { return this.adventureDeck; }
         }
 
-        public Deck DiscardPile {
-            get { return this.discardPile; }
-        }
+		public Deck DiscardPile {
+			get { return this.discardPile; }
+		}
+
+		public StoryCard CurrentStory {
+			get { return this.currentStory; }
+		}
 
         public void AddPlayer(Player player) {
             this.players.Add(player);
