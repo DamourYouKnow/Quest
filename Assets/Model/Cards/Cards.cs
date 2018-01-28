@@ -6,7 +6,6 @@ namespace Quest.Core.Cards {
     public abstract class Card {
         protected string name;
         protected string imageFilename;
-        protected int battlePoints;
         protected QuestMatch match;
 
         public Card(QuestMatch match) {
@@ -14,7 +13,8 @@ namespace Quest.Core.Cards {
         }
     }
 
-    public abstract class AdventureCard : Card {
+	public abstract class AdventureCard : Card {
+		protected int battlePoints;
         public AdventureCard(QuestMatch match) : base(match) {
 
         }
