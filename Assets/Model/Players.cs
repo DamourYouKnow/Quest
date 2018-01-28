@@ -1,28 +1,112 @@
 ﻿using System;
+using System.Collections.Generic;
 using Quest.Core.Cards;
 
 namespace Quest.Core.Players {
-    public enum PlayerRank {
+    public enum Rank {
         Squire,
         Knight,
         ChampionKnight,
         KnightOfTheRoundTable
     };
 
+    public class PlayerRank {
+        private List<RankNode> ranks;
+        private int currentRank;
+        private int shields;
+
+        public PlayerRank() {
+            this.currentRank = 0;
+            this.shields = 0;
+            ranks = new List<RankNode>();
+            ranks.Add(new RankNode(Rank.Squire, 0));
+            ranks.Add(new RankNode(Rank.Knight, 5));
+            ranks.Add(new RankNode(Rank.ChampionKnight, 7));
+            ranks.Add(new RankNode(Rank.KnightOfTheRoundTable, 10));
+        }
+
+        public Rank Value {
+            get { return this.ranks[currentRank].Value; }
+        }
+
+        public int Shields {
+            get { return this.shields; }
+        }
+
+        public void AddShields(int count) {
+            this.shields += count;
+            if (this.currentRank == this.ranks.Count - 1) {
+                return;
+            }
+
+            // Check for promotion.
+            int required = this.ranks[currentRank + 1].RequiredShields;
+            if (this.shields >= required) {
+                currentRank++;
+                this.shields = this.shields - required;
+            }
+        }
+
+        public void RemoveShields(int count) {
+            this.shields = Math.Max(0, this.shields - count);
+        }
+
+        public int TotalShields() {
+            int total = 0;
+            for (int i = 0; i < currentRank; i++) {
+                total += this.ranks[i].RequiredShields;
+            }
+            total += this.shields;
+            return total;
+        }
+
+        public static bool operator<(PlayerRank r1, PlayerRank r2) {
+            return r1.TotalShields() < r2.TotalShields();
+        }
+
+        public static bool operator>(PlayerRank r1, PlayerRank r2) {
+            return r1.TotalShields() > r2.TotalShields();
+        }
+
+        public static bool operator<=(PlayerRank r1, PlayerRank r2) {
+            return r1.TotalShields() <= r2.TotalShields();
+        }
+
+        public static bool operator>=(PlayerRank r1, PlayerRank r2) {
+            return r1.TotalShields() >= r2.TotalShields();
+        }
+    }
+
+    internal class RankNode {
+        private Rank value;
+        private int requiredShields;
+
+        public RankNode(Rank value, int requiredShields) {
+            this.value = value;
+            this.requiredShields = requiredShields;
+        }
+
+        public Rank Value {
+            get { return this.value; }
+        }
+
+        public int RequiredShields {
+            get { return this.requiredShields; }
+        }
+    }
+
     public class Player {
         private QuestMatch match;
         private string username;
         private PlayerBehaviour behaviour;
-        private RankCard rankCard;
-        private int shields;
+        private PlayerRank rank;
         private Hand hand;
 		private BattleArea battleArea;
 
         public Player(QuestMatch match, string username) {
             this.match = match;
             this.username = username;
-            this.rankCard = new RankCard(match);
-            this.shields = 0;
+            this.rank = new PlayerRank();
             this.hand = new Hand();
 			this.battleArea = new BattleArea();
         }
@@ -35,35 +119,10 @@ namespace Quest.Core.Players {
             get { return hand; }
         }
 
-        public void Promote() {
-			if (this.rankCard.Rank == PlayerRank.Squire){
-				this.rankCard.Rank = PlayerRank.Knight;
-			}
-			else if (this.rankCard.Rank == PlayerRank.Knight){
-				this.rankCard.Rank = PlayerRank.ChampionKnight;
-			}
-			else {
-				this.rankCard.Rank = PlayerRank.KnightOfTheRoundTable;
-			}
+        public PlayerRank Rank {
+            get { return this.rank; }
         }
-		
-		public void AddShields(int shields){
-			this.shields += shields;
-			
-			if ((this.rankCard.Rank == PlayerRank.Squire)&&(this.shields >= 5)){
-				this.shields -= 5;
-				Promote();
-			}
-			else if ((this.rankCard.Rank == PlayerRank.Knight)&&(this.shields >= 7)){
-				this.shields -= 7;
-				Promote();
-			}
-			else if ((this.rankCard.Rank == PlayerRank.ChampionKnight)&&(this.shields >= 10)){
-				this.shields -= 10;
-				Promote();
-			}
-		}
-		
+	
         public void Draw(Deck deck, int count=1) {
             for (int i = 0; i < count; i++) {
                 this.Hand.Add(deck.Draw());

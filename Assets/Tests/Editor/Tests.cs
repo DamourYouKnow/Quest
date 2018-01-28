@@ -85,4 +85,29 @@ namespace NUnitTesting {
             } 
         }
     }
+
+    public class PlayerTests {
+        [Test]
+        public void Ranking() {
+            Player player = new Player(null, "Test Player");
+            Assert.AreEqual(Rank.Squire, player.Rank.Value);
+            Assert.AreEqual(0, player.Rank.Shields);
+
+            player.Rank.AddShields(5);
+            Assert.AreEqual(Rank.Knight, player.Rank.Value);
+            Assert.AreEqual(0, player.Rank.Shields);
+
+            player.Rank.AddShields(8);
+            Assert.AreEqual(Rank.ChampionKnight, player.Rank.Value);
+            Assert.AreEqual(1, player.Rank.Shields);
+
+            player.Rank.RemoveShields(2);
+            Assert.AreEqual(Rank.ChampionKnight, player.Rank.Value);
+            Assert.AreEqual(0, player.Rank.Shields);
+
+            player.Rank.AddShields(12);
+            Assert.AreEqual(Rank.KnightOfTheRoundTable, player.Rank.Value);
+            Assert.AreEqual(2, player.Rank.Shields);
+        }
+    }
 }

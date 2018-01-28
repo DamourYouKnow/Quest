@@ -39,13 +39,13 @@ namespace Quest.Core.Cards {
     }
 
     public class RankCard : Card {
-        private PlayerRank rank;
+        private Rank rank;
 
         public RankCard(QuestMatch match) : base(match) {
 
         }
 
-        public PlayerRank Rank {
+        public Rank Rank {
             get { return this.rank; }
 			set { this.rank = value;}
         }
