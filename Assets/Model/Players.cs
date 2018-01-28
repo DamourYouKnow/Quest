@@ -36,14 +36,14 @@ namespace Quest.Core.Players {
         }
 
         public void Promote() {
-			if (rankCard.Rank == PlayerRank.Squire){
-				rankCard.Rank = PlayerRank.Knight;
+			if (this.rankCard.Rank == PlayerRank.Squire){
+				this.rankCard.Rank = PlayerRank.Knight;
 			}
-			else if (rankCard.Rank == PlayerRank.Knight){
-				rankCard.Rank = PlayerRank.ChampionKnight;
+			else if (this.rankCard.Rank == PlayerRank.Knight){
+				this.rankCard.Rank = PlayerRank.ChampionKnight;
 			}
 			else {
-				rankCard.Rank = PlayerRank.KnightOfTheRoundTable;
+				this.rankCard.Rank = PlayerRank.KnightOfTheRoundTable;
 			}
         }
 
@@ -56,16 +56,15 @@ namespace Quest.Core.Players {
 			//player needs to choose whether to discard or play,
 			//if play, players needs to choose which cards,
 			//and some cards are unplayable.
-			//also there may be syntax errors, idk how to test right now
-			/*
-			if (this.hand.Count > maxHandSize){
-				for (int i = this.hand.Count; i>maxHandSize; i--){
+			
+			if (this.hand.Count > Constants.MaxHandSize){
+				for (int i = this.hand.Count; i>Constants.MaxHandSize; i--){
 					//discards the most recently drawn cards
 					//change later
 					Discard(this.hand.Cards[i]);
 				}
 			}
-			*/
+			
 			
         }
 
