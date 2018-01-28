@@ -9,7 +9,11 @@ namespace Quest.Core.Cards {
         protected QuestMatch match;
 
         public Card(QuestMatch match) {
+<<<<<<< HEAD
 			this.match = match;
+=======
+            this.match = match;
+>>>>>>> 37b9e9aacac5e2c0b613d6809a52d8a947c43ae1
         }
     }
 
