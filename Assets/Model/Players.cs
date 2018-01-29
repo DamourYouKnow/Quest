@@ -154,6 +154,44 @@ namespace Quest.Core.Players {
 			//will need to check if a card is playable or not
 			//(that might be handled elsewhere, not in this function (not sure))
 		}
+
+        public static List<Player> LowestShields(List<Player> players) {
+            List<Player> minList = new List<Player>();
+
+            int min = Int32.MaxValue;
+            foreach (Player player in players) {
+                if (player.rank.TotalShields() < min) {
+                    min = player.rank.TotalShields();
+                }
+            }
+
+            foreach (Player player in players) {
+                if (player.Rank.TotalShields() == min) {
+                    minList.Add(player);
+                }
+            }
+
+            return minList;
+        }
+
+        public static List<Player> HighestShields(List<Player> players) {
+            List<Player> maxList = new List<Player>();
+
+            int max = 0;
+            foreach (Player player in players) {
+                if (player.rank.TotalShields() > max) {
+                    max = player.rank.TotalShields();
+                }
+            }
+
+            foreach (Player player in players) {
+                if (player.Rank.TotalShields() == max) {
+                    maxList.Add(player);
+                }
+            }
+
+            return maxList;
+        }
     }
 
     internal abstract class PlayerBehaviour {

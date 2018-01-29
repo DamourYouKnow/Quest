@@ -84,6 +84,19 @@ namespace NUnitTesting {
                 }
             } 
         }
+
+        [Test]
+        public void ChivalrousDeed() {
+            QuestMatch game = ScenarioCreator.GameNoDeal(3);
+            game.Players[0].Rank.AddShields(1);
+
+            ChivalrousDeedEvent eventCard = new ChivalrousDeedEvent(game);
+            eventCard.RunEvent();
+
+            Assert.AreEqual(1, game.Players[0].Rank.TotalShields());
+            Assert.AreEqual(3, game.Players[1].Rank.TotalShields());
+            Assert.AreEqual(3, game.Players[2].Rank.TotalShields());
+        }
     }
 
     public class PlayerTests {

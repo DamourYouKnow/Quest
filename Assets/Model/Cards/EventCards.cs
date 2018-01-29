@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Quest.Core.Cards;
 using Quest.Core.Players;
 
@@ -17,7 +18,10 @@ namespace Quest.Core.Cards {
         }
 
         public override void RunEvent() {
-            throw new NotImplementedException();
+            List<Player> lowestRanked = Player.LowestShields(this.match.Players);
+            foreach (Player player in lowestRanked) {
+                player.Rank.AddShields(3);
+            }
         }
     }
 
