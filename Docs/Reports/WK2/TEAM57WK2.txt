@@ -1,0 +1,35 @@
+This week our team has NO issues to report in terms of participation, contributions, distribution of work.
+
+F1	Foes			Planned
+F2	Weapons			Planned
+F3	Quests			Planned
+F4	Events			Planned
+F5	Battle System		Planned
+F6	Shield and rank system	Planned
+F7	Tests			Planned
+F8	Turn Handler		Planned
+F9	Tournaments		Planned
+F10	Allies			Planned
+F11	Card limit		Planned
+
+No completed features yet, so no tests.
+
+Kelvin Choy
+	Hours:
+	Completed Features:
+	Planned Features:
+
+Guy Cloutier
+	Hours: 8
+	Completed Features:	None
+	Planned Features:	F3, F8
+
+Daniel Cormier
+	Hours:
+	Completed Features:
+	Planned Features:
+
+Bailey D'Amour
+	Hours:
+	Completed Features:
+	Planned Features:
