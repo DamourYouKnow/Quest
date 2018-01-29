@@ -86,4 +86,17 @@ namespace Quest.Core.Cards {
             }
         }
     }
+
+    public class QueensFavourEvent : EventCard {
+        public QueensFavourEvent(QuestMatch match) : base(match) {
+
+        }
+
+        public override void RunEvent() {
+            List<Player> lowestRanked = Player.LowestRanked(this.match.Players);
+            foreach (Player player in lowestRanked) {
+                player.Draw(this.match.AdventureDeck, 2);
+            }
+        }
+    }
 }

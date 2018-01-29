@@ -97,6 +97,27 @@ namespace NUnitTesting {
             Assert.AreEqual(3, game.Players[1].Rank.TotalShields());
             Assert.AreEqual(3, game.Players[2].Rank.TotalShields());
         }
+
+        [Test]
+        public void QueensFavour() {
+            QuestMatch game = ScenarioCreator.GameNoDeal(3);
+            game.Players[0].Rank.AddShields(10);
+
+            QueensFavourEvent eventCard = new QueensFavourEvent(game);
+            eventCard.RunEvent();
+
+            Assert.AreEqual(0, game.Players[0].Hand.Count);
+            Assert.AreEqual(2, game.Players[1].Hand.Count);
+            Assert.AreEqual(2, game.Players[2].Hand.Count);
+
+            foreach (Card card in game.Players[1].Hand.Cards) {
+                Assert.IsInstanceOf(typeof(AdventureCard), card);
+            }
+
+            foreach (Card card in game.Players[2].Hand.Cards) {
+                Assert.IsInstanceOf(typeof(AdventureCard), card);
+            }
+        }
     }
 
     public class PlayerTests {

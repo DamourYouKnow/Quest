@@ -61,19 +61,19 @@ namespace Quest.Core.Players {
         }
 
         public static bool operator<(PlayerRank r1, PlayerRank r2) {
-            return r1.TotalShields() < r2.TotalShields();
+            return r1.currentRank < r2.currentRank;
         }
 
         public static bool operator>(PlayerRank r1, PlayerRank r2) {
-            return r1.TotalShields() > r2.TotalShields();
+            return r1.currentRank > r2.currentRank;
         }
 
         public static bool operator<=(PlayerRank r1, PlayerRank r2) {
-            return r1.TotalShields() <= r2.TotalShields();
+            return r1.currentRank <= r2.currentRank;
         }
 
         public static bool operator>=(PlayerRank r1, PlayerRank r2) {
-            return r1.TotalShields() >= r2.TotalShields();
+            return r1.currentRank >= r2.currentRank;
         }
     }
 
@@ -157,8 +157,9 @@ namespace Quest.Core.Players {
 
         public static List<Player> LowestShields(List<Player> players) {
             List<Player> minList = new List<Player>();
+            if (players.Count == 0) return minList;
 
-            int min = Int32.MaxValue;
+            int min = players[0].Rank.TotalShields();
             foreach (Player player in players) {
                 if (player.rank.TotalShields() < min) {
                     min = player.rank.TotalShields();
@@ -166,7 +167,7 @@ namespace Quest.Core.Players {
             }
 
             foreach (Player player in players) {
-                if (player.Rank.TotalShields() == min) {
+                if (player.rank.TotalShields() == min) {
                     minList.Add(player);
                 }
             }
@@ -185,7 +186,46 @@ namespace Quest.Core.Players {
             }
 
             foreach (Player player in players) {
-                if (player.Rank.TotalShields() == max) {
+                if (player.rank.TotalShields() == max) {
+                    maxList.Add(player);
+                }
+            }
+
+            return maxList;
+        }
+
+        public static List<Player> LowestRanked(List<Player> players) {
+            List<Player> minList = new List<Player>();
+            if (players.Count == 0) return minList;
+
+            PlayerRank min = players[0].Rank;
+            foreach (Player player in players) {
+                if (player.rank < min) {
+                    min = player.rank;
+                }
+            }
+
+            foreach (Player player in players) {
+                if (player.rank.Value == min.Value) {
+                    minList.Add(player);
+                }
+            }
+
+            return minList;
+        }
+
+        public static List<Player> HighestRanked(List<Player> players) {
+            List<Player> maxList = new List<Player>();
+
+            PlayerRank max = new PlayerRank();
+            foreach (Player player in players) {
+                if (player.rank > max) {
+                    max = player.rank;
+                }
+            }
+
+            foreach (Player player in players) {
+                if (player.rank.Value == max.Value) {
                     maxList.Add(player);
                 }
             }
