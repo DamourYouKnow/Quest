@@ -8,6 +8,10 @@ namespace Quest.Core.Cards {
         public FoeCard(QuestMatch match) : base(match) {
 
         }
+		
+		public void addBonusBP(){
+			this.battlePoints += this.bonusBP;
+		}
     }
 	
 	public class BlackKnight : FoeCard{
