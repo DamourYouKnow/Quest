@@ -24,6 +24,7 @@ namespace Quest.Core.Cards {
         public StoryCard(QuestMatch match) : base(match) {
 
         }
+		public abstract void run();
     }
 	
     public class WeaponCard : AdventureCard {
@@ -48,20 +49,6 @@ namespace Quest.Core.Cards {
         public Rank Rank {
             get { return this.rank; }
 			set { this.rank = value;}
-        }
-    }
-
-    public class TournamentCard : StoryCard {
-        public TournamentCard(QuestMatch match) : base(match) {
-
-        }
-    }
-
-    public class TestCard : StoryCard {
-        private int minBid;
-
-        public TestCard(QuestMatch match) : base(match) {
-
         }
     }
 
@@ -112,7 +99,7 @@ namespace Quest.Core.Cards {
         protected override void Init() {
             // TODO: Init deck with proper cards.
             for (int i = 0; i < 50; i++) {
-                this.cards.Push(new TestCard(this.match));
+                //this.cards.Push(new TestCard(this.match));
             }
         }
     }
