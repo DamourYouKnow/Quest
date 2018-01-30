@@ -30,6 +30,6 @@ Daniel Cormier
 	Planned Features:
 
 Bailey D'Amour
-	Hours:
-	Completed Features:
-	Planned Features:
+	Hours: 8
+	Completed Features: None
+	Planned Features: F4, F10, F7
