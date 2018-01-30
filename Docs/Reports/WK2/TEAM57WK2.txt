@@ -27,7 +27,7 @@ Guy Cloutier
 Daniel Cormier
 	Hours: 5
 	Completed Features: None
-	Planned Features: F2
+	Planned Features: F2, F7
 
 Bailey D'Amour
 	Hours: 8
