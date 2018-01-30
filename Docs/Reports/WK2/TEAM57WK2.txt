@@ -14,10 +14,10 @@ F11	Card limit		Planned
 
 No completed features yet, so no tests.
 
-Kelvin Choy
-	Hours:
-	Completed Features:
-	Planned Features:
+Kelvin Choi
+	Hours:6
+	Completed Features: None
+	Planned Features: F11, F1, F6(completed logic-wise, not sure if that counts)
 
 Guy Cloutier
 	Hours: 8
