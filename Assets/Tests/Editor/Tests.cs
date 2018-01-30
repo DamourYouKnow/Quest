@@ -74,7 +74,7 @@ namespace NUnitTesting {
         public void Prosperity() {
             QuestMatch game = ScenarioCreator.GameNoDeal(3);
             ProsperityEvent eventCard = new ProsperityEvent(game);
-            eventCard.RunEvent();
+            eventCard.run();
 
             // TODO: Player pulls event, run handler on draw.
             foreach (Player player in game.Players) {
@@ -91,7 +91,7 @@ namespace NUnitTesting {
             game.Players[0].Rank.AddShields(1);
 
             ChivalrousDeedEvent eventCard = new ChivalrousDeedEvent(game);
-            eventCard.RunEvent();
+            eventCard.run();
 
             Assert.AreEqual(1, game.Players[0].Rank.TotalShields());
             Assert.AreEqual(3, game.Players[1].Rank.TotalShields());
@@ -104,7 +104,7 @@ namespace NUnitTesting {
             game.Players[0].Rank.AddShields(10);
 
             QueensFavourEvent eventCard = new QueensFavourEvent(game);
-            eventCard.RunEvent();
+            eventCard.run();
 
             Assert.AreEqual(0, game.Players[0].Hand.Count);
             Assert.AreEqual(2, game.Players[1].Hand.Count);

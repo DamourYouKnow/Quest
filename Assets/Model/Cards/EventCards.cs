@@ -8,8 +8,6 @@ namespace Quest.Core.Cards {
         public EventCard(QuestMatch match) : base(match) {
 
         }
-
-        abstract public void RunEvent();
     }
 
     public class ChivalrousDeedEvent : EventCard {
@@ -17,7 +15,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void RunEvent() {
+        public override void run() {
             List<Player> lowestRanked = Player.LowestShields(this.match.Players);
             foreach (Player player in lowestRanked) {
                 player.Rank.AddShields(3);
@@ -30,7 +28,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void RunEvent() {
+        public override void run() {
             throw new NotImplementedException();
         }
     }
@@ -40,7 +38,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void RunEvent() {
+        public override void run() {
             throw new NotImplementedException();
         }
     }
@@ -50,7 +48,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void RunEvent() {
+        public override void run() {
             throw new NotImplementedException();
         }
     }
@@ -60,7 +58,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void RunEvent() {
+        public override void run() {
             throw new NotImplementedException();
         }
     }
@@ -70,7 +68,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void RunEvent() {
+        public override void run() {
             throw new NotImplementedException();
         }
     }
@@ -80,7 +78,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void RunEvent() {
+        public override void run() {
             foreach (Player player in this.match.Players) {
                 player.Draw(this.match.AdventureDeck, 2);
             }
@@ -92,7 +90,7 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override void RunEvent() {
+        public override void run() {
             List<Player> lowestRanked = Player.LowestRanked(this.match.Players);
             foreach (Player player in lowestRanked) {
                 player.Draw(this.match.AdventureDeck, 2);
