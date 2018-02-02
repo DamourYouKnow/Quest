@@ -36,12 +36,6 @@ namespace Quest.Core.Cards {
         }
 		public abstract void run();
     }
-	
-    public class WeaponCard : AdventureCard {
-        public WeaponCard(QuestMatch match) : base(match) {
-
-        }
-    }
 
     public class AmourCard : AdventureCard {
         public AmourCard(QuestMatch match) : base(match) {
@@ -107,11 +101,41 @@ namespace Quest.Core.Cards {
         }
 
         protected override void Init() {
-            // TODO: Init deck with proper cards.
-            for (int i = 0; i < 50; i++) {
-                //this.cards.Push(new TestCard(this.match));
-            }
-        }
+			List<StoryCard> story_deck = new List<StoryCard> {
+				new SearchForTheHolyGrail (this.match),             //1
+				new TestOfTheGreenKnight (this.match),              //2
+				new SearchForTheQuestingBeast (this.match),         //3
+				new DefendTheQueensHonor (this.match),              //4
+				new RescueTheFairMaiden (this.match),               //5
+				new JourneyThroughTheEnchantedForest (this.match),  //6
+				new VanquishKingArthursEnemies (this.match),        //7
+				new SlayTheDragon (this.match),                     //8
+				new BoarHunt (this.match),                          //9
+				new RepelTheSaxonRaiders (this.match),              //10
+			};
+			//events and tournaments need to be added
+
+			List<int> deck_quantity_list = new List<int>{ 
+				1,  //1
+				1,  //2
+				1,  //3
+				1,  //4
+				1,  //5
+				1,  //6
+				2,  //7
+				1,  //8
+				2,  //9
+				2}; //10
+
+			for (int i = 0; i < story_deck.Count; i++) {
+				int deck_quantity = deck_quantity_list[i];
+				for (int j = 0; j < deck_quantity; j++) {
+					this.cards.Push(story_deck[i]);
+				} 
+			} 
+
+			this.shuffle(); //comment out for testing deck
+		}
     }
 
     public class AdventureDeck : Deck {
@@ -129,19 +153,64 @@ namespace Quest.Core.Cards {
             this.cards.Push(new SirPercival(this.match));
             this.cards.Push(new SirTristan(this.match));
 
-            // Create test cards.
-            for (int i = 1; i <= 2; i++) {
-                this.cards.Push(new TestOfValor(this.match));
-                this.cards.Push(new TestOfTemptation(this.match));
-                this.cards.Push(new TestOfMorganLeFey(this.match));
-                this.cards.Push(new TestOfTheQuestingBeast(this.match));
-            }
+			//create the rest of the adventure cards and add them to deck
+			List<AdventureCard> adventure_list = new List<AdventureCard>{
+				new Horse(this.match),                  //1
+				new Sword(this.match),                  //2
+				new Dagger(this.match),                 //3
+				new Excalibur(this.match),              //4
+				new Lance(this.match),                  //5
+				new BattleAx(this.match),               //6
+				new Dragon(this.match),                 //7
+				new Giant(this.match),                  //8
+				new Mordred(this.match),                //9
+				new GreenKnight(this.match),            //10
+				new BlackKnight(this.match),            //11
+				new EvilKnight(this.match),             //12
+				new SaxonKnight(this.match),            //13
+				new RobberKnight(this.match),           //14
+				new Saxons(this.match),                 //15
+				new Boar(this.match),                   //16
+				new Thieves(this.match),                //17
+				new TestOfValor(this.match),            //18
+				new TestOfTemptation(this.match),       //19
+				new TestOfMorganLeFey(this.match),      //20
+				new TestOfTheQuestingBeast(this.match)  //21
+			};
 
-            // TODO: Init deck with proper cards.
-            for (int i = 0; i < 50; i++) {
-                this.cards.Push(new BlackKnight(this.match));
-            }
-        }
+			List<int> deck_quantity_list = new List<int>{
+				11, //1
+				16, //2
+				6,  //3
+				2,  //4
+				6,  //5
+				8,  //6
+				1,  //7
+				2,  //8
+				4,  //9
+				2,  //10
+				3,  //11
+				6,  //12
+				8,  //13
+				7,  //14
+				5,  //15
+				4,  //16
+				8,  //17
+				2,  //18
+				2,  //19
+				2,  //20
+				2}; //21
+
+			for (int i = 0; i < adventure_list.Count; i++) {
+				int deck_quantity = deck_quantity_list[i];
+				for (int j = 0; j < deck_quantity; j++) {
+					this.cards.Push(adventure_list[i]);
+				} 
+			} 
+
+			//this.shuffle(); //comment out for testing deck
+		}
+        
     }
 
     public class DiscardPile : Deck {
