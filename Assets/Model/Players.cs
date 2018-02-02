@@ -240,17 +240,54 @@ namespace Quest.Core.Players {
     }
 
     internal abstract class PlayerBehaviour {
-        public abstract void HandleTurn();
+        // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
+        public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
+        public abstract bool SponsorQuest(QuestCard questCard);
+        public abstract bool ParticipateInQuest(QuestCard questCard);
+        public abstract List<Card> NextBid(TestCard testCard);
+        public abstract List<Card> DiscardAfterWinningTest();
     }
 
     internal class HumanPlayer : PlayerBehaviour {
-        public override void HandleTurn() {
+        public override List<Card> DiscardAfterWinningTest() {
+            throw new NotImplementedException();
+        }
+
+        public override List<Card> NextBid(TestCard testCard) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInQuest(QuestCard questCard) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInTournament(TournamentCard tournamentCard) {
+            throw new NotImplementedException();
+        }
+
+        public override bool SponsorQuest(QuestCard questCard) {
             throw new NotImplementedException();
         }
     }
 
-    internal class SimpleBot : PlayerBehaviour {
-        public override void HandleTurn() {
+    internal class Strategy2 : PlayerBehaviour {
+        public override List<Card> DiscardAfterWinningTest() {
+            throw new NotImplementedException();
+        }
+
+        public override List<Card> NextBid(TestCard testCard) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInQuest(QuestCard questCard) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInTournament(TournamentCard tournamentCard) {
+            throw new NotImplementedException();
+        }
+
+        public override bool SponsorQuest(QuestCard questCard) {
             throw new NotImplementedException();
         }
     }
