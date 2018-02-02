@@ -125,6 +125,14 @@ namespace Quest.Core.Cards {
             this.cards.Push(new SirPercival(this.match));
             this.cards.Push(new SirTristan(this.match));
 
+            // Create test cards.
+            for (int i = 1; i <= 2; i++) {
+                this.cards.Push(new TestOfValor(this.match));
+                this.cards.Push(new TestOfTemptation(this.match));
+                this.cards.Push(new TestOfMorganLeFey(this.match));
+                this.cards.Push(new TestOfTheQuestingBeast(this.match));
+            }
+
             // TODO: Init deck with proper cards.
             for (int i = 0; i < 50; i++) {
                 this.cards.Push(new BlackKnight(this.match));
