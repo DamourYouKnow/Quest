@@ -15,8 +15,9 @@ namespace NUnitTesting {
     public class CardTests {
         [Test]
         public void TestDraw() {
-            AdventureDeck deck = new AdventureDeck(ScenarioCreator.EmptyGame());
-            Player player = new Player("Test Player");
+            QuestMatch game = ScenarioCreator.EmptyGame();
+            AdventureDeck deck = new AdventureDeck(game);
+            Player player = new Player("Test Player", game);
             player.Draw(deck, 10);
             Assert.AreEqual(player.Hand.Count, 10);
             Assert.AreEqual(deck.Count, deck.DeckSize - 10);

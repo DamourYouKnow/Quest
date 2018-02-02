@@ -11,6 +11,10 @@ namespace Quest.Core.Cards {
         public Card(QuestMatch match) {
 			this.match = match;
         }
+
+        public override string ToString() {
+            return this.name;
+        }
     }
 
 	public abstract class AdventureCard : Card {

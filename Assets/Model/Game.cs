@@ -14,13 +14,16 @@ namespace Quest.Core {
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
         private StoryCard currentStory;
+        private Logger logger;
 
-        public QuestMatch() {
+        public QuestMatch(Logger logger=null) {
             this.players = new List<Player>();
             this.storyDeck = new StoryDeck(this);
             this.adventureDeck = new AdventureDeck(this);
             this.discardPile = new DiscardPile(this);
 			this.currentStory = null;
+            this.logger = logger;
+            this.Log("Creating new Quest match");
         }
 
         public List<Player> Players {
@@ -46,12 +49,21 @@ namespace Quest.Core {
 
         public void AddPlayer(Player player) {
             this.players.Add(player);
+            this.Log("Added player " + player.Username + " to Quest match");
         }
 
         public void Setup() {
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
                 player.Draw(this.adventureDeck, Constants.MaxHandSize);
+            }
+
+            this.Log("Setup Quest match.");
+        }
+
+        public void Log(string message) {
+            if (this.logger != null) {
+                this.logger.Log(message);
             }
         }
     }

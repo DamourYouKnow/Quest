@@ -125,7 +125,9 @@ namespace Quest.Core.Players {
 	
         public void Draw(Deck deck, int count=1) {
             for (int i = 0; i < count; i++) {
-                this.Hand.Add(deck.Draw());
+                Card drawnCard = deck.Draw();
+                this.Hand.Add(drawnCard);
+                this.match.Log("Player " + this.username + " drew " + drawnCard.ToString());
             }
 			
 			//not sure how to fully implement this 'limit' right now.
@@ -147,12 +149,15 @@ namespace Quest.Core.Players {
         public void Discard(Card card) {
             this.hand.Remove(card);
             this.match.DiscardPile.Push(card);
+            this.match.Log("Player " + this.username + " discarded " + card.ToString());
         }
 		
 		public void Play(Card card){
 			this.hand.Transfer(battleArea, card);
-			//will need to check if a card is playable or not
-			//(that might be handled elsewhere, not in this function (not sure))
+            //will need to check if a card is playable or not
+            //(that might be handled elsewhere, not in this function (not sure))
+
+            this.match.Log("Player " + this.username + " played " + card.ToString());
 		}
 
         public static List<Player> LowestShields(List<Player> players) {
