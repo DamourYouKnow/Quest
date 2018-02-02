@@ -14,9 +14,15 @@ namespace Quest.Core.Cards {
     }
 
 	public abstract class AdventureCard : Card {
-		protected int battlePoints;
+		protected int battlePoints = 0;
+        protected int freeBids = 0;
+
         public AdventureCard(QuestMatch match) : base(match) {
 
+        }
+
+        public int FreeBids {
+            get { return this.freeBids; }
         }
     }
 
