@@ -11,12 +11,22 @@ namespace Quest.Core.Cards {
         public Card(QuestMatch match) {
 			this.match = match;
         }
+
+        public override string ToString() {
+            return this.name;
+        }
     }
 
 	public abstract class AdventureCard : Card {
-		protected int battlePoints;
+		protected int battlePoints = 0;
+        protected int freeBids = 0;
+
         public AdventureCard(QuestMatch match) : base(match) {
 
+        }
+
+        public int FreeBids {
+            get { return this.freeBids; }
         }
     }
 
@@ -118,6 +128,14 @@ namespace Quest.Core.Cards {
             this.cards.Push(new SirLancelot(this.match));
             this.cards.Push(new SirPercival(this.match));
             this.cards.Push(new SirTristan(this.match));
+
+            // Create test cards.
+            for (int i = 1; i <= 2; i++) {
+                this.cards.Push(new TestOfValor(this.match));
+                this.cards.Push(new TestOfTemptation(this.match));
+                this.cards.Push(new TestOfMorganLeFey(this.match));
+                this.cards.Push(new TestOfTheQuestingBeast(this.match));
+            }
 
             // TODO: Init deck with proper cards.
             for (int i = 0; i < 50; i++) {

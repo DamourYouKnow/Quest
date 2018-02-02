@@ -15,9 +15,9 @@ namespace NUnitTesting {
     public class CardTests {
         [Test]
         public void TestDraw() {
-            AdventureDeck deck = new AdventureDeck(null);
-            Player player = new Player("Test Player");
-
+            QuestMatch game = ScenarioCreator.EmptyGame();
+            AdventureDeck deck = new AdventureDeck(game);
+            Player player = new Player("Test Player", game);
             player.Draw(deck, 10);
             Assert.AreEqual(player.Hand.Count, 10);
             Assert.AreEqual(deck.Count, deck.DeckSize - 10);
@@ -26,7 +26,7 @@ namespace NUnitTesting {
         [Test]
         public void TransferCards() {
             // Transfer cards from player hand to battle area.
-            KingArthur testCard = new KingArthur(null);
+            KingArthur testCard = new KingArthur(ScenarioCreator.EmptyGame());
             Hand playerHand = new Hand();
             BattleArea battleArea = new BattleArea();
             playerHand.Add(testCard);

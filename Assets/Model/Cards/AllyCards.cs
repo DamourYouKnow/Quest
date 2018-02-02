@@ -2,14 +2,8 @@
 
 namespace Quest.Core.Cards {
     public abstract class AllyCard : AdventureCard {
-        protected int bids;
-
         public AllyCard(QuestMatch match) : base(match) {
 
-        }
-
-        public int Bids {
-            get { return this.bids; }
         }
     }
 
@@ -18,7 +12,7 @@ namespace Quest.Core.Cards {
             this.name = "King Arthur";
             this.imageFilename = "ally_king_arthur.png";
             this.battlePoints = 10;
-            this.bids = 2;
+            this.freeBids = 2;
         }
     }
 
