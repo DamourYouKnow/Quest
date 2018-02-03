@@ -4,14 +4,13 @@ namespace Quest.Core.Cards {
 	
 	public abstract class FoeCard : AdventureCard {	
 		protected int bonusBP;
-
-        public FoeCard(QuestMatch match) : base(match) {
-
-        }
 		
-		public void addBonusBP(){
-			this.battlePoints += this.bonusBP;
-		}
+        public FoeCard(QuestMatch match) : base(match) {
+			QuestCard questCard = this.match.CurrentStory as QuestCard;
+			if (questCard.QuestFoes.Contains(typeof(FoeCard))){
+				this.battlePoints += this.bonusBP;
+			}
+        }
     }
 	
 	public class BlackKnight : FoeCard{
@@ -20,6 +19,7 @@ namespace Quest.Core.Cards {
 			this.imageFilename = "foe_black_knight.png";
 			this.battlePoints = 25;
 			this.bonusBP = 10;
+			
 		}
 	}
 	
