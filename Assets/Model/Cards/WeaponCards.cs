@@ -10,6 +10,7 @@ namespace Quest.Core.Cards{
 		public int BattlePoints(){
 			return this.battlePoints;
 		}
+			
 	}
 
 	public class Horse : WeaponCard{
@@ -59,4 +60,6 @@ namespace Quest.Core.Cards{
 			this.battlePoints = 15;
 		}
 	}
+
+
 }

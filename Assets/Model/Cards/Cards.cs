@@ -12,7 +12,7 @@ namespace Quest.Core.Cards {
 			this.match = match;
         }
 
-        public override string ToString() {
+        public override String ToString() {
             return this.name;
         }
     }
@@ -88,6 +88,11 @@ namespace Quest.Core.Cards {
             this.cards.Push(card);
         }
 
+		public string Peek(Deck deck){
+			Card cardn = deck.cards.Peek ();
+			return cardn.ToString ();
+		}
+
         protected void shuffle() {
             List<Card> shuffleList = new List<Card>(this.cards);
             Utils.Random.Shuffle<Card>(shuffleList);
@@ -112,8 +117,20 @@ namespace Quest.Core.Cards {
 				new SlayTheDragon (this.match),                     //8
 				new BoarHunt (this.match),                          //9
 				new RepelTheSaxonRaiders (this.match),              //10
+				new TournamentAtCamelot(this.match),                //11
+				new TournamentAtOrkney(this.match),                 //12
+				new TournamentAtTintagle(this.match),               //13
+				new TournamentAtYork(this.match),                   //14
+				new RecognitionEvent(this.match),                   //15
+				new QueensFavourEvent(this.match),                  //16
+				new CourtCalledEvent(this.match),                   //17
+				new PoxEvent(this.match),                           //18
+				new PlagueEvent(this.match),                        //19
+				new ChivalrousDeedEvent(this.match),                //20
+				new ProsperityEvent(this.match),                    //21
+				new CallToArmsEvent(this.match)                     //22
 			};
-			//events and tournaments need to be added
+
 
 			List<int> deck_quantity_list = new List<int>{ 
 				1,  //1
@@ -125,7 +142,19 @@ namespace Quest.Core.Cards {
 				2,  //7
 				1,  //8
 				2,  //9
-				2}; //10
+				2,  //10
+				1,  //11
+				1,  //12
+				1,  //13
+				1,  //14
+				2,  //15
+				2,  //16
+				2,  //17
+				1,  //18
+				1,  //19
+				1,  //20
+				1,  //21
+				1}; //22
 
 			for (int i = 0; i < story_deck.Count; i++) {
 				int deck_quantity = deck_quantity_list[i];
@@ -134,7 +163,7 @@ namespace Quest.Core.Cards {
 				} 
 			} 
 
-			this.shuffle(); //comment out for testing deck
+			//this.shuffle(); //comment out for testing deck
 		}
     }
 
@@ -151,7 +180,7 @@ namespace Quest.Core.Cards {
             this.cards.Push(new SirGawain(this.match));
             this.cards.Push(new SirLancelot(this.match));
             this.cards.Push(new SirPercival(this.match));
-            this.cards.Push(new SirTristan(this.match));
+            this.cards.Push(new SirTristan(this.match)); 
 
 			//create the rest of the adventure cards and add them to deck
 			List<AdventureCard> adventure_list = new List<AdventureCard>{
@@ -175,11 +204,12 @@ namespace Quest.Core.Cards {
 				new TestOfValor(this.match),            //18
 				new TestOfTemptation(this.match),       //19
 				new TestOfMorganLeFey(this.match),      //20
-				new TestOfTheQuestingBeast(this.match)  //21
+				new TestOfTheQuestingBeast(this.match)  //21 
 			};
+			
 
-			List<int> deck_quantity_list = new List<int>{
-				11, //1
+			List<int> deck_quantity_list = new List<int> {
+				11, //1 
 				16, //2
 				6,  //3
 				2,  //4
@@ -199,7 +229,7 @@ namespace Quest.Core.Cards {
 				2,  //18
 				2,  //19
 				2,  //20
-				2}; //21
+				2}; //21 
 
 			for (int i = 0; i < adventure_list.Count; i++) {
 				int deck_quantity = deck_quantity_list[i];
