@@ -6,13 +6,29 @@ using System.Collections.Generic;
 
 namespace Quest.UI {
     public abstract class Prompt : MonoBehaviour {
+        protected GameObject panel;
         protected Text messageText;
         protected List<PromptField> fields;
         protected List<PromptButton> buttons;
-        protected GameObject promptObject;
+        protected int width;
+        protected int verticalPadding;
+        protected int horizontalPadding; 
 
         public Prompt(string message) {
+            this.setupPanel();
+            this.transformComponents();
             this.messageText.text = message;
+        }
+
+        private void setupPanel() {
+            this.panel = new GameObject();
+            this.panel.AddComponent<CanvasRenderer>();
+            this.panel.AddComponent<RectTransform>();
+            this.panel.AddComponent<Image>();
+        }
+
+        private void transformComponents() {
+            
         }
     }
 
