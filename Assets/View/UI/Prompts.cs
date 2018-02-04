@@ -6,54 +6,28 @@ using System.Collections.Generic;
 
 namespace Quest.UI {
     public abstract class Prompt : MonoBehaviour {
-        protected string message;
+        protected Text messageText;
         protected List<PromptField> fields;
         protected List<PromptButton> buttons;
         protected GameObject promptObject;
 
         public Prompt(string message) {
-            this.message = message;
+            this.messageText.text = message;
         }
     }
 
     public class YesNoPrompt : Prompt {
         public YesNoPrompt(string message, UnityAction acceptEvent, UnityAction declineEvent) 
         : base(message) {
-            this.buttons.Add(new AcceptButton(acceptEvent));
-            this.buttons.Add(new DeclineButton(declineEvent));
+
         }
     }
 
-    public abstract class PromptButton : MonoBehaviour {
-        protected string text;
-        protected UnityAction onClickEvent;
-        protected bool selectable;
-
+    public abstract class PromptButton : Button { 
         public PromptButton(string text, UnityAction onClickEvent, bool selectable=true) {
-            this.text = text;
-            this.selectable = selectable;
-            this.onClickEvent = onClickEvent;
+            this.onClick.AddListener(onClickEvent);
         }
 
-        void OnMouseDown() {
-            if (this.selectable) {
-                this.onClickEvent.Invoke();
-            }
-        }
-    }
-
-    public class AcceptButton : PromptButton {
-        public AcceptButton(UnityAction onClickEvent, bool selectable=true) 
-        : base("Accept", onClickEvent, selectable) {
-
-        }
-    }
-
-    public class DeclineButton : PromptButton {
-        public DeclineButton(UnityAction onClickEvent, bool selectable = true)
-        : base("Decline", onClickEvent, selectable) {
-
-        }
     }
 
     public abstract class PromptField : MonoBehaviour {
