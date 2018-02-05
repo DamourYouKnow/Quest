@@ -8,7 +8,7 @@ using Quest.UI;
 //I call this a change
 namespace Quest.Core {
 	public class GameController : MonoBehaviour {
-        Prompt testPrompt;
+        GameObject testPromptObj;
 		QuestMatch gm;
 		Logger Logger;
 		public Logger log {
@@ -24,7 +24,12 @@ namespace Quest.Core {
 
 		// Use this for initialization
 		void Start () {
-            testPrompt = new YesNoPrompt("Test?", null, null);
+            GameObject parentObj = new GameObject();
+            Canvas canvas = parentObj.AddComponent<Canvas>();
+
+            testPromptObj = new GameObject("TestPrompt");
+            YesNoPrompt prompt = testPromptObj.AddComponent<YesNoPrompt>();
+            prompt.Canvas = canvas;
 		}
 		
 		// Update is called once per frame
