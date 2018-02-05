@@ -6,10 +6,7 @@ namespace Quest.Core.Cards {
 		protected int bonusBP;
 		
         public FoeCard(QuestMatch match) : base(match) {
-			QuestCard questCard = this.match.CurrentStory as QuestCard;
-			if (questCard.QuestFoes.Contains(typeof(FoeCard))){
-				this.battlePoints += this.bonusBP;
-			}
+
         }
     }
 	
