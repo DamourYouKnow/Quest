@@ -47,7 +47,7 @@ namespace Quest.UI {
     }
 
     public class YesNoPrompt : Prompt {
-        public YesNoPrompt(string message, UnityAction acceptEvent, UnityAction declineEvent) 
+        public YesNoPrompt(string message, UnityAction yesEvent, UnityAction noEvent) 
         : base(message) {
 
         }
