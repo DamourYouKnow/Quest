@@ -7,6 +7,9 @@ using System.Collections.Generic;
 namespace Quest.UI {
     public abstract class Prompt : MonoBehaviour {
         protected GameObject panel;
+        protected RectTransform panelTransform;
+        protected Image panelImage;
+        protected Color color;
         protected Text messageText;
         protected List<PromptField> fields;
         protected List<PromptButton> buttons;
@@ -20,11 +23,22 @@ namespace Quest.UI {
             this.messageText.text = message;
         }
 
+        public Color Color {
+            get { return this.color; }
+            set { this.color = value; }
+        }
+
+        public void SetSize(int x, int y) {
+            this.panelTransform.sizeDelta = new Vector2(x, y);
+        }
+
         private void setupPanel() {
             this.panel = new GameObject();
             this.panel.AddComponent<CanvasRenderer>();
-            this.panel.AddComponent<RectTransform>();
-            this.panel.AddComponent<Image>();
+            this.panelTransform = this.panel.AddComponent<RectTransform>();
+            this.panelImage = this.panel.AddComponent<Image>();
+            this.Color = Color.red;
+            this.SetSize(100, 100);
         }
 
         private void transformComponents() {
