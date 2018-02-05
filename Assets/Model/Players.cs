@@ -122,6 +122,10 @@ namespace Quest.Core.Players {
         public PlayerRank Rank {
             get { return this.rank; }
         }
+		
+		public BattleArea BattleArea{
+            get { return battleArea; }
+        }
 	
         public void Draw(Deck deck, int count=1) {
             for (int i = 0; i < count; i++) {

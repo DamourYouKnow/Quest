@@ -52,6 +52,53 @@ namespace NUnitTesting {
 			//questFoes are initialized
 			Assert.IsTrue (boarhunt.QuestFoes.Contains (typeof(Boar)));
 		}
+
+		[Test]
+		public void AdventureDeckCheck(){
+			QuestMatch game = ScenarioCreator.GameNoDeal(3);
+			AdventureDeck deck = new AdventureDeck(game);
+
+			Assert.IsTrue (deck.Peek (deck) == "Test Of The Questing Beast");
+
+			for (int i = 0; i < 77; i++) {
+				deck.Draw ();
+				if (i == 2) {
+					Assert.IsTrue (deck.Peek (deck) == "Test Of Morgan Le Fey");
+				}
+				if (i == 10) {
+					Assert.IsTrue (deck.Peek (deck) == "Thieves");
+				}
+				if (i == 20) {
+					Assert.IsTrue (deck.Peek (deck) == "Saxons");
+				}
+				if (i == 30) {
+					Assert.IsTrue (deck.Peek (deck) == "Robber Knight");
+				}
+			}
+			Assert.IsTrue (deck.Peek (deck) == "Dagger"); 
+		}
+
+		[Test]
+		public void StoryDeckCheck(){
+			QuestMatch game = ScenarioCreator.GameNoDeal(3);
+			StoryDeck deck = new StoryDeck(game);
+
+			Assert.IsTrue (deck.Peek (deck) == "King's Call To Arms");
+
+			for (int i = 0; i < 27; i++) {
+				deck.Draw ();
+				if (i == 1) {
+					Assert.IsTrue (deck.Peek (deck) == "Chivalrous Deed");
+				}
+				if (i == 10) {
+					Assert.IsTrue (deck.Peek (deck) == "Tournament At York");
+				}
+				if (i == 20) {
+					Assert.IsTrue (deck.Peek (deck) == "Vanquish King Arthur's Enemies");
+				}
+			}
+			Assert.IsTrue (deck.Peek (deck) == "Search For The Holy Grail"); 
+		}
     }
 
     public class GameManagerTests {
@@ -144,4 +191,6 @@ namespace NUnitTesting {
             Assert.AreEqual(2, player.Rank.Shields);
         }
     }
+
+
 }
