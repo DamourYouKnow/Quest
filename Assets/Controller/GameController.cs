@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Quest.Core;
+using Quest.UI;
 
 //I call this a change
 namespace Quest.Core {
 	public class GameController : MonoBehaviour {
+        GameObject testPromptObj;
 		QuestMatch gm;
 		Logger logger;
 		public Logger Logger {
@@ -25,6 +27,11 @@ namespace Quest.Core {
 
 		// Use this for initialization
 		void Start () {
+            Canvas canvas = GameObject.Find("GameCanvas").GetComponent<Canvas>();
+            testPromptObj = new GameObject("TestPrompt");
+            YesNoPrompt prompt = testPromptObj.AddComponent<YesNoPrompt>();
+            prompt.Canvas = canvas;
+            prompt.Message = "Hello, world!";
 		}
 		
 		// Update is called once per frame
