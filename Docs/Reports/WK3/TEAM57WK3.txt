@@ -25,7 +25,7 @@ Guy Cloutier
 	Planned Features:	F3, F8
 
 Daniel Cormier
-	Hours: 5
+	Hours: 8
 	Completed Features: None
 	Planned Features: F2, F7
 
