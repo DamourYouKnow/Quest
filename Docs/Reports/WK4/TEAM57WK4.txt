@@ -20,9 +20,9 @@ Kelvin Choi
 	Planned Features: 
 
 Guy Cloutier
-	Hours: 
-	Completed Features:	
-	Planned Features:
+	Hours:			7
+	Completed Features:	None
+	Planned Features:	F8, F3
 
 Daniel Cormier
 	Hours: 
