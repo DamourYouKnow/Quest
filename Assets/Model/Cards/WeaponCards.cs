@@ -6,10 +6,6 @@ namespace Quest.Core.Cards{
 
 		public WeaponCard (QuestMatch match) : base(match){
 		}
-
-		public int BattlePoints(){
-			return this.battlePoints;
-		}
 			
 	}
 

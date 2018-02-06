@@ -111,9 +111,13 @@ namespace Quest.Core.Players {
 			this.battleArea = new BattleArea();
         }
 
-        public string Username {
-            get { return username; }
-        }
+		public string Username {
+			get { return username; }
+		}
+
+		public QuestMatch Match {
+			get { return match; }
+		}
 
         public Hand Hand {
             get { return hand; }

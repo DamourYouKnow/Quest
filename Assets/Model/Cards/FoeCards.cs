@@ -8,6 +8,19 @@ namespace Quest.Core.Cards {
         public FoeCard(QuestMatch match) : base(match) {
 
         }
+		public override int BattlePoints {
+			get {
+				int total = base.BattlePoints;
+				QuestCard story;
+				if (this.match.CurrentStory is QuestCard) {
+					story = this.match.CurrentStory as QuestCard;
+					if(story.QuestFoes.Contains(this.GetType())){
+						total += this.bonusBP;
+					}
+				}
+				return total;
+			}
+		}
     }
 	
 	public class BlackKnight : FoeCard{

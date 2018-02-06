@@ -25,9 +25,12 @@ namespace Quest.Core.Cards {
 
         }
 
-        public int FreeBids {
-            get { return this.freeBids; }
-        }
+		public int FreeBids {
+			get { return this.freeBids; }
+		}
+		public virtual int BattlePoints {
+			get { return this.battlePoints; }
+		}
     }
 
     public abstract class StoryCard: Card {

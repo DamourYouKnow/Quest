@@ -9,6 +9,7 @@ using Quest.Core;
 using Quest.Core.Cards;
 using Quest.Core.Players;
 using Quest.Core.Scenarios;
+using Utils;
 
 namespace NUnitTesting {
     [TestFixture]
@@ -98,6 +99,37 @@ namespace NUnitTesting {
 				}
 			}
 			Assert.IsTrue (deck.Peek (deck) == "Search For The Holy Grail"); 
+		}
+
+		[Test]
+		public void QuestAreaTest(){
+			QuestMatch match = new QuestMatch (new Quest.Core.Logger ("QuestAreaTest"));
+			QuestArea qarea = new QuestArea (new List<Card>());
+			Card card1 = new Boar (match);
+			qarea.Add (card1);
+
+			Assert.IsTrue (qarea.MainCard == card1);
+
+			Card card2 = new TestOfValor (match);
+			qarea.Add (card2);
+
+			Assert.IsTrue (qarea.MainCard == card1);
+			Assert.IsFalse (qarea.Cards.Contains (card2));
+
+			Assert.AreEqual (5, qarea.BattlePoints());
+
+			Card card3 = new Sword (match);
+
+			qarea.Add (card3);
+
+			Assert.IsTrue (qarea.MainCard == card1);
+			Assert.IsTrue (qarea.Cards.Contains (card3));
+
+			Assert.AreEqual (15, qarea.BattlePoints());
+
+			match.CurrentStory = new BoarHunt (match);
+
+			Assert.AreEqual (25, qarea.BattlePoints ());
 		}
     }
 

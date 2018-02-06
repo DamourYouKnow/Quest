@@ -7,7 +7,6 @@ namespace Quest.Core {
 	/// </summary>
 	public class Logger {
 		const string logFolder = "./Logs/";
-		const string filePrefix = "quest";
 		const string fileSuffix = ".log";
 
 		string LogPath;
@@ -15,11 +14,11 @@ namespace Quest.Core {
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Quest.Core.Logger"/> class.
 		/// </summary>
+		/// <param name="path">Identifies custom log file name.</param>
 		/// <note>
-		/// Creates directory structure in regards to current date, and creates uniquely
-		/// identified logfile.
+		/// Will create file, but not directory structure.
 		/// </note>
-		public Logger(){
+		public Logger(string filePrefix = "Quest") {
 			string folderDate = date().Replace("-", "_");
 
 			string filePath = logFolder;
@@ -30,36 +29,29 @@ namespace Quest.Core {
 			}
 
 			//If exists, or created in last block.
-			if (Directory.Exists (filePath + folderDate)) {
-				filePath += folderDate + "/" + filePrefix + folderDate + "_";
+			if (Directory.Exists (filePath + folderDate)) {//If today's directory doesn't exist, create it.
 
-				//Append unique identifier to end of filename.
-				int id = 0;
-				while (File.Exists (filePath + id.ToString () + fileSuffix)) {
-					id++;
+				filePath += folderDate + "/";
+
+				if (!Directory.Exists (filePath + filePrefix)) {
+					Directory.CreateDirectory (filePath + filePrefix);
 				}
-				filePath += id.ToString () + fileSuffix;
 
-				//Attempt to create logfile.
-				using (File.Create (filePath)) {
-					this.LogPath = filePath;
+				if (Directory.Exists (filePath + filePrefix)) {
+					filePath += filePrefix + "/" + filePrefix + "_" + folderDate + "_";
+
+					//Append unique identifier to end of filename.
+					int id = 0;
+					while (File.Exists (filePath + id.ToString () + fileSuffix)) {
+						id++;
+					}
+					filePath += id.ToString () + fileSuffix;
+
+					//Attempt to create logfile.
+					using (File.Create (filePath)) {
+						this.LogPath = filePath;
+					}
 				}
-			}
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Quest.Core.Logger"/> class.
-		/// </summary>
-		/// <param name="path">Identifies custom log file name.</param>
-		/// <note>
-		/// Will create file, but not directory structure.
-		/// </note>
-		public Logger(string path) {
-			if (!File.Exists (path)) {
-				File.Create (path);
-			}
-			if (File.Exists (path)) {
-				this.LogPath = path;
 			}
 		}
 

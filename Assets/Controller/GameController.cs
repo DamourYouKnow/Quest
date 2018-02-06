@@ -10,15 +10,18 @@ namespace Quest.Core {
 	public class GameController : MonoBehaviour {
         GameObject testPromptObj;
 		QuestMatch gm;
-		Logger Logger;
-		public Logger log {
+		Logger logger;
+		public Logger Logger {
 			get { return this.Logger; }
+		}
+		public QuestMatch GM {
+			get { return this.gm; }
 		}
 
 		//Awake is called before Start function, guaranteeing we'll have it setup for other scripts
 		void Awake(){
 			gm = new QuestMatch();
-			Logger = new Logger ();
+			logger = new Logger ();
 			Logger.Log ("GameController.Awake()");
 		}
 
