@@ -12,7 +12,7 @@ namespace Quest.Core {
 		QuestMatch gm;
 		Logger logger;
 		public Logger Logger {
-			get { return this.Logger; }
+			get { return this.logger; }
 		}
 		public QuestMatch GM {
 			get { return this.gm; }
