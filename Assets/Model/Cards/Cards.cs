@@ -37,7 +37,7 @@ namespace Quest.Core.Cards {
         public StoryCard(QuestMatch match) : base(match) {
 
         }
-		public abstract void run();
+		public abstract void Run();
     }
 
     public class AmourCard : AdventureCard {

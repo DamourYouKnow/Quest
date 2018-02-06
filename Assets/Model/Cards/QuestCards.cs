@@ -17,7 +17,7 @@ namespace Quest.Core.Cards{
 			this.questFoes = new List<Type> ();
 			
 		}
-		public override void run (){
+		public override void Run (){
 			this.match.CurrentStory = this;
 			Logger log = new Logger ();
 		}
@@ -29,8 +29,8 @@ namespace Quest.Core.Cards{
 			this.stages = new List<List<AdventureCard>> (2);
 			this.questFoes.Add (typeof(Boar));
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class DefendTheQueensHonor : QuestCard{
@@ -50,8 +50,8 @@ namespace Quest.Core.Cards{
 			this.questFoes.Add (typeof(Saxons));
 			this.questFoes.Add (typeof(Thieves));
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class JourneyThroughTheEnchantedForest : QuestCard{
@@ -61,8 +61,8 @@ namespace Quest.Core.Cards{
 			this.stages = new List<List<AdventureCard>> (3);
 			this.questFoes.Add (typeof(EvilKnight));
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class RepelTheSaxonRaiders : QuestCard{
@@ -73,8 +73,8 @@ namespace Quest.Core.Cards{
 			this.questFoes.Add (typeof(SaxonKnight));
 			this.questFoes.Add (typeof(Saxons));
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class RescueTheFairMaiden : QuestCard{
@@ -84,8 +84,8 @@ namespace Quest.Core.Cards{
 			this.stages = new List<List<AdventureCard>> (3);
 			this.questFoes.Add (typeof(BlackKnight));
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class SearchForTheHolyGrail : QuestCard{
@@ -105,8 +105,8 @@ namespace Quest.Core.Cards{
 			this.questFoes.Add (typeof(Saxons));
 			this.questFoes.Add (typeof(Thieves));
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class SearchForTheQuestingBeast : QuestCard{
@@ -115,8 +115,8 @@ namespace Quest.Core.Cards{
 			this.imageFilename = "quest_search_for_the_questing_beast";
 			this.stages = new List<List<AdventureCard>> (4);
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class SlayTheDragon : QuestCard{
@@ -126,8 +126,8 @@ namespace Quest.Core.Cards{
 			this.stages = new List<List<AdventureCard>> (3);
 			this.questFoes.Add (typeof(Dragon));
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class TestOfTheGreenKnight : QuestCard{
@@ -137,8 +137,8 @@ namespace Quest.Core.Cards{
 			this.stages = new List<List<AdventureCard>> (4);
 			this.questFoes.Add (typeof(GreenKnight));
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 	public class VanquishKingArthursEnemies : QuestCard{
@@ -147,8 +147,8 @@ namespace Quest.Core.Cards{
 			this.imageFilename = "quest_vanquish_king_arthurs_enemies.png";
 			this.stages = new List<List<AdventureCard>> (3);
 		}
-		public override void run(){
-			base.run ();
+		public override void Run(){
+			base.Run ();
 		}
 	}
 }
