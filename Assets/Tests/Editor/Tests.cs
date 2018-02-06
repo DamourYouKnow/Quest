@@ -230,6 +230,16 @@ namespace NUnitTesting {
             Assert.AreEqual(1, game.Players[0].Rank.Shields);
             Assert.AreEqual(0, game.Players[1].Rank.Shields);
         }
+
+        [Test]
+        public void Plague() {
+            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            PlagueEvent eventCard = new PlagueEvent(game);
+            game.Players[0].Rank.AddShields(2);
+            game.Players[0].Hand.Add(eventCard);
+            eventCard.Run();
+            Assert.AreEqual(0, game.Players[0].Rank.Shields);
+        }
     }
 
     public class PlayerTests {
