@@ -45,7 +45,7 @@ namespace NUnitTesting {
 			Assert.IsTrue (match.CurrentStory == null);
 
 			BoarHunt boarhunt = new BoarHunt(match);
-			boarhunt.run ();
+			boarhunt.Run ();
 
 			//match currentstory is initiated after quest.run
 			Assert.IsTrue (match.CurrentStory == boarhunt);
@@ -153,7 +153,7 @@ namespace NUnitTesting {
         public void Prosperity() {
             QuestMatch game = ScenarioCreator.GameNoDeal(3);
             ProsperityEvent eventCard = new ProsperityEvent(game);
-            eventCard.run();
+            eventCard.Run();
 
             // TODO: Player pulls event, run handler on draw.
             foreach (Player player in game.Players) {
@@ -170,7 +170,7 @@ namespace NUnitTesting {
             game.Players[0].Rank.AddShields(1);
 
             ChivalrousDeedEvent eventCard = new ChivalrousDeedEvent(game);
-            eventCard.run();
+            eventCard.Run();
 
             Assert.AreEqual(1, game.Players[0].Rank.TotalShields());
             Assert.AreEqual(3, game.Players[1].Rank.TotalShields());
@@ -183,7 +183,7 @@ namespace NUnitTesting {
             game.Players[0].Rank.AddShields(10);
 
             QueensFavourEvent eventCard = new QueensFavourEvent(game);
-            eventCard.run();
+            eventCard.Run();
 
             Assert.AreEqual(0, game.Players[0].Hand.Count);
             Assert.AreEqual(2, game.Players[1].Hand.Count);
@@ -195,6 +195,25 @@ namespace NUnitTesting {
 
             foreach (Card card in game.Players[2].Hand.Cards) {
                 Assert.IsInstanceOf(typeof(AdventureCard), card);
+            }
+        }
+
+        [Test]
+        public void CourtCalled() {
+            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+
+            List<Card> testCards = new List<Card>() {
+                new KingArthur(game),
+                new SirLancelot(game),
+                new Sword(game)
+            };
+            game.Players[0].BattleArea.Add(testCards);
+
+            CourtCalledEvent eventCard = new CourtCalledEvent(game);
+            eventCard.Run();
+
+            foreach (Card card in game.Players[0].BattleArea.Cards) {
+                Assert.IsNotInstanceOf(typeof(AllyCard), card);
             }
         }
     }

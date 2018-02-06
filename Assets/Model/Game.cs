@@ -85,6 +85,12 @@ namespace Quest.Core {
             this.cards.Add(card);
         }
 
+        public virtual void Add(List<Card> cards) {
+            foreach (Card card in cards) {
+                this.Add(card);
+            }
+        }
+
         public void Remove(Card card) {
             if (!this.cards.Contains(card)) {
                 throw new Exception("Card not in area.");
@@ -98,6 +104,12 @@ namespace Quest.Core {
 				this.cards.Remove(card);
 			}
         }
+
+        public void Transfer(CardArea target, List<Card> cards) {
+            foreach (Card card in cards) {
+                this.Transfer(target, card);
+            }
+        } 
     }
 
     /// <summary>

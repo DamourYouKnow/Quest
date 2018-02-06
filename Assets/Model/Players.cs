@@ -159,6 +159,12 @@ namespace Quest.Core.Players {
             this.match.DiscardPile.Push(card);
             this.match.Log("Player " + this.username + " discarded " + card.ToString());
         }
+
+        public void Discard(List<Card> cards) {
+            foreach (Card card in cards) {
+                this.Discard(card);
+            }
+        }
 		
 		public void Play(Card card){
 			this.hand.Transfer(battleArea, card);
