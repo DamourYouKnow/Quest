@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using Quest.Core.Cards;
 using Quest.Core.Players;
+using Utils;
 
 namespace Quest.Core {
     public static class Constants {
         public const int MaxHandSize = 12;
     }
 
-    public class QuestMatch {
+    public class QuestMatch : Subject{
         private List<Player> players;
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
@@ -80,7 +81,7 @@ namespace Quest.Core {
             get { return this.cards; }
         }
 
-        public void Add(Card card) {
+        public virtual void Add(Card card) {
             this.cards.Add(card);
         }
 
@@ -93,7 +94,9 @@ namespace Quest.Core {
 
         public void Transfer(CardArea target, Card card) {
             target.cards.Add(card);
-            this.cards.Remove(card);
+			if (target.cards.Contains (card)) {
+				this.cards.Remove(card);
+			}
         }
     }
 
@@ -101,8 +104,52 @@ namespace Quest.Core {
     /// Battle area on a game board.
     /// </summary>
     public class BattleArea : CardArea {
-
+		public virtual int BattlePoints(){
+			int total = 0;
+			foreach (var item in cards) {
+				AdventureCard card = item as AdventureCard;
+				total += card.BattlePoints;
+			}
+			return total;
+		}
     }
+
+	/// <summary>
+	/// Area for quest stages.
+	/// </summary>
+	public class QuestArea : BattleArea {
+		private Card mainCard;
+		public Card MainCard {
+			get{ return mainCard; }
+		}
+
+		public QuestArea(List<Card> stageCards){
+			this.mainCard = null;
+			this.cards = stageCards;
+		}
+		public override void Add(Card card) {
+			if (mainCard == null) {
+				if (card is FoeCard
+					|| card is TestCard){
+					mainCard = card;
+				}
+			} 
+			else if (!(card is FoeCard)
+				&& !(card is TestCard)){
+				base.Add (card);
+			}
+		}
+		public override int BattlePoints(){
+			int total = base.BattlePoints ();
+			if (mainCard != null
+				&& mainCard is FoeCard) {
+				FoeCard foe = mainCard as FoeCard;
+				total += foe.BattlePoints;
+			}
+			return total;
+		}
+
+	}
 
     /// <summary>
     /// Card hand beloning to a player.

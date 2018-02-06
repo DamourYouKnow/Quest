@@ -4,7 +4,7 @@ using Quest.Core.Players;
 namespace Quest.Core.Scenarios {
     public class ScenarioCreator {
         public static QuestMatch EmptyGame() {
-            return new QuestMatch(new Logger());
+            return new QuestMatch(new Logger("Scenario"));
         }
 
         public static QuestMatch GameNoDeal(int playerCount) {
