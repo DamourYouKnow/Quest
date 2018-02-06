@@ -24,12 +24,11 @@ namespace Quest.Core {
 
 		// Use this for initialization
 		void Start () {
-            GameObject parentObj = new GameObject();
-            Canvas canvas = parentObj.AddComponent<Canvas>();
-
+            Canvas canvas = GameObject.Find("GameCanvas").GetComponent<Canvas>();
             testPromptObj = new GameObject("TestPrompt");
             YesNoPrompt prompt = testPromptObj.AddComponent<YesNoPrompt>();
             prompt.Canvas = canvas;
+            prompt.Message = "Hello, world!";
 		}
 		
 		// Update is called once per frame

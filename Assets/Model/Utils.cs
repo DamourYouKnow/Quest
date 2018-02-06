@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Utils {
     public class Random {
@@ -36,4 +37,14 @@ namespace Utils {
 			observers.Remove (observer);
 		}
 	}
+
+    public class UnityFont {
+        public static Font Find(string fontName) {
+            return Resources.GetBuiltinResource(typeof(Font), fontName + ".ttf") as Font;
+        }
+
+        public static Font Arial() {
+            return UnityFont.Find("Arial");
+        }
+    }
 }
