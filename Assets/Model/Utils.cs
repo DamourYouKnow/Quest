@@ -15,7 +15,7 @@ namespace Utils {
 	//Registers to a Subject to recieve updates
 	public abstract class Observer
 	{
-		abstract public void update ();
+		public abstract void updateObserver ();
 	}
 	//Notifies registered Observers on update
 	public abstract class Subject
@@ -24,7 +24,7 @@ namespace Utils {
 
 		public void notify(){
 			foreach (Observer obs in observers) {
-				obs.update();
+				obs.updateObserver();
 			}
 		}
 
