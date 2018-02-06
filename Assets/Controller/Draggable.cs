@@ -4,8 +4,22 @@ using UnityEngine.EventSystems;
 using System.Collections;
 
 public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
+    Transform returnParent;
+    CanvasGroup raycastBlocker;
+
+    public Transform ReturnParent {
+        get { return this.returnParent; }
+        set { this.returnParent = value; }
+    }
+
+    public void Start() {
+        this.raycastBlocker = this.gameObject.AddComponent<CanvasGroup>();
+    }
+
     public void OnBeginDrag(PointerEventData eventData) {
-        //throw new NotImplementedException();
+        this.returnParent = this.transform.parent;
+        this.transform.SetParent(this.transform.parent.parent, false);
+        raycastBlocker.blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData) {
@@ -15,6 +29,7 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        //throw new NotImplementedException();
+        this.transform.SetParent(returnParent, false);
+        raycastBlocker.blocksRaycasts = true;
     }
 }

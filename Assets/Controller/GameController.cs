@@ -26,12 +26,8 @@ namespace Quest.Core {
 		}
 
 		// Use this for initialization
-		void Start () {
-            Canvas canvas = GameObject.Find("GameCanvas").GetComponent<Canvas>();
-            testPromptObj = new GameObject("TestPrompt");
-            YesNoPrompt prompt = testPromptObj.AddComponent<YesNoPrompt>();
-            prompt.Canvas = canvas;
-            prompt.Message = "Hello, world!";
+		void Start() {
+
 		}
 		
 		// Update is called once per frame
