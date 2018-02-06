@@ -50,8 +50,8 @@ namespace Quest.UI {
         }
 
         private void setParents() {
-            this.messageObj.transform.SetParent(this.panelTransform);
-            this.panel.transform.SetParent(this.canvas.transform);
+            this.messageObj.transform.SetParent(this.panelTransform, false);
+            this.panel.transform.SetParent(this.canvas.transform, false);
         }
 
         private void setupPanel() {
