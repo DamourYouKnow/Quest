@@ -8,7 +8,7 @@ namespace Quest.Core.Cards{
 
 		}
 
-		public override void run(){
+		public override void Run(){
 			
 		}
 	}

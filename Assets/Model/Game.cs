@@ -53,6 +53,15 @@ namespace Quest.Core {
             this.Log("Added player " + player.Username + " to Quest match");
         }
 
+        public Player PlayerWithCard(Card card) {
+            foreach (Player player in this.players) {
+                if (player.CardInHand(card)) {
+                    return player;
+                }
+            }
+            return null;
+        }
+
         public void Setup() {
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
@@ -85,6 +94,12 @@ namespace Quest.Core {
             this.cards.Add(card);
         }
 
+        public virtual void Add(List<Card> cards) {
+            foreach (Card card in cards) {
+                this.Add(card);
+            }
+        }
+
         public void Remove(Card card) {
             if (!this.cards.Contains(card)) {
                 throw new Exception("Card not in area.");
@@ -98,6 +113,12 @@ namespace Quest.Core {
 				this.cards.Remove(card);
 			}
         }
+
+        public void Transfer(CardArea target, List<Card> cards) {
+            foreach (Card card in cards) {
+                this.Transfer(target, card);
+            }
+        } 
     }
 
     /// <summary>
