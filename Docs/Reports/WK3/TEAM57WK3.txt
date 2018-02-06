@@ -12,7 +12,12 @@ F9	Tournaments		Planned
 F10	Allies			Planned
 F11	Card limit		Planned
 
-No completed features yet, so no tests.
+T1 Card drawing F5
+T2 Card transfer between different areas F5
+T3 Deck tests F1 F2 F3 F4 F5
+T4 Game setup F5
+T5 Events tests for each event F4
+T6 Ranking system F6
 
 Kelvin Choi
 	Hours: 6
