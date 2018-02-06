@@ -165,6 +165,14 @@ namespace Quest.Core.Players {
                 this.Discard(card);
             }
         }
+
+        public Boolean CardInPlay(Card card) {
+            return this.battleArea.Cards.Contains(card);
+        }
+
+        public Boolean CardInHand(Card card) {
+            return this.hand.Cards.Contains(card);
+        }
 		
 		public void Play(Card card){
 			this.hand.Transfer(battleArea, card);

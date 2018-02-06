@@ -216,6 +216,20 @@ namespace NUnitTesting {
                 Assert.IsNotInstanceOf(typeof(AllyCard), card);
             }
         }
+
+        [Test]
+        public void Pox() {
+            QuestMatch game = ScenarioCreator.GameNoDeal(2);
+            game.Players[0].Rank.AddShields(1);
+            game.Players[1].Rank.AddShields(1);
+
+            PoxEvent eventCard = new PoxEvent(game);
+            game.Players[0].Hand.Add(eventCard);
+            eventCard.Run();
+
+            Assert.AreEqual(1, game.Players[0].Rank.Shields);
+            Assert.AreEqual(0, game.Players[1].Rank.Shields);
+        }
     }
 
     public class PlayerTests {

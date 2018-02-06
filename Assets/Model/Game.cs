@@ -53,6 +53,15 @@ namespace Quest.Core {
             this.Log("Added player " + player.Username + " to Quest match");
         }
 
+        public Player PlayerWithCard(Card card) {
+            foreach (Player player in this.players) {
+                if (player.CardInHand(card)) {
+                    return player;
+                }
+            }
+            return null;
+        }
+
         public void Setup() {
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
