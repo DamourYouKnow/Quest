@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuStart : MonoBehaviour {
+namespace Quest.Core {
+	public class MenuStart : MonoBehaviour {
 
-	public void changeMenuScene(string sceneName){
-		Application.LoadLevel(sceneName);
+		public void changeMenuScene(string sceneName){
+			Application.LoadLevel(sceneName);
+		}
+		
+		public void ExitGame() {
+			Application.Quit();
+		}
+		
+		public void StartMatch(){
+			QuestMatch questMatch = new QuestMatch();
+		}
 	}
-	
-	public void ExitGame() {
-		Application.Quit();
-	}
-	
 }
