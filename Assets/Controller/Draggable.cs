@@ -41,6 +41,7 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
         if (dropArea != null) {
             this.transform.SetSiblingIndex(this.computeOnDropIndex());
         }
+        dropArea.AdjustOffset();
     }
 
     private int computeOnDropIndex() {

@@ -1,9 +1,12 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 class DropArea : MonoBehaviour, IDropHandler {
+    private const int defaultOffset = 3;
+
     public void OnDrop(PointerEventData eventData) {
         Draggable draggable = eventData.pointerDrag.GetComponent<Draggable>();
         if (draggable != null) {
@@ -21,9 +24,27 @@ class DropArea : MonoBehaviour, IDropHandler {
         return draggables;
     }
 
-    private void adjustOffset() {
+    public void AdjustOffset() {
         float width = this.GetComponent<RectTransform>().rect.width;
-        // TODO.
+        float draggablesWidth = this.getDraggablesWidth();
+        float currentOffset = defaultOffset;
+        float usedWidth = draggablesWidth + (currentOffset * this.GetDraggables().Count);
+
+        float newOffset = defaultOffset;
+        if (Math.Ceiling(usedWidth) > width) {
+            newOffset = (float)(Math.Ceiling((width - (currentOffset * 50) - draggablesWidth) / this.GetDraggables().Count));
+        }
+
+        this.GetComponent<HorizontalLayoutGroup>().spacing = newOffset;
+    }
+
+    private float getDraggablesWidth() {
+        float widthSum = 0f;
+        List<Draggable> draggables = this.GetDraggables();
+        foreach (Draggable draggable in draggables) {
+            widthSum += draggable.GetComponent<RectTransform>().rect.width;
+        }
+        return widthSum;
     }
 }
 
