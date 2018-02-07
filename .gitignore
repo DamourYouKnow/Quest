@@ -363,3 +363,6 @@ ASALocalRun/
 # Tex files
 *.aux
 *.synctex.gz
+
+# include meta files
+!*.*.meta
