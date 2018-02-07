@@ -8,7 +8,6 @@ using Quest.UI;
 //I call this a change
 namespace Quest.Core {
 	public class GameController : MonoBehaviour {
-        GameObject testPromptObj;
 		QuestMatch gm;
 		Logger logger;
 		public Logger Logger {

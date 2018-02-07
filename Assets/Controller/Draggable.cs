@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
     Transform returnParent;
+    GameObject placeholder;
     CanvasGroup raycastBlocker;
 
     public Transform ReturnParent {
@@ -19,6 +20,7 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
     public void OnBeginDrag(PointerEventData eventData) {
         this.returnParent = this.transform.parent;
         this.transform.SetParent(this.transform.parent.parent, false);
+
         raycastBlocker.blocksRaycasts = false;
     }
 
@@ -31,5 +33,26 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
     public void OnEndDrag(PointerEventData eventData) {
         this.transform.SetParent(returnParent, false);
         raycastBlocker.blocksRaycasts = true;
+        this.reposition();
+    }
+
+    private void reposition() {
+        DropArea dropArea = this.transform.parent.GetComponent<DropArea>();
+        if (dropArea != null) {
+            this.transform.SetSiblingIndex(this.computeOnDropIndex());
+        }
+    }
+
+    private int computeOnDropIndex() {
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        List<Draggable> draggables = this.transform.parent.GetComponent<DropArea>().GetDraggables();
+
+        for (int i = 0; i < draggables.Count - 1; i++) {
+            if (mousePos.x < draggables[i].transform.position.x) {
+                return i;
+            }
+        }
+
+        return this.transform.parent.childCount - 1;
     }
 }
