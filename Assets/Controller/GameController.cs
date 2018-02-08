@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Quest.Core;
-using Quest.UI;
 
 //I call this a change
 namespace Quest.Core {
