@@ -15,8 +15,32 @@ namespace Quest.Core.Players {
                 throw new NotImplementedException();
             }
 
-            public override bool ParticipateInQuest(QuestCard questCard) {
-                throw new NotImplementedException();
+            public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
+				
+				List<AdventureCard> playableCards = hand.AdventureCards;
+                List<AdventureCard> cardsToPlay = new List<AdventureCard>();
+				int currentBattlePoints = 0;
+				/*
+				List<AdventureCard> cardsToPlay = new List<AdventureCard>();
+				while(currentBattlePoints < 50){
+					int indexToPlay = 0;
+					int currentIndex = 0;
+					int maxBP = 0;
+					foreach(AdventureCard card in hand.Cards){
+						if(card.BattlePoints > maxBP){
+							maxBP = card.BattlePoints;
+							indexToPlay = currentIndex;
+						}
+						currentIndex += 1;
+					}
+					if (maxBP == 0){
+						break;
+					}
+					currentBattlePoints += maxBP;
+					//play/add the card
+				}
+				*/
+				return true;
             }
 
             public override bool ParticipateInTournament(TournamentCard tournamentCard) {
