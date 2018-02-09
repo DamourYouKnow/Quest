@@ -119,6 +119,10 @@ namespace Quest.Core.Players {
 			get { return match; }
 		}
 
+        public PlayerBehaviour Behaviour {
+            set { this.behaviour = value; }
+        }
+
         public Hand Hand {
             get { return hand; }
         }
@@ -268,14 +272,31 @@ namespace Quest.Core.Players {
         }
     }
 
-    internal abstract class PlayerBehaviour {
+    public abstract class PlayerBehaviour {
         // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
         public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand);
         public abstract bool SponsorQuest(QuestCard questCard);
+<<<<<<< HEAD
         public abstract bool ParticipateInQuest(QuestCard questCard, Hand hand);
         public abstract List<Card> NextBid(TestCard testCard);
+=======
+        public abstract bool ParticipateInQuest(QuestCard questCard);
+        public abstract List<Card> NextBid(TestCard testCard, Hand hand);
+>>>>>>> 8bdb2eb0496f665cf54211c2aa8149218704882c
         public abstract List<Card> DiscardAfterWinningTest();
+
+        protected static AdventureCard StrongestCard(List<AdventureCard> cards) {
+            int maxBattlePoints = 0;
+            AdventureCard maxCard = null;
+            foreach (AdventureCard card in cards) {
+                if (card.BattlePoints > maxBattlePoints) {
+                    maxCard = card;
+                    maxBattlePoints = card.BattlePoints;
+                }
+            }
+            return maxCard;
+        }
     }
 
     internal class HumanPlayer : PlayerBehaviour {
@@ -283,7 +304,7 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override List<Card> NextBid(TestCard testCard) {
+        public override List<Card> NextBid(TestCard testCard, Hand hand) {
             throw new NotImplementedException();
         }
 
