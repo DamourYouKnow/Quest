@@ -20,5 +20,14 @@ namespace Quest.Core.Scenarios {
             game.Setup();
             return game;
         }
+
+        public static QuestMatch AIGameNoDeal(int aiCount) {
+            QuestMatch game = EmptyGame();
+            for (int i = 1; i <= aiCount; i++) {
+                Player aiPlayer = new Player("AI Player " + i, game);
+                aiPlayer.Behaviour = new Strategy2();
+            }
+            return game;
+        }
     }
 }

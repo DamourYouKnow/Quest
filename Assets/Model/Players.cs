@@ -119,6 +119,10 @@ namespace Quest.Core.Players {
 			get { return match; }
 		}
 
+        public PlayerBehaviour Behaviour {
+            set { this.behaviour = value; }
+        }
+
         public Hand Hand {
             get { return hand; }
         }
@@ -268,7 +272,7 @@ namespace Quest.Core.Players {
         }
     }
 
-    internal abstract class PlayerBehaviour {
+    public abstract class PlayerBehaviour {
         // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
         public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand);
