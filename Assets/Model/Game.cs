@@ -62,6 +62,16 @@ namespace Quest.Core {
             return null;
         }
 
+        public Player PlayerWithMostBattlePoints() {
+            Player maxPlayer = this.players[0];
+            foreach (Player player in this.players) {
+                if (player.BattlePointsInPlay() > maxPlayer.BattlePointsInPlay()) {
+                    maxPlayer = player;
+                }
+            }
+            return maxPlayer;
+        }
+
         public void Setup() {
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {

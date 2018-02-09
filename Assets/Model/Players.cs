@@ -130,6 +130,13 @@ namespace Quest.Core.Players {
 		public BattleArea BattleArea{
             get { return battleArea; }
         }
+
+        public RankCard RankCard {
+            // TODO.
+            get {
+                return null;
+            }
+        }
 	
         public void Draw(Deck deck, int count=1) {
             for (int i = 0; i < count; i++) {
@@ -164,6 +171,16 @@ namespace Quest.Core.Players {
             foreach (Card card in cards) {
                 this.Discard(card);
             }
+        }
+
+        public int BattlePointsInPlay() {
+            // TODO: Add battle points from player's rank card.
+            int totalPoints = 0;
+            foreach (Card card in this.battleArea.Cards) {
+                if (!(card is AdventureCard)) continue;
+                totalPoints += ((AdventureCard)card).BattlePoints;
+            }
+            return totalPoints;
         }
 
         public Boolean CardInPlay(Card card) {
