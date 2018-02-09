@@ -10,6 +10,7 @@ namespace Quest.Core {
     }
 
     public class QuestMatch : Subject{
+		private Queue<Player> playerQueue;
         private List<Player> players;
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
