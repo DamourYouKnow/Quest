@@ -153,18 +153,6 @@ namespace Quest.Core {
                 this.Transfer(target, card);
             }
         }
-
-        public AdventureCard StrongestCard() {
-            int maxBattlePoints = 0;
-            AdventureCard maxCard = null;
-            foreach (AdventureCard card in this.AdventureCards) {
-                if (card.BattlePoints > maxBattlePoints) {
-                    maxCard = card;
-                    maxBattlePoints = card.BattlePoints;
-                }
-            }
-            return maxCard;
-        }
     }
 
     /// <summary>

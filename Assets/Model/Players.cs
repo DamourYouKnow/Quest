@@ -276,6 +276,18 @@ namespace Quest.Core.Players {
         public abstract bool ParticipateInQuest(QuestCard questCard);
         public abstract List<Card> NextBid(TestCard testCard, Hand hand);
         public abstract List<Card> DiscardAfterWinningTest();
+
+        protected static AdventureCard StrongestCard(List<AdventureCard> cards) {
+            int maxBattlePoints = 0;
+            AdventureCard maxCard = null;
+            foreach (AdventureCard card in cards) {
+                if (card.BattlePoints > maxBattlePoints) {
+                    maxCard = card;
+                    maxBattlePoints = card.BattlePoints;
+                }
+            }
+            return maxCard;
+        }
     }
 
     internal class HumanPlayer : PlayerBehaviour {

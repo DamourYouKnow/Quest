@@ -42,9 +42,11 @@ namespace Quest.Core.Players {
                 int cardsVisited = 0;
                 List<AdventureCard> playableCards = hand.AdventureCards;
                 List<AdventureCard> cardsToPlay = new List<AdventureCard>();
+                List<AdventureCard> playableCardsCopy = new List<AdventureCard>(hand.AdventureCards);
 
                 while (currentBattlePoints < tournamentTargetBattlePoints && cardsVisited < playableCards.Count) {
-                    AdventureCard nextCard = hand.StrongestCard();
+                    AdventureCard nextCard = StrongestCard(playableCardsCopy);
+                    playableCardsCopy.Remove(nextCard);
                     cardsToPlay.Add(nextCard);
                     currentBattlePoints += nextCard.BattlePoints;
                     cardsVisited++;
