@@ -15,8 +15,20 @@ namespace Quest.Core.Players {
             List<Card> bids = new List<Card>();
             int bidValue = 0;
 
-<<<<<<< HEAD
-            public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
+            foreach (Card card in hand.Cards) {
+                if (card is FoeCard) {
+                    bids.Add(card);
+                    bidValue += card.BidValue;
+                }
+            }
+
+            if (bidValue <= targetBid) {
+                bids.Clear();
+            }
+            return bids;
+        }
+		
+		public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
 				
 				List<AdventureCard> playableCards = hand.AdventureCards;
 				int currentBattlePoints = 0;
@@ -41,24 +53,7 @@ namespace Quest.Core.Players {
 				}
 				*/
 				return true;
-=======
-            foreach (Card card in hand.Cards) {
-                if (card is FoeCard) {
-                    bids.Add(card);
-                    bidValue += card.BidValue;
-                }
->>>>>>> 8bdb2eb0496f665cf54211c2aa8149218704882c
-            }
-
-            if (bidValue <= targetBid) {
-                bids.Clear();
-            }
-            return bids;
-        }
-
-        public override bool ParticipateInQuest(QuestCard questCard) {
-            throw new NotImplementedException();
-        }
+		}
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
             return true;

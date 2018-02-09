@@ -277,13 +277,8 @@ namespace Quest.Core.Players {
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
         public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand);
         public abstract bool SponsorQuest(QuestCard questCard);
-<<<<<<< HEAD
         public abstract bool ParticipateInQuest(QuestCard questCard, Hand hand);
-        public abstract List<Card> NextBid(TestCard testCard);
-=======
-        public abstract bool ParticipateInQuest(QuestCard questCard);
         public abstract List<Card> NextBid(TestCard testCard, Hand hand);
->>>>>>> 8bdb2eb0496f665cf54211c2aa8149218704882c
         public abstract List<Card> DiscardAfterWinningTest();
 
         protected static AdventureCard StrongestCard(List<AdventureCard> cards) {
