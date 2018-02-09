@@ -19,10 +19,9 @@ namespace Quest.Core.Players {
             public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
 				
 				List<AdventureCard> playableCards = hand.AdventureCards;
-                List<AdventureCard> cardsToPlay = new List<AdventureCard>();
 				int currentBattlePoints = 0;
-				/*
 				List<AdventureCard> cardsToPlay = new List<AdventureCard>();
+				/*
 				while(currentBattlePoints < 50){
 					int indexToPlay = 0;
 					int currentIndex = 0;
