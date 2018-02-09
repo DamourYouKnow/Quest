@@ -173,16 +173,6 @@ namespace Quest.Core.Players {
             }
         }
 
-        public int BattlePointsInPlay() {
-            // TODO: Add battle points from player's rank card.
-            int totalPoints = 0;
-            foreach (Card card in this.battleArea.Cards) {
-                if (!(card is AdventureCard)) continue;
-                totalPoints += ((AdventureCard)card).BattlePoints;
-            }
-            return totalPoints;
-        }
-
         public Boolean CardInPlay(Card card) {
             return this.battleArea.Cards.Contains(card);
         }
@@ -281,6 +271,7 @@ namespace Quest.Core.Players {
     internal abstract class PlayerBehaviour {
         // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
+        public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand);
         public abstract bool SponsorQuest(QuestCard questCard);
         public abstract bool ParticipateInQuest(QuestCard questCard);
         public abstract List<Card> NextBid(TestCard testCard);
@@ -301,6 +292,10 @@ namespace Quest.Core.Players {
         }
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
+            throw new NotImplementedException();
+        }
+
+        public override List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand) {
             throw new NotImplementedException();
         }
 

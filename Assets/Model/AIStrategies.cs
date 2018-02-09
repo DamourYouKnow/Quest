@@ -4,6 +4,8 @@ using Quest.Core.Cards;
 
 namespace Quest.Core.Players {
     class AIStrategies {
+        private const int tournamentTargetBattlePoints = 50;
+
         internal class Strategy2 : PlayerBehaviour {
             public override List<Card> DiscardAfterWinningTest() {
                 throw new NotImplementedException();
@@ -18,7 +20,23 @@ namespace Quest.Core.Players {
             }
 
             public override bool ParticipateInTournament(TournamentCard tournamentCard) {
-                throw new NotImplementedException();
+                return true;
+            }
+
+            public override List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand) {
+                int currentBattlePoints = 0;
+                int cardsVisited = 0;
+                List<AdventureCard> playableCards = hand.AdventureCards;
+                List<AdventureCard> cardsToPlay = new List<AdventureCard>();
+
+                while (currentBattlePoints < tournamentTargetBattlePoints && cardsVisited < playableCards.Count) {
+                    AdventureCard nextCard = hand.StrongestCard();
+                    cardsToPlay.Add(nextCard);
+                    currentBattlePoints += nextCard.BattlePoints;
+                    cardsVisited++;
+                }
+
+                return cardsToPlay;
             }
 
             public override bool SponsorQuest(QuestCard questCard) {

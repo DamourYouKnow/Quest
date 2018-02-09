@@ -65,7 +65,7 @@ namespace Quest.Core {
         public Player PlayerWithMostBattlePoints() {
             Player maxPlayer = this.players[0];
             foreach (Player player in this.players) {
-                if (player.BattlePointsInPlay() > maxPlayer.BattlePointsInPlay()) {
+                if (player.BattleArea.BattlePoints() > maxPlayer.BattleArea.BattlePoints()) {
                     maxPlayer = player;
                 }
             }
@@ -100,6 +100,30 @@ namespace Quest.Core {
             get { return this.cards; }
         }
 
+        public List<AdventureCard> AdventureCards {
+            get {
+                List<AdventureCard> retList = new List<AdventureCard>();
+                foreach (Card card in this.cards) {
+                    if (card is AdventureCard) {
+                        retList.Add((AdventureCard)card);
+                    }
+                }
+                return retList;
+            }
+        }
+
+        public List<StoryCard> StoryCards {
+            get {
+                List<StoryCard> retList = new List<StoryCard>();
+                foreach (Card card in this.cards) {
+                    if (card is StoryCard) {
+                        retList.Add((StoryCard)card);
+                    }
+                }
+                return retList;
+            }
+        }
+
         public virtual void Add(Card card) {
             this.cards.Add(card);
         }
@@ -128,7 +152,19 @@ namespace Quest.Core {
             foreach (Card card in cards) {
                 this.Transfer(target, card);
             }
-        } 
+        }
+
+        public AdventureCard StrongestCard() {
+            int maxBattlePoints = 0;
+            AdventureCard maxCard = null;
+            foreach (AdventureCard card in this.AdventureCards) {
+                if (card.BattlePoints > maxBattlePoints) {
+                    maxCard = card;
+                    maxBattlePoints = card.BattlePoints;
+                }
+            }
+            return maxCard;
+        }
     }
 
     /// <summary>
@@ -137,8 +173,7 @@ namespace Quest.Core {
     public class BattleArea : CardArea {
 		public virtual int BattlePoints(){
 			int total = 0;
-			foreach (var item in cards) {
-				AdventureCard card = item as AdventureCard;
+			foreach (AdventureCard card in this.AdventureCards) {
 				total += card.BattlePoints;
 			}
 			return total;
