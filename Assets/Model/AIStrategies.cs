@@ -30,29 +30,33 @@ namespace Quest.Core.Players {
 		
 		public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
 				
-				List<AdventureCard> playableCards = hand.AdventureCards;
-				int currentBattlePoints = 0;
-				List<AdventureCard> cardsToPlay = new List<AdventureCard>();
-				/*
-				while(currentBattlePoints < 50){
-					int indexToPlay = 0;
-					int currentIndex = 0;
-					int maxBP = 0;
-					foreach(AdventureCard card in hand.Cards){
-						if(card.BattlePoints > maxBP){
-							maxBP = card.BattlePoints;
-							indexToPlay = currentIndex;
-						}
-						currentIndex += 1;
-					}
-					if (maxBP == 0){
-						break;
-					}
-					currentBattlePoints += maxBP;
-					//play/add the card
+			List<AdventureCard> yourCards = hand.AdventureCards;
+			int totalBattlePoints = 0;
+			List<AdventureCard> discardableFoeCards = new List<AdventureCard>();
+				
+			//sorts your hand by battle points
+			//yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+				
+			//filter your hand for non-foes and discardable foes
+			//non-discardable foes are ignored
+			foreach (AdventureCard card in yourCards) {
+				if ((card is FoeCard)
+					&&(card.BattlePoints < 25)) {
+					discardableFoeCards.Add(card);
 				}
-				*/
+				else if (!(card is FoeCard)){
+					totalBattlePoints += card.BattlePoints;
+				}
+			}
+				
+			//if you are able to increment by 10 per stage
+			//and your list of discardable foes has at least 2 foe cards
+			if (((totalBattlePoints / questCard.Stages.Count) > 10)
+			&&(discardableFoeCards.Count > 1)){
 				return true;
+			}
+			
+			return false;
 		}
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
