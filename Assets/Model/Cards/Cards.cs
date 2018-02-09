@@ -12,6 +12,10 @@ namespace Quest.Core.Cards {
 			this.match = match;
         }
 
+        public virtual int BidValue {
+            get { return 1; }
+        }
+
         public override String ToString() {
             return this.name;
         }
@@ -23,6 +27,10 @@ namespace Quest.Core.Cards {
 
         public AdventureCard(QuestMatch match) : base(match) {
 
+        }
+
+        public override int BidValue {
+            get { return this.freeBids + 1; }
         }
 
 		public int FreeBids {

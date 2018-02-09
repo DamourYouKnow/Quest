@@ -5,6 +5,8 @@ using Quest.Core.Players;
 namespace Quest.Core.Cards {
     public abstract class TestCard : AdventureCard {
         protected int minBid = 0;
+        protected int currentBid = 0;
+        protected Player currentBidPlayer;
         protected QuestCard minBidQuest = null;
         protected Dictionary<Player, List<Card>> bids;
 
@@ -15,8 +17,37 @@ namespace Quest.Core.Cards {
             }
         }
 
+        public int HigestBid {
+            get { return this.currentBid; }
+        }
+
+        public Player HighestBidPlayer {
+            get { return this.currentBidPlayer; }
+        }
+
         public void AddBid(Player player, Card card) {
+            if (card.BidValue <= currentBid) {
+                throw new Exception("Value of bid must be higher than current bid");
+            }
+            // TODO: Add bids from cards in play.
             this.bids[player].Add(card);
+            this.currentBid = card.BidValue;
+            this.currentBidPlayer = player;
+        }
+
+        public void AddBid(Player player, List<Card> cards) {
+            int bids = 0;
+            foreach (Card card in cards) {
+                bids += card.BidValue;
+            }
+
+            if (bids <= currentBid) {
+                throw new Exception("Value of bid must be higher than current bid");
+            }
+
+            this.bids[player].AddRange(cards);
+            this.currentBid = bids;
+            this.currentBidPlayer = player;
         }
 
         public int GetBids(Player player) {

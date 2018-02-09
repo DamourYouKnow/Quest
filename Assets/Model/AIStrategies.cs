@@ -11,7 +11,8 @@ namespace Quest.Core.Players {
                 throw new NotImplementedException();
             }
 
-            public override List<Card> NextBid(TestCard testCard) {
+            public override List<Card> NextBid(TestCard testCard, Hand hand) {
+                if (testCard.m)
                 throw new NotImplementedException();
             }
 

@@ -274,7 +274,7 @@ namespace Quest.Core.Players {
         public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand);
         public abstract bool SponsorQuest(QuestCard questCard);
         public abstract bool ParticipateInQuest(QuestCard questCard);
-        public abstract List<Card> NextBid(TestCard testCard);
+        public abstract List<Card> NextBid(TestCard testCard, Hand hand);
         public abstract List<Card> DiscardAfterWinningTest();
     }
 
@@ -283,7 +283,7 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override List<Card> NextBid(TestCard testCard) {
+        public override List<Card> NextBid(TestCard testCard, Hand hand) {
             throw new NotImplementedException();
         }
 
