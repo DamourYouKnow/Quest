@@ -12,7 +12,21 @@ namespace Quest.Core.Players {
             }
 
             public override List<Card> NextBid(TestCard testCard, Hand hand) {
-                throw new NotImplementedException();
+                int targetBid = testCard.HigestBid;
+                List<Card> bids = new List<Card>();
+                int bidValue = 0;
+
+                foreach (Card card in hand.Cards) {
+                    if (card is FoeCard) {
+                        bids.Add(card);
+                        bidValue += card.BidValue;
+                    }
+                }
+
+                if (bidValue <= targetBid) {
+                    bids.Clear();
+                }
+                return bids;
             }
 
             public override bool ParticipateInQuest(QuestCard questCard) {
