@@ -1,13 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using Quest.Core.Players;
 
 namespace Quest.Core.Cards{
 	public abstract class QuestCard:StoryCard {
-		protected List<List<AdventureCard>> stages;
+		protected int numStages;
+		protected int currentStage;
+		protected Player sponsor;
+		protected List<Player> questingPlayers;
+		protected List<QuestArea> stages;
 		protected List<Type> questFoes;
 
-		public List<List<AdventureCard>> Stages {
+		public List<QuestArea> Stages {
 			get { return this.stages; }
+			set {
+				if (value.Count == numStages) {
+					this.stages = value;
+				} else {
+					this.match.Log("Invalid number of stages.");
+				}
+			}
+		}
+		public List<Player> QuestingPlayers {
+			get { return this.questingPlayers; }
+			set { this.questingPlayers = value; }
+		}
+		public int CurrentStage {
+			get { return this.currentStage; }
+		}
+		public Player Sponsor {
+			get { return this.sponsor; }
+			set { this.sponsor = value; }
 		}
 		public List<Type> QuestFoes {
 			get { return this.questFoes; }
@@ -15,18 +38,62 @@ namespace Quest.Core.Cards{
 
 		public QuestCard(QuestMatch match):base(match) {
 			this.questFoes = new List<Type> ();
-			
+			this.currentStage = 0;
+			this.sponsor = null;
+			this.questingPlayers = null;
 		}
 		public override void Run (){
-			this.match.CurrentStory = this;
-			Logger log = new Logger ();
+			if (this.sponsor == null ||
+			   this.questingPlayers == null ||
+			   this.stages == null) {
+
+				this.sponsor = null;
+				this.questingPlayers = null;
+				this.stages = null;
+
+				this.match.CurrentStory = this;
+			}
+			else {
+				this.currentStage = 1;
+			}
+		}
+		public List<Player> resolveStage(){
+			List<Player> winners = new List<Player>();
+			//TODO: Implement Test stage.
+			if (this.stages [currentStage-1].MainCard is FoeCard) {
+				foreach (var p in questingPlayers) {
+					if (p.BattleArea.BattlePoints() >= this.stages [currentStage-1].BattlePoints()) {
+						winners.Add (p);
+					}
+					p.BattleArea.Cards.Clear ();
+				}
+			}
+			this.questingPlayers = winners;
+			this.currentStage += 1;
+
+			//If no more stages or no more players, resolve quest.
+			if (this.questingPlayers.Count == 0
+				|| this.currentStage > this.numStages) {
+				foreach (var p in this.questingPlayers) {
+					p.Rank.AddShields (this.numStages);
+				}
+				int numDraw = 0;
+				foreach (var item in this.stages) {
+					numDraw += item.Count;
+					this.match.Log (numDraw.ToString ());
+				}
+				numDraw += this.numStages;
+				this.match.Log (numDraw.ToString ());
+				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
+			}
+			return winners;
 		}
 	}
 	public class BoarHunt : QuestCard{
 		public BoarHunt(QuestMatch match) : base(match) {
 			this.name = "Boar Hunt";
 			this.imageFilename = "quest_boar_hunt.png";
-			this.stages = new List<List<AdventureCard>> (2);
+			this.numStages = 2;
 			this.questFoes.Add (typeof(Boar));
 		}
 		public override void Run(){
@@ -37,7 +104,7 @@ namespace Quest.Core.Cards{
 		public DefendTheQueensHonor(QuestMatch match) : base(match) {
 			this.name = "Defend The Queen's Honor";
 			this.imageFilename = "quest_defend_the_queens_honor.png";
-			this.stages = new List<List<AdventureCard>> (4);
+			this.numStages = 4;
 			this.questFoes.Add (typeof(BlackKnight));
 			this.questFoes.Add (typeof(Boar));
 			this.questFoes.Add (typeof(Dragon));
@@ -58,7 +125,7 @@ namespace Quest.Core.Cards{
 		public JourneyThroughTheEnchantedForest(QuestMatch match) : base(match) {
 			this.name = "Journey Through The Enchanted Forest";
 			this.imageFilename = "quest_journey_through_the_enchanted_forest.png";
-			this.stages = new List<List<AdventureCard>> (3);
+			this.numStages = 3;
 			this.questFoes.Add (typeof(EvilKnight));
 		}
 		public override void Run(){
@@ -69,7 +136,7 @@ namespace Quest.Core.Cards{
 		public RepelTheSaxonRaiders(QuestMatch match) : base(match) {
 			this.name = "Repel The Saxon Raiders";
 			this.imageFilename = "quest_repel_the_saxon_raiders.png";
-			this.stages = new List<List<AdventureCard>> (2);
+			this.numStages = 2;
 			this.questFoes.Add (typeof(SaxonKnight));
 			this.questFoes.Add (typeof(Saxons));
 		}
@@ -81,7 +148,7 @@ namespace Quest.Core.Cards{
 		public RescueTheFairMaiden(QuestMatch match) : base(match) {
 			this.name = "Rescue The Fair Maiden";
 			this.imageFilename = "quest_rescue_the_fair_maiden.png";
-			this.stages = new List<List<AdventureCard>> (3);
+			this.numStages = 3;
 			this.questFoes.Add (typeof(BlackKnight));
 		}
 		public override void Run(){
@@ -92,7 +159,7 @@ namespace Quest.Core.Cards{
 		public SearchForTheHolyGrail(QuestMatch match) : base(match) {
 			this.name = "Search For The Holy Grail";
 			this.imageFilename = "quest_search_for_the_holy_grail.png";
-			this.stages = new List<List<AdventureCard>> (5);
+			this.numStages = 5;
 			this.questFoes.Add (typeof(BlackKnight));
 			this.questFoes.Add (typeof(Boar));
 			this.questFoes.Add (typeof(Dragon));
@@ -113,7 +180,7 @@ namespace Quest.Core.Cards{
 		public SearchForTheQuestingBeast(QuestMatch match) : base(match) {
 			this.name = "Search For The Questing Beast";
 			this.imageFilename = "quest_search_for_the_questing_beast";
-			this.stages = new List<List<AdventureCard>> (4);
+			this.numStages = 4;
 		}
 		public override void Run(){
 			base.Run ();
@@ -123,7 +190,7 @@ namespace Quest.Core.Cards{
 		public SlayTheDragon(QuestMatch match) : base(match) {
 			this.name = "Slay The Dragon";
 			this.imageFilename = "quest_slay_the_dragon.png";
-			this.stages = new List<List<AdventureCard>> (3);
+			this.stages = new List<QuestArea> (3);
 			this.questFoes.Add (typeof(Dragon));
 		}
 		public override void Run(){
@@ -134,7 +201,7 @@ namespace Quest.Core.Cards{
 		public TestOfTheGreenKnight(QuestMatch match) : base(match) {
 			this.name = "Test Of The Green Knight";
 			this.imageFilename = "quest_test_of_the_green_knight.png";
-			this.stages = new List<List<AdventureCard>> (4);
+			this.numStages = 4;
 			this.questFoes.Add (typeof(GreenKnight));
 		}
 		public override void Run(){
@@ -145,7 +212,7 @@ namespace Quest.Core.Cards{
 		public VanquishKingArthursEnemies(QuestMatch match) : base(match) {
 			this.name = "Vanquish King Arthur's Enemies";
 			this.imageFilename = "quest_vanquish_king_arthurs_enemies.png";
-			this.stages = new List<List<AdventureCard>> (3);
+			this.numStages = 3;
 		}
 		public override void Run(){
 			base.Run ();

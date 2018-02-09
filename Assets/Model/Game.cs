@@ -82,7 +82,7 @@ namespace Quest.Core {
     public abstract class CardArea {
         protected List<Card> cards = new List<Card>();
 
-        public int Count {
+        public virtual int Count {
             get { return this.cards.Count; }
         }
 
@@ -169,7 +169,11 @@ namespace Quest.Core {
 			}
 			return total;
 		}
-
+		public override int Count {
+			get {
+				return this.cards.Count + 1;
+			}
+		}
 	}
 
     /// <summary>

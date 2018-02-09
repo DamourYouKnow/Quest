@@ -131,6 +131,98 @@ namespace NUnitTesting {
 
 			Assert.AreEqual (25, qarea.BattlePoints ());
 		}
+
+		[Test]
+		public void QuestTest(){
+			QuestMatch match = new QuestMatch (new Quest.Core.Logger ("QuestTest"));
+			Player p1 = new Player ("p1", match);
+			Player p2 = new Player ("p2", match);
+			Player p3 = new Player ("p3", match);
+			Player p4 = new Player ("p4", match);
+
+			QuestCard quest = new BoarHunt (match);
+			quest.Run ();
+
+			quest.Sponsor = p1;
+
+			Assert.IsTrue ((match.CurrentStory as QuestCard).Sponsor == p1);
+
+			List<Player> qplayers = new List<Player> ();
+			qplayers.Add (p2);
+			qplayers.Add (p3);
+			qplayers.Add (p4);
+
+			quest.QuestingPlayers = qplayers;
+
+			Assert.IsTrue(quest.QuestingPlayers.Contains (p2));
+
+			List<QuestArea> lqa = new List<QuestArea> ();
+			QuestArea qa1 = new QuestArea(new List<Card>());
+			qa1.Add (new Boar(match));
+			qa1.Add (new Sword(match));
+			qa1.Add (new Horse(match));
+			lqa.Add (qa1);
+			Assert.AreEqual (35, qa1.BattlePoints());
+
+			QuestArea qa2 = new QuestArea (new List<Card>());
+			qa2.Add (new Thieves(match));
+			lqa.Add (qa2);
+
+			Assert.AreEqual (5, qa2.BattlePoints());
+
+			quest.Stages = lqa;
+
+			p2.BattleArea.Add (new Sword(match));
+			p2.BattleArea.Add (new Excalibur(match));
+			p2.BattleArea.Add (new Dagger(match));
+			p2.BattleArea.Add (new Horse(match));
+			p2.BattleArea.Add (new Lance (match));
+			p2.BattleArea.Add (new BattleAx (match));
+
+			Assert.AreEqual (90, p2.BattleArea.BattlePoints ());
+
+			p3.BattleArea.Add (new Dagger (match));
+			p3.BattleArea.Add (new Excalibur (match));
+
+			Assert.AreEqual (35, p3.BattleArea.BattlePoints ());
+
+			p4.BattleArea.Add (new Sword (match));
+
+			Assert.AreEqual (10, p4.BattleArea.BattlePoints ());
+
+			quest.Run ();
+
+			quest.resolveStage ();
+
+			Assert.AreEqual (2, quest.CurrentStage);
+
+			Assert.IsTrue (quest.QuestingPlayers.Contains (p2));
+			Assert.IsTrue (quest.QuestingPlayers.Contains (p3));
+			Assert.IsFalse (quest.QuestingPlayers.Contains (p4));
+
+			Assert.IsTrue (p2.BattleArea.Cards.Count == 0);
+			Assert.IsTrue (p3.BattleArea.Cards.Count == 0);
+			Assert.IsTrue (p4.BattleArea.Cards.Count == 0);
+
+			p2.BattleArea.Add (new Dagger (match));
+
+			Assert.AreEqual (5, p2.BattleArea.BattlePoints());
+
+			quest.resolveStage ();
+
+			Assert.IsTrue (quest.QuestingPlayers.Contains (p2));
+			Assert.IsFalse (quest.QuestingPlayers.Contains (p3));
+
+			Assert.AreEqual (0, p1.Rank.Shields);
+			Assert.AreEqual (2, p2.Rank.Shields);
+			Assert.AreEqual (0, p3.Rank.Shields);
+			Assert.AreEqual (0, p4.Rank.Shields);
+
+			Assert.AreEqual (6, p1.Hand.Count);
+			Assert.AreEqual (0, p2.Hand.Count);
+			Assert.AreEqual (0, p3.Hand.Count);
+			Assert.AreEqual (0, p4.Hand.Count);
+		}
     }
 
     public class GameManagerTests {
