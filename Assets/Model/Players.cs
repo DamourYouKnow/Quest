@@ -138,7 +138,10 @@ namespace Quest.Core.Players {
         public RankCard RankCard {
             // TODO.
             get {
-                return null;
+                if (this.rank.Value == Players.Rank.Squire) return new Squire(this.match);
+                if (this.rank.Value == Players.Rank.Knight) return new Knight(this.match);
+                if (this.rank.Value == Players.Rank.ChampionKnight) return new ChampionKnight(this.match);
+                return new KnightOfTheRoundTable(this.match);
             }
         }
 	

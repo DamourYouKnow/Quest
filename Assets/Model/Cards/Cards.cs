@@ -54,9 +54,9 @@ namespace Quest.Core.Cards {
         }
     }
 
-    public class RankCard : Card {
-        private Rank rank;
-        private int battlePoints;
+    public abstract class RankCard : Card {
+        protected Rank rank;
+        protected int battlePoints;
 
         public RankCard(QuestMatch match) : base(match) {
 
@@ -69,6 +69,42 @@ namespace Quest.Core.Cards {
         public Rank Rank {
             get { return this.rank; }
 			set { this.rank = value;}
+        }
+    }
+
+    public class Squire : RankCard {
+        public Squire(QuestMatch match) : base(match) {
+            this.name = "Squire";
+            this.imageFilename = "rank_squire.png";
+            this.rank = Rank.Squire;
+            this.battlePoints = 5;
+        }
+    }
+
+    public class Knight : RankCard {
+        public Knight(QuestMatch match) : base(match) {
+            this.name = "Knight";
+            this.imageFilename = "rank_knight.png";
+            this.rank = Rank.Knight;
+            this.battlePoints = 10;
+        }
+    }
+
+    public class ChampionKnight : RankCard {
+        public ChampionKnight(QuestMatch match) : base(match) {
+            this.name = "Champion Knight";
+            this.imageFilename = "champion_knight.png";
+            this.rank = Rank.ChampionKnight;
+            this.battlePoints = 20;
+        }
+    }
+
+    public class KnightOfTheRoundTable : RankCard {
+        public KnightOfTheRoundTable(QuestMatch match) : base(match) {
+            this.name = "Knight of the Round Table";
+            this.imageFilename = null;
+            this.rank = Rank.KnightOfTheRoundTable;
+            this.battlePoints = 0;
         }
     }
 
