@@ -56,9 +56,14 @@ namespace Quest.Core.Cards {
 
     public class RankCard : Card {
         private Rank rank;
+        private int battlePoints;
 
         public RankCard(QuestMatch match) : base(match) {
 
+        }
+
+        public int BattlePoints {
+            get { return this.battlePoints; }
         }
 
         public Rank Rank {

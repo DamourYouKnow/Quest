@@ -177,6 +177,10 @@ namespace Quest.Core.Players {
             }
         }
 
+        public int BattlePointsInPlay() {
+            return this.battleArea.BattlePoints() + this.RankCard.BattlePoints;
+        }
+
         public Boolean CardInPlay(Card card) {
             return this.battleArea.Cards.Contains(card);
         }

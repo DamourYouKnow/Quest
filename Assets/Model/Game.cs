@@ -66,7 +66,7 @@ namespace Quest.Core {
         public Player PlayerWithMostBattlePoints() {
             Player maxPlayer = this.players[0];
             foreach (Player player in this.players) {
-                if (player.BattleArea.BattlePoints() > maxPlayer.BattleArea.BattlePoints()) {
+                if (player.BattlePointsInPlay() > maxPlayer.BattlePointsInPlay()) {
                     maxPlayer = player;
                 }
             }
