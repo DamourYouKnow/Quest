@@ -1,4 +1,5 @@
 using System;
+using Quest.Core.Players;
 
 namespace Quest.Core.Cards {
 	
@@ -85,7 +86,22 @@ namespace Quest.Core.Cards {
 			this.battlePoints = 30;
 			this.bonusBP = 0;
 		}
-		//will need to do something for Mordred's ability later
+		
+		//SpecialAbility discards a target ally and Mordred
+		//Should work since there's only 1 of each ally card 
+		public void SpecialAbility(AllyCard card){
+			//problem: this might discard another player's Mordred
+			//but at least for now let's just have it discard any Mordred
+			//just to confirm that this function "works"
+			Player mordredPlayer = this.match.PlayerWithCard(this);
+			//Check which player contains the target card
+			foreach(Player player in this.match.Players){
+				if (player.BattleArea.Cards.Contains(card)){
+					player.Discard(card);
+				}
+			}
+			mordredPlayer.Discard(this);
+		}
 	}
 	
 	public class RobberKnight : FoeCard{
