@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Quest.Core.Players;
 
 namespace Quest.Core {
@@ -10,7 +11,7 @@ namespace Quest.Core {
 		int numAIPlayers = 0;
 		
 		public void changeMenuScene(string sceneName){
-			Application.LoadLevel(sceneName);
+			SceneManager.LoadScene(sceneName);
 		}
 		
 		public void ExitGame() {
@@ -28,6 +29,8 @@ namespace Quest.Core {
 				Player newAI = new Player("test AI");
 				questMatch.AddPlayer(newAI);
 			}
+
+			changeMenuScene ("Match");
 		}
 		
 		public void AddHuman(){
