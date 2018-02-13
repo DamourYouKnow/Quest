@@ -12,6 +12,9 @@ namespace Quest.Core {
 	public class GameController : MonoBehaviour {
 		QuestMatch gm;
 		Logger logger;
+
+		//Specifies if a scene has been setup yet
+		//Necessary because scenes are not loaded when Load is run, but rather at next update cycle
 		bool sceneSet;
 
 		public Logger Logger {
@@ -21,6 +24,7 @@ namespace Quest.Core {
 			get { return this.gm; }
 		}
 
+		//Used to copy GameController between scenes
 		private void init(GameController gc){
 			this.gm = gc.gm;
 			this.logger = gc.logger;
@@ -28,6 +32,8 @@ namespace Quest.Core {
 		}
 		//Awake is called before Start function, guaranteeing we'll have it setup for other scripts
 		void Awake(){
+			//This setup ensures only one GameController is running at a time.
+			//If a new one comes along, copy all settings, destroy old one
 			GameObject gc = GameObject.FindGameObjectWithTag ("GameController");
 			if (gc != null) {
 				this.init (gc.GetComponent<GameController>());
@@ -72,11 +78,12 @@ namespace Quest.Core {
 			for (int i = 0; i < this.gm.Players.Count; i++) {
 				GameObject opponent = Instantiate (Resources.Load("Opponent", typeof(GameObject))) as GameObject;
 				opponent.transform.SetParent (opponents.transform);
-				opponent.transform.localScale = new Vector3 (1, 1, 1);
 			}
 		}
 
 		public void QuitGame(){
+			//When game is run in editor, the application cannot be quit as this would close editor
+			//Therefore, have to specifically stop it through editor
 			#if UNITY_EDITOR
 				UnityEditor.EditorApplication.isPlaying = false;
 			#else
