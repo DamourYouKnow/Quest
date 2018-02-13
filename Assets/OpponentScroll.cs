@@ -16,14 +16,15 @@ public class OpponentScroll : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		//assumes first child is opponent list
+		//assumes first child is opponents
 		scrollbar.numberOfSteps = scrollbar.transform.parent.GetChild (0).childCount;
-		RectTransform oppTransform = (scrollbar.transform.parent.GetChild (0).GetChild(0) as RectTransform);
-		RectTransform screenSize = (scrollbar.transform.parent.parent as RectTransform);
-		opponentSize = oppTransform.rect.width;
-		Debug.Log ((screenSize.rect.width % opponentSize));
-		opponentSize += (screenSize.rect.width % opponentSize);
-		opponentSize /= 100.0f;
+		if (scrollbar.numberOfSteps > 0) {
+			RectTransform oppTransform = (scrollbar.transform.parent.GetChild (0).GetChild(0) as RectTransform);
+			RectTransform screenSize = (scrollbar.transform.parent.parent as RectTransform);
+			opponentSize = oppTransform.rect.width;
+			opponentSize += (screenSize.rect.width % opponentSize);
+			opponentSize /= 100.0f;
+		}
 	}
 
 	void valueChanged(float value){
