@@ -78,6 +78,7 @@ namespace Quest.Core {
 			for (int i = 0; i < this.gm.Players.Count; i++) {
 				GameObject opponent = Instantiate (Resources.Load("Opponent", typeof(GameObject))) as GameObject;
 				opponent.transform.SetParent (opponents.transform);
+				opponent.transform.localScale = new Vector3 (1, 1, 1);
 			}
 		}
 
