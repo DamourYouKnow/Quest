@@ -33,6 +33,15 @@ namespace Quest.Core.Players {
             get { return this.shields; }
         }
 
+		//for AI deciding to sponsor quest
+		public bool PromotableThroughQuest(QuestCard questCard){
+			int required = this.ranks[currentRank + 1].RequiredShields;
+			if ((questCard.QuestingPlayers.Count + this.shields) >= required){
+				return true;
+			}
+			return false;
+		}
+		
         public void AddShields(int count) {
             this.shields += count;
             if (this.currentRank == this.ranks.Count - 1) {
@@ -283,10 +292,11 @@ namespace Quest.Core.Players {
         // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
         public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand);
-        public abstract bool SponsorQuest(QuestCard questCard);
+        public abstract bool SponsorQuest(QuestCard questCard, Hand hand);
         public abstract bool ParticipateInQuest(QuestCard questCard, Hand hand);
-        public abstract List<Card> NextBid(TestCard testCard, Hand hand);
+        public abstract List<AdventureCard> NextBid(TestCard testCard, Hand hand);
         public abstract List<Card> DiscardAfterWinningTest();
+		public abstract List<AdventureCard> PlayCardsInQuest(QuestCard questCard, Hand hand);
 
         protected static AdventureCard StrongestCard(List<AdventureCard> cards) {
             int maxBattlePoints = 0;
@@ -302,11 +312,15 @@ namespace Quest.Core.Players {
     }
 
     internal class HumanPlayer : PlayerBehaviour {
+		public override List<AdventureCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+		
         public override List<Card> DiscardAfterWinningTest() {
             throw new NotImplementedException();
         }
 
-        public override List<Card> NextBid(TestCard testCard, Hand hand) {
+        public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
             throw new NotImplementedException();
         }
 
@@ -322,7 +336,7 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override bool SponsorQuest(QuestCard questCard) {
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
             throw new NotImplementedException();
         }
     }

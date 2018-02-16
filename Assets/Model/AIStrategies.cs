@@ -10,12 +10,12 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override List<Card> NextBid(TestCard testCard, Hand hand) {
+        public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
             int targetBid = testCard.HigestBid;
-            List<Card> bids = new List<Card>();
+            List<AdventureCard> bids = new List<AdventureCard>();
             int bidValue = 0;
 
-            foreach (Card card in hand.Cards) {
+            foreach (AdventureCard card in hand.AdventureCards) {
                 if (card is FoeCard) {
                     bids.Add(card);
                     bidValue += card.BidValue;
@@ -35,7 +35,7 @@ namespace Quest.Core.Players {
 			List<AdventureCard> discardableFoeCards = new List<AdventureCard>();
 				
 			//sorts your hand by battle points
-			//yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+			//yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 				
 			//filter your hand for non-foes and discardable foes
 			//non-discardable foes are ignored
@@ -58,6 +58,36 @@ namespace Quest.Core.Players {
 			
 			return false;
 		}
+		
+		public override List<AdventureCard> PlayCardsInQuest(QuestCard questCard, Hand hand){
+			//your current hand
+			List<AdventureCard> yourCards = hand.AdventureCards;
+			List<AdventureCard> toPlay = new List<AdventureCard>();
+			//if current stage is quest: calls NextBid
+			if(questCard.Stages[questCard.CurrentStage].MainCard is TestCard){
+				TestCard currentTest = questCard.Stages[questCard.CurrentStage].MainCard as TestCard;
+				toPlay = this.NextBid(currentTest, hand);
+			}
+			//if it's the last stage: sort hand and play all until current cards battle points = 0
+			else if(questCard.CurrentStage == questCard.Stages.Count){
+				//sort hand by battle points
+				yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
+				foreach(AdventureCard card in yourCards){
+					if(!(card is FoeCard)){
+						if(card.BattlePoints == 0){break;}
+						else{
+							//probably need to check for duplicate weapons
+							toPlay.Add(card);
+							}
+					}
+				}
+				
+			}
+			//else, (if not last stage and not test)
+			//...not sure how to check how many battle points were played last stage
+			//i'll get back to this
+			return toPlay;
+		}
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
             return true;
@@ -78,8 +108,34 @@ namespace Quest.Core.Players {
             return cardsToPlay;
         }
 
-        public override bool SponsorQuest(QuestCard questCard) {
-            throw new NotImplementedException();
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
+			//if someone can be promoted by winning
+            foreach(Player player in questCard.QuestingPlayers){
+				if (player.Rank.PromotableThroughQuest(questCard)){
+					return false;
+				}
+			}
+			
+			List<AdventureCard> yourCards = hand.AdventureCards;
+			List<AdventureCard> yourFoes = new List<AdventureCard>();
+			
+			foreach(AdventureCard card in yourCards){
+					if(card is FoeCard){
+						yourFoes.Add(card);
+					}
+			}
+			//if you don't have enough foes
+			if (yourFoes.Count < questCard.Stages.Count){
+				return false;
+			}
+			yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
+			for(int i = 1; i < questCard.Stages.Count - 1; i++){
+				//if there's not enough foes with increasing battle points
+				if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
+					return false;
+				}
+			}
+			return true;
         }
     }
 }

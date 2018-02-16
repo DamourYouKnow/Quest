@@ -11,3 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Lobby.unity
     guid: 4924a6c06536ff84c8403409e12d4d77
+  - enabled: 1
+    path: Assets/Match.unity
+    guid: 71ed3b74b7f19474197fc28db7198e94
