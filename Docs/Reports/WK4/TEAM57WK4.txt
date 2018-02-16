@@ -1,18 +1,30 @@
 This week our team has NO issues to report in terms of participation, contributions, distribution of work.
 
-F1	Foes			Planned
-F2	Weapons			Planned
-F3	Quests			Planned
-F4	Events			Planned
-F5	Battle System		Planned
-F6	Shield and rank system	Planned
-F7	Tests			Planned
-F8	Turn Handler		Planned
+F1	Foes			Complete
+F2	Weapons			Complete
+F3	Quests			Complete
+F4	Events			Complete
+F5	Battle System	Complete
+F6	Rank system	    Complete
+F7	Tests			In progress
+F8	Turn Handler    In progress
 F9	Tournaments		Planned
-F10	Allies			Planned
-F11	Card limit		Planned
+F10	Allies			In progress
+F11	Card limit		In progress
+F12 Quest UI        In progress
+F13 Match UI        In progress
+F14 Lobby           In progress
+F15 Stratgies       In progress
+F16 Main menu       In progress
+F17 Opponents UI    In Progress
+F18 Card draging    Complete
 
-No completed features yet, so no tests.
+T1 Card drawing F5
+T2 Card transfer between different areas F5
+T3 Deck tests F1 F2 F3 F4 F5
+T4 Game setup F5
+T5 Events tests for each event F4
+T6 Ranking system F6 
 
 Kelvin Choi
 	Hours:
@@ -20,16 +32,16 @@ Kelvin Choi
 	Planned Features: 
 
 Guy Cloutier
-	Hours:			7
-	Completed Features:	None
-	Planned Features:	F8, F3
+	Hours: 7			
+	Completed Features:	
+	Planned Features: F8, F3	
 
 Daniel Cormier
-	Hours: 
-	Completed Features:
-	Planned Features:
+	Hours: 4
+	Completed Features: F2
+	Planned Features: F15
 
 Bailey D'Amour
-	Hours: 8
-	Completed Features: None, been working on developing UI components.
-	Planned Features: F10, F7, F4
+	Hours: 14
+	Completed Features: F18, F4
+	Planned Features: F10, F7, F4, F15, F17
