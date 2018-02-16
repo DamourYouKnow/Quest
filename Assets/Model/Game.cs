@@ -62,7 +62,16 @@ namespace Quest.Core {
             }
             return null;
         }
-
+		
+		public Player PlayerWithCardOnBoard(Card card){
+			foreach (Player player in this.players) {
+                if (player.CardInPlay(card)) {
+                    return player;
+                }
+            }
+            return null;
+		}
+		
         public Player PlayerWithMostBattlePoints() {
             Player maxPlayer = this.players[0];
             foreach (Player player in this.players) {

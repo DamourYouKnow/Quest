@@ -93,13 +93,9 @@ namespace Quest.Core.Cards {
 			//problem: this might discard another player's Mordred
 			//but at least for now let's just have it discard any Mordred
 			//just to confirm that this function "works"
+			Player targetPlayer = this.match.PlayerWithCardOnBoard(card);
 			Player mordredPlayer = this.match.PlayerWithCard(this);
-			//Check which player contains the target card
-			foreach(Player player in this.match.Players){
-				if (player.BattleArea.Cards.Contains(card)){
-					player.Discard(card);
-				}
-			}
+			targetPlayer.Discard(card);
 			mordredPlayer.Discard(this);
 		}
 	}
