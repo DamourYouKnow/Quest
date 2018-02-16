@@ -12,22 +12,17 @@ F9	Tournaments		Planned
 F10	Allies			Planned
 F11	Card limit		Planned
 
-T1 Card drawing F5
-T2 Card transfer between different areas F5
-T3 Deck tests F1 F2 F3 F4 F5
-T4 Game setup F5
-T5 Events tests for each event F4
-T6 Ranking system F6
+No completed features yet, so no tests.
 
 Kelvin Choi
-	Hours: 9.5
-	Completed Features: F1, F6
-	Planned Features: F11
+	Hours:
+	Completed Features: 
+	Planned Features: 
 
 Guy Cloutier
-	Hours:			
-	Completed Features:	
-	Planned Features:	
+	Hours:			7
+	Completed Features:	None
+	Planned Features:	F8, F3
 
 Daniel Cormier
 	Hours: 
@@ -35,6 +30,6 @@ Daniel Cormier
 	Planned Features:
 
 Bailey D'Amour
-	Hours: 
-	Completed Features: 
-	Planned Features: 
+	Hours: 8
+	Completed Features: None, been working on developing UI components.
+	Planned Features: F10, F7, F4
