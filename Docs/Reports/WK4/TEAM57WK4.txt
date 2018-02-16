@@ -27,9 +27,9 @@ T5 Events tests for each event F4
 T6 Ranking system F6 
 
 Kelvin Choi
-	Hours:
-	Completed Features: 
-	Planned Features: 
+	Hours: 10
+	Completed Features: F1, F6
+	Planned Features: F15, F16, F14, F11
 
 Guy Cloutier
 	Hours: 7			
