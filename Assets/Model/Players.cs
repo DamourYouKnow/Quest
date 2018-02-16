@@ -33,6 +33,15 @@ namespace Quest.Core.Players {
             get { return this.shields; }
         }
 
+		//for AI deciding to sponsor quest
+		public bool PromotableThroughQuest(QuestCard questCard){
+			int required = this.ranks[currentRank + 1].RequiredShields;
+			if ((questCard.QuestingPlayers.Count + this.shields) >= required){
+				return true;
+			}
+			return false;
+		}
+		
         public void AddShields(int count) {
             this.shields += count;
             if (this.currentRank == this.ranks.Count - 1) {
@@ -283,7 +292,7 @@ namespace Quest.Core.Players {
         // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
         public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand);
-        public abstract bool SponsorQuest(QuestCard questCard);
+        public abstract bool SponsorQuest(QuestCard questCard, Hand hand);
         public abstract bool ParticipateInQuest(QuestCard questCard, Hand hand);
         public abstract List<AdventureCard> NextBid(TestCard testCard, Hand hand);
         public abstract List<Card> DiscardAfterWinningTest();
@@ -327,7 +336,7 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override bool SponsorQuest(QuestCard questCard) {
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
             throw new NotImplementedException();
         }
     }

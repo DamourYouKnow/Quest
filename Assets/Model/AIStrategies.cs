@@ -35,7 +35,7 @@ namespace Quest.Core.Players {
 			List<AdventureCard> discardableFoeCards = new List<AdventureCard>();
 				
 			//sorts your hand by battle points
-			//yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+			//yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 				
 			//filter your hand for non-foes and discardable foes
 			//non-discardable foes are ignored
@@ -71,7 +71,7 @@ namespace Quest.Core.Players {
 			//if it's the last stage: sort hand and play all until current cards battle points = 0
 			else if(questCard.CurrentStage == questCard.Stages.Count){
 				//sort hand by battle points
-				yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+				yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 				foreach(AdventureCard card in yourCards){
 					if(!(card is FoeCard)){
 						if(card.BattlePoints == 0){break;}
@@ -108,8 +108,34 @@ namespace Quest.Core.Players {
             return cardsToPlay;
         }
 
-        public override bool SponsorQuest(QuestCard questCard) {
-            throw new NotImplementedException();
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
+			//if someone can be promoted by winning
+            foreach(Player player in questCard.QuestingPlayers){
+				if (player.Rank.PromotableThroughQuest(questCard)){
+					return false;
+				}
+			}
+			
+			List<AdventureCard> yourCards = hand.AdventureCards;
+			List<AdventureCard> yourFoes = new List<AdventureCard>();
+			
+			foreach(AdventureCard card in yourCards){
+					if(card is FoeCard){
+						yourFoes.Add(card);
+					}
+			}
+			//if you don't have enough foes
+			if (yourFoes.Count < questCard.Stages.Count){
+				return false;
+			}
+			yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
+			for(int i = 1; i < questCard.Stages.Count - 1; i++){
+				//if there's not enough foes with increasing battle points
+				if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
+					return false;
+				}
+			}
+			return true;
         }
     }
 }
