@@ -407,7 +407,7 @@ namespace NUnitTesting {
 
             winningPlayer.Rank.RemoveShields(10);
 
-            
+            // TODO. Test setup validation
         }
     }
 }

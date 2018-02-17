@@ -51,8 +51,14 @@ namespace Quest.Core {
 
 		// Use this for initialization
 		void Start() {
-
-		}
+            GameObject promptObj = new GameObject("Prompt");
+            Prompt prompt = promptObj.AddComponent<Prompt>();
+            promptObj.transform.parent = GameObject.Find("GameCanvas").transform;
+            prompt.SetParent(GameObject.Find("GameCanvas").transform);
+            prompt.Message = "Hello this is a test prompt. Set my yes and no event handlers and click my buttons!";
+            prompt.OnNoClick = () => { Debug.Log("No clicked"); };
+            prompt.OnYesClick = () => { Debug.Log("Yes clicked"); };
+        }
 		
 		// Update is called once per frame
 		void Update () {
