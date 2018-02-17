@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Quest.Core.Cards {
-    public abstract class AllyCard : AdventureCard {
+    public abstract class AllyCard : BattleCard {
         public AllyCard(QuestMatch match) : base(match) {
 
         }

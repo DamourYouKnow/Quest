@@ -33,15 +33,6 @@ namespace Quest.Core.Players {
         public int Shields {
             get { return this.shields; }
         }
-
-		//for AI deciding to sponsor quest
-		public bool PromotableThroughQuest(QuestCard questCard){
-			int required = this.ranks[currentRank + 1].RequiredShields;
-			if ((questCard.QuestingPlayers.Count + this.shields) >= required){
-				return true;
-			}
-			return false;
-		}
 		
         public void AddShields(int count) {
             this.shields += count;
@@ -68,6 +59,22 @@ namespace Quest.Core.Players {
             }
             total += this.shields;
             return total;
+        }
+
+        public int ShieldsToNextPromotion() {
+            if (this.currentRank < this.ranks.Count - 1) {
+                return this.ranks[this.currentRank + 1].RequiredShields - this.shields;
+            } else {
+                return 0;
+            }
+        }
+
+        public int ShieldsToVictory() {
+            int requiredShields = this.ShieldsToNextPromotion();
+            for (int nextRank = this.currentRank + 2; nextRank < this.ranks.Count - 1; nextRank++) {
+                requiredShields += this.ranks[nextRank].RequiredShields;
+            }
+            return requiredShields;
         }
 
         public static bool operator<(PlayerRank r1, PlayerRank r2) {
@@ -141,10 +148,6 @@ namespace Quest.Core.Players {
         public PlayerRank Rank {
             get { return this.rank; }
         }
-		
-		public BattleArea BattleArea{
-            get { return battleArea; }
-        }
 
         public RankCard RankCard {
             // TODO.
@@ -154,6 +157,10 @@ namespace Quest.Core.Players {
                 if (this.rank.Value == Players.Rank.ChampionKnight) return new ChampionKnight(this.match);
                 return new KnightOfTheRoundTable(this.match);
             }
+        }
+
+        public BattleArea BattleArea{
+            get { return battleArea; }
         }
 	
         public void Draw(Deck deck, int count=1) {
@@ -203,7 +210,7 @@ namespace Quest.Core.Players {
             return this.hand.Cards.Contains(card);
         }
 		
-		public void Play(AdventureCard card){
+		public void Play(BattleCard card){
 			this.hand.Transfer(this.battleArea, card);
             //will need to check if a card is playable or not
             //(that might be handled elsewhere, not in this function (not sure))
@@ -211,7 +218,7 @@ namespace Quest.Core.Players {
             this.match.Log("Player " + this.username + " played " + card.ToString());
 		}
 
-        public void Play(List<AdventureCard> cards) {
+        public void Play(List<BattleCard> cards) {
             List<string> cardsPlayed = new List<string>();
             foreach (Card card in cards) {
                 cardsPlayed.Add(card.ToString());
@@ -303,17 +310,18 @@ namespace Quest.Core.Players {
     public abstract class PlayerBehaviour {
         // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
-        public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player);
+        public abstract List<BattleCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player);
         public abstract bool SponsorQuest(QuestCard questCard, Hand hand);
+        public abstract bool SetupQuest(QuestCard questCard, Hand hand);
         public abstract bool ParticipateInQuest(QuestCard questCard, Hand hand);
         public abstract List<AdventureCard> NextBid(TestCard testCard, Hand hand);
         public abstract List<Card> DiscardAfterWinningTest();
-		public abstract List<AdventureCard> PlayCardsInQuest(QuestCard questCard, Hand hand);
+		public abstract List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand);
 
-        protected static AdventureCard strongestCard(List<AdventureCard> cards) {
+        protected static AdventureCard strongestCard(List<BattleCard> cards) {
             int maxBattlePoints = 0;
-            AdventureCard maxCard = null;
-            foreach (AdventureCard card in cards) {
+            BattleCard maxCard = null;
+            foreach (BattleCard card in cards) {
                 if (card.BattlePoints > maxBattlePoints) {
                     maxCard = card;
                     maxBattlePoints = card.BattlePoints;
@@ -322,7 +330,7 @@ namespace Quest.Core.Players {
             return maxCard;
         }
 
-        protected bool hasDuplicate(List<AdventureCard> cards, AdventureCard card) {
+        protected bool hasDuplicate(List<BattleCard> cards, BattleCard card) {
             foreach (Card c in cards) {
                 if (card.GetType() == c.GetType()) {
                     return true;
@@ -330,10 +338,15 @@ namespace Quest.Core.Players {
             }
             return false;
         }
+
+        // for AI deciding to sponsor quest
+        public bool promotableThroughQuest(Player player, QuestCard questCard) {
+            return (player.Rank.ShieldsToVictory() <= questCard.Stages.Count);
+        }
     }
 
     internal class HumanPlayer : PlayerBehaviour {
-		public override List<AdventureCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
+		public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
             throw new NotImplementedException();
         }
 		
@@ -353,11 +366,15 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player) {
+        public override List<BattleCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player) {
             throw new NotImplementedException();
         }
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool SetupQuest(QuestCard questCard, Hand hand) {
             throw new NotImplementedException();
         }
     }

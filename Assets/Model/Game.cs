@@ -122,6 +122,18 @@ namespace Quest.Core {
             }
         }
 
+        public List<BattleCard> BattleCards {
+            get {
+                List<BattleCard> retList = new List<BattleCard>();
+                foreach (Card card in this.cards) {
+                    if (card is BattleCard) {
+                        retList.Add((BattleCard)card);
+                    }
+                }
+                return retList;
+            }
+        }
+
         public List<StoryCard> StoryCards {
             get {
                 List<StoryCard> retList = new List<StoryCard>();
@@ -172,7 +184,7 @@ namespace Quest.Core {
     public class BattleArea : CardArea {
 		public virtual int BattlePoints(){
 			int total = 0;
-			foreach (AdventureCard card in this.AdventureCards) {
+			foreach (BattleCard card in this.BattleCards) {
 				total += card.BattlePoints;
 			}
 			return total;

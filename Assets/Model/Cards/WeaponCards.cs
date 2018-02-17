@@ -2,7 +2,7 @@
 
 namespace Quest.Core.Cards{
 
-	public abstract class WeaponCard : AdventureCard{
+	public abstract class WeaponCard : BattleCard{
 
 		public WeaponCard (QuestMatch match) : base(match){
 		}

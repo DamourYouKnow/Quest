@@ -22,7 +22,6 @@ namespace Quest.Core.Cards {
     }
 
 	public abstract class AdventureCard : Card {
-		protected int battlePoints = 0;
         protected int freeBids = 0;
 
         public AdventureCard(QuestMatch match) : base(match) {
@@ -36,9 +35,18 @@ namespace Quest.Core.Cards {
 		public int FreeBids {
 			get { return this.freeBids; }
 		}
-		public virtual int BattlePoints {
-			get { return this.battlePoints; }
-		}
+    }
+
+    public abstract class BattleCard : AdventureCard {
+        protected int battlePoints = 0;
+
+        public BattleCard(QuestMatch match) : base(match) {
+
+        }
+
+        public virtual int BattlePoints {
+            get { return this.battlePoints; }
+        }
     }
 
     public abstract class StoryCard: Card {
@@ -48,7 +56,7 @@ namespace Quest.Core.Cards {
 		public abstract void Run();
     }
 
-    public class Amour : AdventureCard {
+    public class Amour : BattleCard {
         public Amour(QuestMatch match) : base(match) {
             this.name = "Amour";
             this.imageFilename = "amour.png";

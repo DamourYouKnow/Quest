@@ -3,12 +3,13 @@ using Quest.Core.Players;
 
 namespace Quest.Core.Cards {
 	
-	public abstract class FoeCard : AdventureCard {	
+	public abstract class FoeCard : BattleCard {	
 		protected int bonusBP;
 		
         public FoeCard(QuestMatch match) : base(match) {
 
         }
+
 		public override int BattlePoints {
 			get {
 				int total = base.BattlePoints;

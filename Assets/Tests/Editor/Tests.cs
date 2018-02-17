@@ -378,7 +378,7 @@ namespace NUnitTesting {
             aiPlayer.Hand.Add(new Amour(game)); // 10 BP.
 
             // Should play SirGalahad, sword, and amour.
-            List<AdventureCard> played = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
+            List<BattleCard> played = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
             Assert.AreEqual(3, played.Count);
             aiPlayer.Play(played);
             Assert.AreEqual(40, aiPlayer.BattlePointsInPlay());
@@ -393,5 +393,21 @@ namespace NUnitTesting {
             Assert.AreEqual(50, aiPlayer.BattlePointsInPlay());
         }
 
+        [Test]
+        public void TestQuestSponsoring() {
+            QuestMatch game = ScenarioCreator.GameNoDeal(2);
+            Player aiPlayer = game.Players[0];
+            Player winningPlayer = game.Players[1];
+
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game);
+
+            // Test case where another player can win.
+            winningPlayer.Rank.AddShields(21);
+            Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
+
+            winningPlayer.Rank.RemoveShields(10);
+
+            
+        }
     }
 }
