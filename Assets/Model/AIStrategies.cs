@@ -93,14 +93,15 @@ namespace Quest.Core.Players {
             return true;
         }
 
-        public override List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand) {
-            int currentBattlePoints = 0;
-            List<AdventureCard> playableCards = hand.AdventureCards;
+        public override List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player) {
+            int currentBattlePoints = player.BattlePointsInPlay();
+            List<AdventureCard> playableCards = player.Hand.AdventureCards;
             playableCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
             List<AdventureCard> cardsToPlay = new List<AdventureCard>();
 
             foreach (AdventureCard card in playableCards) {
-                if (currentBattlePoints >= tournamentTargetBattlePoints) continue;
+                if (currentBattlePoints >= tournamentTargetBattlePoints) break;
+                if (hasDuplicate(cardsToPlay, card)) continue;
                 cardsToPlay.Add(card);
                 currentBattlePoints += card.BattlePoints;
             }

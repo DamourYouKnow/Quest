@@ -48,9 +48,12 @@ namespace Quest.Core.Cards {
 		public abstract void Run();
     }
 
-    public class AmourCard : AdventureCard {
-        public AmourCard(QuestMatch match) : base(match) {
-
+    public class Amour : AdventureCard {
+        public Amour(QuestMatch match) : base(match) {
+            this.name = "Amour";
+            this.imageFilename = "amour.png";
+            this.battlePoints = 10;
+            this.freeBids = 1;
         }
     }
 

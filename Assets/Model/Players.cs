@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Quest.Core.Cards;
 
 namespace Quest.Core.Players {
@@ -129,6 +130,7 @@ namespace Quest.Core.Players {
 		}
 
         public PlayerBehaviour Behaviour {
+            get { return this.behaviour; }
             set { this.behaviour = value; }
         }
 
@@ -201,13 +203,23 @@ namespace Quest.Core.Players {
             return this.hand.Cards.Contains(card);
         }
 		
-		public void Play(Card card){
-			this.hand.Transfer(battleArea, card);
+		public void Play(AdventureCard card){
+			this.hand.Transfer(this.battleArea, card);
             //will need to check if a card is playable or not
             //(that might be handled elsewhere, not in this function (not sure))
 
             this.match.Log("Player " + this.username + " played " + card.ToString());
 		}
+
+        public void Play(List<AdventureCard> cards) {
+            List<string> cardsPlayed = new List<string>();
+            foreach (Card card in cards) {
+                cardsPlayed.Add(card.ToString());
+            }
+
+            this.hand.Transfer(this.battleArea, cards.Cast<Card>().ToList());
+            this.match.Log("Player " + this.username + " played " + String.Join(",", cardsPlayed.ToArray()));
+        }
 
         public static List<Player> LowestShields(List<Player> players) {
             List<Player> minList = new List<Player>();
@@ -291,14 +303,14 @@ namespace Quest.Core.Players {
     public abstract class PlayerBehaviour {
         // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
-        public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand);
+        public abstract List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player);
         public abstract bool SponsorQuest(QuestCard questCard, Hand hand);
         public abstract bool ParticipateInQuest(QuestCard questCard, Hand hand);
         public abstract List<AdventureCard> NextBid(TestCard testCard, Hand hand);
         public abstract List<Card> DiscardAfterWinningTest();
 		public abstract List<AdventureCard> PlayCardsInQuest(QuestCard questCard, Hand hand);
 
-        protected static AdventureCard StrongestCard(List<AdventureCard> cards) {
+        protected static AdventureCard strongestCard(List<AdventureCard> cards) {
             int maxBattlePoints = 0;
             AdventureCard maxCard = null;
             foreach (AdventureCard card in cards) {
@@ -308,6 +320,15 @@ namespace Quest.Core.Players {
                 }
             }
             return maxCard;
+        }
+
+        protected bool hasDuplicate(List<AdventureCard> cards, AdventureCard card) {
+            foreach (Card c in cards) {
+                if (card.GetType() == c.GetType()) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -332,7 +353,7 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Hand hand) {
+        public override List<AdventureCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player) {
             throw new NotImplementedException();
         }
 

@@ -359,5 +359,39 @@ namespace NUnitTesting {
         }
     }
 
+    public class Strategy2Tests {
+        [Test]
+        public void TestTournamentParticipation() {
+            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            Player aiPlayer = game.Players[0];
+            aiPlayer.Behaviour = new Strategy2();
+            TournamentAtCamelot tournament = new TournamentAtCamelot(game);
 
+            // Test tournament participation.
+            Assert.IsTrue(aiPlayer.Behaviour.ParticipateInTournament(tournament));
+
+            // Test best possible battle points.
+            // 5 BP from rank.
+            aiPlayer.Hand.Add(new SirGalahad(game)); // 15 BP.
+            aiPlayer.Hand.Add(new Sword(game)); // 10 BP.
+            aiPlayer.Hand.Add(new Sword(game)); // 10 BP, should not be played.
+            aiPlayer.Hand.Add(new Amour(game)); // 10 BP.
+
+            // Should play SirGalahad, sword, and amour.
+            List<AdventureCard> played = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
+            Assert.AreEqual(3, played.Count);
+            aiPlayer.Play(played);
+            Assert.AreEqual(40, aiPlayer.BattlePointsInPlay());
+
+            // Test playing as few cards as possible to get 50 battle points.
+            aiPlayer.BattleArea.Transfer(aiPlayer.Hand, aiPlayer.BattleArea.Cards);
+            aiPlayer.Hand.Add(new Excalibur(game));
+
+            played = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
+            Assert.AreEqual(2, played.Count);   
+            aiPlayer.Play(played);
+            Assert.AreEqual(50, aiPlayer.BattlePointsInPlay());
+        }
+
+    }
 }

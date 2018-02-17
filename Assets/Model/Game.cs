@@ -152,13 +152,14 @@ namespace Quest.Core {
         }
 
         public void Transfer(CardArea target, Card card) {
-            target.cards.Add(card);
-			if (target.cards.Contains (card)) {
-				this.cards.Remove(card);
-			}
+            if (this.cards.Contains(card)) {
+                target.cards.Add(card);
+                this.cards.Remove(card);
+            }
         }
 
         public void Transfer(CardArea target, List<Card> cards) {
+            cards = new List<Card>(cards); // Stop bad things from happening.
             foreach (Card card in cards) {
                 this.Transfer(target, card);
             }
