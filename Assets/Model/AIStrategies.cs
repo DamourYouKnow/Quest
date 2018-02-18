@@ -121,6 +121,7 @@ namespace Quest.Core.Players {
 			
 			List<AdventureCard> yourCards = hand.AdventureCards;
 			List<FoeCard> yourFoes = new List<FoeCard>();
+			List<WeaponCard> yourWeapons = new List<WeaponCard>();
 			int yourTestsCount = 0;
 			
 			foreach(AdventureCard card in yourCards){
@@ -130,14 +131,33 @@ namespace Quest.Core.Players {
 					else if(card is TestCard){
 						yourTestsCount += 1;
 					}
+					else if(card is WeaponCard){
+						//eventually check for duplicate weapons
+						yourWeapons.Add((WeaponCard)card);
+					}
 			}
-			//if you dont' have a test card in hand
+			
+			yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
+			
+			int finalFoeBP = yourFoes[0].BattlePoints;
+			//When setting up a Quest, the last foe must have at least 40 BP
+			//So i need to check weapons, even though it doesn't say anything
+			//for weapons in the AI strategies pdf
+			foreach(WeaponCard weapon in yourWeapons){
+				if(finalFoeBP >= 40){
+					break;
+				}
+				finalFoeBP += weapon.BattlePoints;
+			}
+			if (finalFoeBP < 40){
+				return false;
+			}
+			//if you don't have a test card in hand
 			if (yourTestsCount == 0){
 			//if you don't have enough foes
 				if (yourFoes.Count < questCard.Stages.Count){
 					return false;
 				}
-				yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 				for(int i = 1; i < questCard.Stages.Count - 1; i++){
 					//if there's not enough foes with increasing battle points
 					if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
@@ -151,7 +171,6 @@ namespace Quest.Core.Players {
 				if (yourFoes.Count < questCard.Stages.Count - 1){
 					return false;
 				}
-				yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 				for(int i = 1; i < questCard.Stages.Count - 2; i++){
 					//if there's not enough foes with increasing battle points
 					if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
