@@ -48,11 +48,20 @@ namespace Quest.Core.Players {
 
             //if you are able to increment by 10 per stage
             //and your list of discardable foes has at least 2 foe cards
-            if (((totalBattlePoints / questCard.Stages.Count) > 10)
-            && (discardableFoeCards.Count > 1)) {
-                return true;
-            }
-
+			if (discardableFoeCards.Count >= 2){
+				if ((questCard.Stages.Count == 2)&&(totalBattlePoints >= 10)){
+					return true;
+				}
+				else if ((questCard.Stages.Count == 3)&&(totalBattlePoints >= 30)){
+					return true;
+				}
+				else if ((questCard.Stages.Count == 4)&&(totalBattlePoints >= 60)){
+					return true;
+				}
+				else if ((questCard.Stages.Count == 5)&&(totalBattlePoints >= 100)){
+					return true;
+				}
+			}
             return false;
         }
 
