@@ -34,9 +34,6 @@ namespace Quest.Core.Players {
             int totalBattlePoints = 0;
             List<BattleCard> discardableFoeCards = new List<BattleCard>();
 
-            //sorts your hand by battle points
-            //yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
-
             //filter your hand for non-foes and discardable foes
             //non-discardable foes are ignored
             foreach (BattleCard card in yourCards) {
@@ -73,7 +70,6 @@ namespace Quest.Core.Players {
                         if (card.BattlePoints == 0) {
                             break;
                         } else {
-                            //probably need to check for duplicate weapons
                             toPlay.Add(card);
                         }
                     }
@@ -116,21 +112,42 @@ namespace Quest.Core.Players {
 			
 			List<AdventureCard> yourCards = hand.AdventureCards;
 			List<FoeCard> yourFoes = new List<FoeCard>();
+			int yourTestsCount = 0;
 			
 			foreach(AdventureCard card in yourCards){
 					if(card is FoeCard){
 						yourFoes.Add((FoeCard)card);
 					}
+					else if(card is TestCard){
+						yourTestsCount += 1;
+					}
 			}
+			//if you dont' have a test card in hand
+			if (yourTestsCount == 0){
 			//if you don't have enough foes
-			if (yourFoes.Count < questCard.Stages.Count){
-				return false;
-			}
-			yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
-			for(int i = 1; i < questCard.Stages.Count - 1; i++){
-				//if there's not enough foes with increasing battle points
-				if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
+				if (yourFoes.Count < questCard.Stages.Count){
 					return false;
+				}
+				yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
+				for(int i = 1; i < questCard.Stages.Count - 1; i++){
+					//if there's not enough foes with increasing battle points
+					if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
+						return false;
+					}
+				}
+			}
+			//if you have a test card in hand
+			else if (yourTestsCount > 0){
+			//if you don't have enough foes
+				if (yourFoes.Count < questCard.Stages.Count - 1){
+					return false;
+				}
+				yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
+				for(int i = 1; i < questCard.Stages.Count - 2; i++){
+					//if there's not enough foes with increasing battle points
+					if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
+						return false;
+					}
 				}
 			}
 			return true;
