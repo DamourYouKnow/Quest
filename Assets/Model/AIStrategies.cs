@@ -100,7 +100,7 @@ namespace Quest.Core.Players {
             List<BattleCard> playableCards = player.Hand.BattleCards;
             playableCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
             List<BattleCard> cardsToPlay = new List<BattleCard>();
-
+			
             foreach (BattleCard card in playableCards) {
                 if (currentBattlePoints >= tournamentTargetBattlePoints) break;
                 if (hasDuplicate(cardsToPlay, card)) continue;
@@ -123,7 +123,7 @@ namespace Quest.Core.Players {
 			List<FoeCard> yourFoes = new List<FoeCard>();
 			List<WeaponCard> yourWeapons = new List<WeaponCard>();
 			int yourTestsCount = 0;
-			
+			int unplayableFoes = 0;
 			foreach(AdventureCard card in yourCards){
 					if(card is FoeCard){
 						yourFoes.Add((FoeCard)card);
@@ -144,10 +144,10 @@ namespace Quest.Core.Players {
 						}
 					}
 			}
+			//sort foes, weakest first
+			yourFoes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
 			
-			yourFoes.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
-			
-			int finalFoeBP = yourFoes[0].BattlePoints;
+			int finalFoeBP = yourFoes[yourFoes.Count].BattlePoints;
 			//When setting up a Quest, the last foe must have at least 40 BP
 			//So i need to check weapons, even though it doesn't say anything
 			//for weapons in the AI strategies pdf
@@ -166,31 +166,99 @@ namespace Quest.Core.Players {
 				if (yourFoes.Count < questCard.Stages.Count){
 					return false;
 				}
-				for(int i = 1; i < questCard.Stages.Count - 1; i++){
+				for(int i = 1; i < yourFoes.Count - 1; i++){
 					//if there's not enough foes with increasing battle points
 					if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
-						return false;
+						unplayableFoes += 1;
 					}
+				}
+				if(yourFoes.Count - unplayableFoes < questCard.Stages.Count){
+					return false;
 				}
 			}
 			//if you have a test card in hand
-			else if (yourTestsCount > 0){
+			else if (yourTestsCount >= 1){
 			//if you don't have enough foes
 				if (yourFoes.Count < questCard.Stages.Count - 1){
 					return false;
 				}
-				for(int i = 1; i < questCard.Stages.Count - 2; i++){
+				for(int i = 1; i < yourFoes.Count; i++){
 					//if there's not enough foes with increasing battle points
 					if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
-						return false;
+						unplayableFoes += 1;
 					}
+				}
+				if(yourFoes.Count - unplayableFoes < questCard.Stages.Count - 1){
+					return false;
 				}
 			}
 			return true;
         }
 
-        public override bool SetupQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+        public override void SetupQuest(QuestCard questCard, Hand hand) {
+			//i'm not actually sure if we're passing questCard by reference or value
+			//but if it's by value i think something like 'stage.Add(...)' wouldn't work,
+			//either way it's no big deal (i could just return a list of List<BattleCard>)
+			
+			//not sure if i need to make this 'if' statement here
+			if(SponsorQuest(questCard, hand)){
+				List<AdventureCard> yourCards = hand.AdventureCards;
+				List<FoeCard> yourFoes = new List<FoeCard>();
+				List<WeaponCard> yourWeapons = new List<WeaponCard>();
+				List<TestCard> yourTests = new List<TestCard>();
+				
+				foreach(AdventureCard card in yourCards){
+						if(card is FoeCard){
+							yourFoes.Add((FoeCard)card);
+						}
+						else if(card is TestCard){
+							yourTests.Add((TestCard)card);
+						}
+						else if(card is WeaponCard){
+							//Check for duplicate weapons (by card name)
+							bool hasDuplicates = false;
+							foreach(WeaponCard weapon in yourWeapons){
+								if (card.ToString() == weapon.ToString()){
+									hasDuplicates = true;
+								}
+							}
+							if(!hasDuplicates){
+								yourWeapons.Add((WeaponCard)card);
+							}
+						}
+				}
+				//sort foes, starting with the weakest
+				yourFoes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+				//sort weapons by strongest
+				yourWeapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
+				foreach(QuestArea stage in questCard.Stages){
+					//if last stage
+					if(stage == questCard.Stages[questCard.Stages.Count]){
+						//add the strongest foe
+						stage.Add(yourFoes[yourFoes.Count]);
+						while(stage.BattlePoints() < 40){
+							stage.Add(yourWeapons[0]);
+							yourWeapons.Remove(yourWeapons[0]);
+							//i believe yourWeapons[1] will be shifted over to 0
+						}
+					}
+					else if(stage == questCard.Stages[questCard.Stages.Count - 1]){
+						//if you have a test card
+						if(yourTests.Count >= 1){
+							stage.Add(yourTests[0]);
+						}
+						//if you don't
+						else{
+							stage.Add(yourFoes[0]);
+							yourFoes.Remove(yourFoes[0]);
+						}
+					}
+					else{
+						stage.Add(yourFoes[0]);
+						yourFoes.Remove(yourFoes[0]);
+					}
+				}
+			}
         }
     }
 }
