@@ -133,13 +133,13 @@ namespace Quest.Core.Players {
 					}
 					else if(card is WeaponCard){
 						//Check for duplicate weapons (by card name)
-						bool hasDuplicates = false;
+						bool isDuplicate = false;
 						foreach(WeaponCard weapon in yourWeapons){
 							if (card.ToString() == weapon.ToString()){
-								hasDuplicates = true;
+								isDuplicate = true;
 							}
 						}
-						if(!hasDuplicates){
+						if(!isDuplicate){
 							yourWeapons.Add((WeaponCard)card);
 						}
 					}
@@ -216,13 +216,13 @@ namespace Quest.Core.Players {
 						}
 						else if(card is WeaponCard){
 							//Check for duplicate weapons (by card name)
-							bool hasDuplicates = false;
+							bool isDuplicate = false;
 							foreach(WeaponCard weapon in yourWeapons){
 								if (card.ToString() == weapon.ToString()){
-									hasDuplicates = true;
+									isDuplicate = true;
 								}
 							}
-							if(!hasDuplicates){
+							if(!isDuplicate){
 								yourWeapons.Add((WeaponCard)card);
 							}
 						}
