@@ -132,8 +132,16 @@ namespace Quest.Core.Players {
 						yourTestsCount += 1;
 					}
 					else if(card is WeaponCard){
-						//eventually check for duplicate weapons
-						yourWeapons.Add((WeaponCard)card);
+						//Check for duplicate weapons (by card name)
+						bool hasDuplicates = false;
+						foreach(WeaponCard weapon in yourWeapons){
+							if (card.ToString() == weapon.ToString()){
+								hasDuplicates = true;
+							}
+						}
+						if(!hasDuplicates){
+							yourWeapons.Add((WeaponCard)card);
+						}
 					}
 			}
 			
