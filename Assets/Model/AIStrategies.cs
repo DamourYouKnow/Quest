@@ -112,18 +112,21 @@ namespace Quest.Core.Players {
         }
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {
-			//if someone can be promoted by winning
-            foreach(Player player in questCard.QuestingPlayers){
-				if (promotableThroughQuest(player, questCard)){
-					return false;
-				}
-			}
-			
 			List<AdventureCard> yourCards = hand.AdventureCards;
 			List<FoeCard> yourFoes = new List<FoeCard>();
 			List<WeaponCard> yourWeapons = new List<WeaponCard>();
 			int yourTestsCount = 0;
 			int unplayableFoes = 0;
+			
+			//if someone can be promoted by winning
+            foreach(Player player in questCard.Match.Players){
+				//***********object reference not set
+				if (promotableThroughQuest(player, questCard)){
+					return false;
+				}
+			}
+			
+			
 			foreach(AdventureCard card in yourCards){
 					if(card is FoeCard){
 						yourFoes.Add((FoeCard)card);
@@ -144,10 +147,15 @@ namespace Quest.Core.Players {
 						}
 					}
 			}
+			
 			//sort foes, weakest first
 			yourFoes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
 			
-			int finalFoeBP = yourFoes[yourFoes.Count].BattlePoints;
+			//*********argument is out of range
+			//int finalFoeBP = yourFoes[yourFoes.Count-1].BattlePoints;
+			
+			int finalFoeBP = 0;//remove this when above line is fixed
+			
 			//When setting up a Quest, the last foe must have at least 40 BP
 			//So i need to check weapons, even though it doesn't say anything
 			//for weapons in the AI strategies pdf
@@ -157,15 +165,21 @@ namespace Quest.Core.Players {
 				}
 				finalFoeBP += weapon.BattlePoints;
 			}
+			
 			if (finalFoeBP < 40){
-				return false;
+				//***********card not in area
+				//return false;
 			}
+			
 			//if you don't have a test card in hand
 			if (yourTestsCount == 0){
 			//if you don't have enough foes
+				/*
+				//********object reference not set
 				if (yourFoes.Count < questCard.Stages.Count){
 					return false;
 				}
+				
 				for(int i = 1; i < yourFoes.Count - 1; i++){
 					//if there's not enough foes with increasing battle points
 					if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
@@ -175,7 +189,9 @@ namespace Quest.Core.Players {
 				if(yourFoes.Count - unplayableFoes < questCard.Stages.Count){
 					return false;
 				}
+				*/
 			}
+			/*
 			//if you have a test card in hand
 			else if (yourTestsCount >= 1){
 			//if you don't have enough foes
@@ -192,6 +208,7 @@ namespace Quest.Core.Players {
 					return false;
 				}
 			}
+			*/
 			return true;
         }
 
