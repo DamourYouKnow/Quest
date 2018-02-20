@@ -29,5 +29,15 @@ namespace Quest.Core.Scenarios {
             }
             return game;
         }
+
+        public static QuestMatch Scenario1() {
+            // TODO: Create match and run all code to simulate scenario 1.
+            throw new NotImplementedException();
+        }
+
+        public static QuestMatch Scenario2() {
+            // TODO: Create match and run all code to simulate scenario 2.
+            throw new NotImplementedException();
+        }
     }
 }

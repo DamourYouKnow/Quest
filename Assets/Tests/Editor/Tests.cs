@@ -192,7 +192,7 @@ namespace NUnitTesting {
 
 			quest.Run ();
 
-			quest.resolveStage ();
+			quest.ResolveStage ();
 
 			Assert.AreEqual (2, quest.CurrentStage);
 
@@ -208,7 +208,7 @@ namespace NUnitTesting {
 
 			Assert.AreEqual (5, p2.BattleArea.BattlePoints());
 
-			quest.resolveStage ();
+			quest.ResolveStage ();
 
 			Assert.IsTrue (quest.QuestingPlayers.Contains (p2));
 			Assert.IsFalse (quest.QuestingPlayers.Contains (p3));
@@ -455,6 +455,7 @@ namespace NUnitTesting {
             Thieves thieves = new Thieves(game);
             BlackKnight blackKnight = new BlackKnight(game); // 25 BP, should not be discarded.
             Dagger dagger = new Dagger(game); // +5 BP.
+            Lance lance = new Lance(game);
 
             // Cannot increase for all 3 stages, expect false.
             aiPlayer.Hand.Add(boar);
@@ -465,13 +466,44 @@ namespace NUnitTesting {
             aiPlayer.Hand.Add(galahad);
             Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
 
-            // Add weapon, expect true.
+            // Add weapon, expect false, still increments by +5 for a stage.
             aiPlayer.Hand.Add(dagger);
+            Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+
+            // Add another weapon, expect true.
+            aiPlayer.Hand.Add(lance);
             Assert.IsTrue(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
 
             // Remove discardable foe less than 25 BP, expect false.
             aiPlayer.Hand.Remove(boar);
             Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+        }
+
+        [Test]
+        public void TestPlayCardsInQuest() {
+            // TODO: Create new preset scenario for fully initialized quest.
+            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            Player aiPlayer = game.Players[0];
+            aiPlayer.Behaviour = new Strategy2();
+
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+
+            // Make player knight, 10 BP.
+            aiPlayer.Rank.AddShields(5);
+
+            // Test cards.
+            Amour amour = new Amour(game);
+            SirTristan tristan = new SirTristan(game);
+            Sword sword = new Sword(game);
+
+
+            // Test first stage. Amour should be played first.
+
+            // Does ally get played second?
+
+            // Does weapon get played last?
+
+            // Test last stage, strongest valid combination
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Quest.Core.Cards{
 				this.currentStage = 1;
 			}
 		}
-		public List<Player> resolveStage(){
+		public List<Player> ResolveStage(){
 			List<Player> winners = new List<Player>();
 			//TODO: Implement Test stage.
 			if (this.stages [currentStage-1].MainCard is FoeCard) {
