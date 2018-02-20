@@ -37,6 +37,10 @@ namespace Quest.Core.Cards{
 		public int CurrentStage {
 			get { return this.currentStage; }
 		}
+		
+		public int NumStages {
+			get { return this.numStages; }
+		}
 
 		public Player Sponsor {
 			get { return this.sponsor; }

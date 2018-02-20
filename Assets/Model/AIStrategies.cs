@@ -156,7 +156,7 @@ namespace Quest.Core.Players {
 			else{
 				return false;
 			}
-			
+			/*
 			foreach(WeaponCard weapon in yourWeapons){
 				if(finalFoeBP >= 40){
 					break;
@@ -167,11 +167,13 @@ namespace Quest.Core.Players {
 			if (finalFoeBP < 40){
 				return false;
 			}
+			*/
 			
 			//if you don't have a test card in hand
 			if (yourTestsCount == 0){
 				//if you don't have enough foes
-				if (yourFoes.Count < questCard.Stages.Count){
+				//if (yourFoes.Count < questCard.Stages.Count){
+				if (yourFoes.Count < questCard.NumStages){
 					return false;
 				}
 				
@@ -181,7 +183,7 @@ namespace Quest.Core.Players {
 						unplayableFoes += 1;
 					}
 				}
-				if(yourFoes.Count - unplayableFoes < questCard.Stages.Count){
+				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.NumStages){
 					return false;
 				}
 				
@@ -190,7 +192,8 @@ namespace Quest.Core.Players {
 			//if you have a test card in hand
 			else if (yourTestsCount >= 1){
 			//if you don't have enough foes
-				if (yourFoes.Count < questCard.Stages.Count - 1){
+				//if (yourFoes.Count < questCard.Stages.Count - 1){
+				if (yourFoes.Count < questCard.NumStages - 1){
 					return false;
 				}
 				for(int i = 1; i < yourFoes.Count; i++){
@@ -199,7 +202,7 @@ namespace Quest.Core.Players {
 						unplayableFoes += 1;
 					}
 				}
-				if(yourFoes.Count - unplayableFoes < questCard.Stages.Count - 1){
+				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.NumStages - 1){
 					return false;
 				}
 			}
