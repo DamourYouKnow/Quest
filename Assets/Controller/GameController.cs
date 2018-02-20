@@ -103,7 +103,7 @@ namespace Quest.Core {
 
 		void SetQuestPlayers(List<Player> qPlayers){
 			QuestCard quest = this.gm.CurrentStory as QuestCard;
-			quest.QuestingPlayers = qPlayers;
+			quest.Participants = qPlayers;
 		}
 
 		public void AddHumanPlayers(int num){

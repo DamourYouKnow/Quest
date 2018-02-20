@@ -147,14 +147,11 @@ namespace NUnitTesting {
 
 			Assert.IsTrue ((match.CurrentStory as QuestCard).Sponsor == p1);
 
-			List<Player> qplayers = new List<Player> ();
-			qplayers.Add (p2);
-			qplayers.Add (p3);
-			qplayers.Add (p4);
+            quest.AddParticipant(p2);
+            quest.AddParticipant(p3);
+            quest.AddParticipant(p4);
 
-			quest.QuestingPlayers = qplayers;
-
-			Assert.IsTrue(quest.QuestingPlayers.Contains (p2));
+			Assert.IsTrue(quest.Participants.Contains (p2));
 
 			List<QuestArea> lqa = new List<QuestArea> ();
 			QuestArea qa1 = new QuestArea(new List<Card>());
@@ -196,9 +193,9 @@ namespace NUnitTesting {
 
 			Assert.AreEqual (2, quest.CurrentStage);
 
-			Assert.IsTrue (quest.QuestingPlayers.Contains (p2));
-			Assert.IsTrue (quest.QuestingPlayers.Contains (p3));
-			Assert.IsFalse (quest.QuestingPlayers.Contains (p4));
+			Assert.IsTrue (quest.Participants.Contains (p2));
+			Assert.IsTrue (quest.Participants.Contains (p3));
+			Assert.IsFalse (quest.Participants.Contains (p4));
 
 			Assert.IsTrue (p2.BattleArea.Cards.Count == 0);
 			Assert.IsTrue (p3.BattleArea.Cards.Count == 0);
@@ -210,8 +207,8 @@ namespace NUnitTesting {
 
 			quest.ResolveStage ();
 
-			Assert.IsTrue (quest.QuestingPlayers.Contains (p2));
-			Assert.IsFalse (quest.QuestingPlayers.Contains (p3));
+			Assert.IsTrue (quest.Participants.Contains (p2));
+			Assert.IsFalse (quest.Participants.Contains (p3));
 
 			Assert.AreEqual (0, p1.Rank.Shields);
 			Assert.AreEqual (2, p2.Rank.Shields);
@@ -359,6 +356,10 @@ namespace NUnitTesting {
         }
     }
 
+    public class TestTests {
+       
+    }
+
     public class Strategy2Tests {
         [Test]
         public void TestTournamentParticipation() {
@@ -495,7 +496,6 @@ namespace NUnitTesting {
             Amour amour = new Amour(game);
             SirTristan tristan = new SirTristan(game);
             Sword sword = new Sword(game);
-
 
             // Test first stage. Amour should be played first.
 

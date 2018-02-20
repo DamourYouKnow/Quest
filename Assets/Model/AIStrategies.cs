@@ -113,7 +113,7 @@ namespace Quest.Core.Players {
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {
 			//if someone can be promoted by winning
-            foreach(Player player in questCard.QuestingPlayers){
+            foreach(Player player in questCard.Participants){
 				if (promotableThroughQuest(player, questCard)){
 					return false;
 				}
