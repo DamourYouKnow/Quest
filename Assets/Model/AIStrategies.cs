@@ -119,8 +119,7 @@ namespace Quest.Core.Players {
 			int unplayableFoes = 0;
 			
 			//if someone can be promoted by winning
-            foreach(Player player in questCard.Match.Players){
-				//***********object reference not set
+            foreach(Player player in questCard.Participants){
 				if (promotableThroughQuest(player, questCard)){
 					return false;
 				}
