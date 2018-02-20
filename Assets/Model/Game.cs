@@ -146,6 +146,19 @@ namespace Quest.Core {
             }
         }
 
+        public List<TestCard> TestCards {
+            get {
+                List<TestCard> retList = new List<TestCard>();
+                foreach (Card card in this.cards) {
+                    if (card is TestCard) {
+                        retList.Add((TestCard)card);
+                    }
+                }
+                return retList;
+            }
+        }
+
+
         public virtual void Add(Card card) {
             this.cards.Add(card);
         }

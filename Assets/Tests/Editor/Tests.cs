@@ -397,17 +397,43 @@ namespace NUnitTesting {
         public void TestQuestSponsoring() {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
             Player aiPlayer = game.Players[0];
+            aiPlayer.Behaviour = new Strategy2();
             Player winningPlayer = game.Players[1];
 
-            RescueTheFairMaiden quest = new RescueTheFairMaiden(game);
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 Stages with bonus to Black Knight.
 
             // Test case where another player can win.
             winningPlayer.Rank.AddShields(21);
             Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
-
             winningPlayer.Rank.RemoveShields(10);
 
-            // TODO. Test setup validation
+            // Test cards.
+            Boar boar = new Boar(game); // 5 BP
+            Thieves thieves = new Thieves(game); // 5 BP
+            BlackKnight blackKnight = new BlackKnight(game); // Should be worth 35 BP, not 25.
+            GreenKnight greenKnight = new GreenKnight(game);
+            Mordred mordred = new Mordred(game); // 30 BP.
+            Lance lance = new Lance(game); // +20 BP.
+
+            // Ensure having a test card is taken into consideration for the next tests.
+            aiPlayer.Hand.Add(new TestOfValor(game));
+
+            // First case, not enough battle points in second stage, expect false.
+            aiPlayer.Hand.Add(boar);
+            aiPlayer.Hand.Remove(thieves);
+            Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
+
+            // Add weapon, expect true.
+            aiPlayer.Hand.Add(lance);
+            Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
+            aiPlayer.Hand.Remove(lance);
+            aiPlayer.Hand.Remove(boar);
+            aiPlayer.Hand.Remove(thieves);
+
+            // Green knight and black knight test, black night quest bonuse should be considered, expect true.
+            aiPlayer.Hand.Add(blackKnight);
+            aiPlayer.Hand.Add(greenKnight);
+            Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
         }
     }
 }
