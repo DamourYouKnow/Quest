@@ -37,7 +37,8 @@ public class Prompt : MonoBehaviour {
     }
 
     void Start() {
-        
+        this.gameObject.transform.SetParent(GameObject.Find("GameCanvas").transform, false);
+        this.promptObj.transform.SetParent(GameObject.Find("GameCanvas").transform, false);
     }
 
     public void SetParent(Transform transform) {

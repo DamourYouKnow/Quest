@@ -505,5 +505,10 @@ namespace NUnitTesting {
 
             // Test last stage, strongest valid combination
         }
+
+        [Test]
+        public void TestDiscardAfterWinningTest() {
+
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace Quest.Core.Cards {
         protected int minBid = 0;
         protected int currentBid = 0;
         protected Player currentBidPlayer;
+        protected QuestCard quest;
         protected QuestCard minBidQuest = null;
         protected Dictionary<Player, List<Card>> bids;
 
