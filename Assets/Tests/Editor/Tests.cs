@@ -388,7 +388,7 @@ namespace NUnitTesting {
             aiPlayer.Hand.Add(new Excalibur(game));
 
             played = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
-            Assert.AreEqual(2, played.Count);   
+            Assert.AreEqual(2, played.Count);
             aiPlayer.Play(played);
             Assert.AreEqual(50, aiPlayer.BattlePointsInPlay());
         }
@@ -434,6 +434,44 @@ namespace NUnitTesting {
             aiPlayer.Hand.Add(blackKnight);
             aiPlayer.Hand.Add(greenKnight);
             Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
+        }
+
+        [Test]
+        public void TestQuestParticipation() {
+            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            Player aiPlayer = game.Players[0];
+            aiPlayer.Behaviour = new Strategy2();
+
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+
+            // Make player knight, 10 BP.
+            aiPlayer.Rank.AddShields(5);
+
+            // Test cards.
+            KingArthur arthur = new KingArthur(game); // 10 BP.
+            SirLancelot lancelot = new SirLancelot(game); // 15 BP.
+            SirGalahad galahad = new SirGalahad(game); // 15 BP.
+            Boar boar = new Boar(game); // 5 BP, should be discarded.
+            Thieves thieves = new Thieves(game);
+            BlackKnight blackKnight = new BlackKnight(game); // 25 BP, should not be discarded.
+            Dagger dagger = new Dagger(game); // +5 BP.
+
+            // Cannot increase for all 3 stages, expect false.
+            aiPlayer.Hand.Add(boar);
+            aiPlayer.Hand.Add(thieves);
+            aiPlayer.Hand.Add(blackKnight);
+            aiPlayer.Hand.Add(arthur);
+            aiPlayer.Hand.Add(lancelot);
+            aiPlayer.Hand.Add(galahad);
+            Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+
+            // Add weapon, expect true.
+            aiPlayer.Hand.Add(dagger);
+            Assert.IsTrue(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+
+            // Remove discardable foe less than 25 BP, expect false.
+            aiPlayer.Hand.Remove(boar);
+            Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
         }
     }
 }
