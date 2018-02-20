@@ -117,6 +117,7 @@ namespace Quest.Core.Players {
 			List<WeaponCard> yourWeapons = new List<WeaponCard>();
 			int yourTestsCount = 0;
 			int unplayableFoes = 0;
+			int finalFoeBP = 0;
 			
 			//if someone can be promoted by winning
             foreach(Player player in questCard.Participants){
@@ -124,7 +125,6 @@ namespace Quest.Core.Players {
 					return false;
 				}
 			}
-			
 			
 			foreach(AdventureCard card in yourCards){
 					if(card is FoeCard){
@@ -147,17 +147,16 @@ namespace Quest.Core.Players {
 					}
 			}
 			
-			//sort foes, weakest first
-			yourFoes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+			if(yourFoes.Count > 0){
+				//sort foes, weakest first
+				yourFoes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+				finalFoeBP = yourFoes[yourFoes.Count - 1].BattlePoints;
+			}
+			//if theres no foes in hand
+			else{
+				return false;
+			}
 			
-			//*********argument is out of range
-			//int finalFoeBP = yourFoes[yourFoes.Count-1].BattlePoints;
-			
-			int finalFoeBP = 0;//remove this when above line is fixed
-			
-			//When setting up a Quest, the last foe must have at least 40 BP
-			//So i need to check weapons, even though it doesn't say anything
-			//for weapons in the AI strategies pdf
 			foreach(WeaponCard weapon in yourWeapons){
 				if(finalFoeBP >= 40){
 					break;
@@ -166,15 +165,12 @@ namespace Quest.Core.Players {
 			}
 			
 			if (finalFoeBP < 40){
-				//***********card not in area
-				//return false;
+				return false;
 			}
 			
 			//if you don't have a test card in hand
 			if (yourTestsCount == 0){
-			//if you don't have enough foes
-				/*
-				//********object reference not set
+				//if you don't have enough foes
 				if (yourFoes.Count < questCard.Stages.Count){
 					return false;
 				}
@@ -188,9 +184,9 @@ namespace Quest.Core.Players {
 				if(yourFoes.Count - unplayableFoes < questCard.Stages.Count){
 					return false;
 				}
-				*/
+				
 			}
-			/*
+			
 			//if you have a test card in hand
 			else if (yourTestsCount >= 1){
 			//if you don't have enough foes
@@ -207,7 +203,7 @@ namespace Quest.Core.Players {
 					return false;
 				}
 			}
-			*/
+			
 			return true;
         }
 

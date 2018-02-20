@@ -421,7 +421,7 @@ namespace NUnitTesting {
 
             // First case, not enough battle points in second stage, expect false.
             aiPlayer.Hand.Add(boar);
-            aiPlayer.Hand.Remove(thieves);
+            aiPlayer.Hand.Add(thieves);
             Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
 
             // Add weapon, expect true.
