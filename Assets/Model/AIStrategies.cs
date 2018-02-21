@@ -49,16 +49,16 @@ namespace Quest.Core.Players {
             //if you are able to increment by 10 per stage
             //and your list of discardable foes has at least 2 foe cards
 			if (discardableFoeCards.Count >= 2){
-				if ((questCard.Stages.Count == 2)&&(totalBattlePoints >= 10)){
+				if ((questCard.StageCount == 2)&&(totalBattlePoints >= 10)){
 					return true;
 				}
-				else if ((questCard.Stages.Count == 3)&&(totalBattlePoints >= 30)){
+				else if ((questCard.StageCount == 3)&&(totalBattlePoints >= 30)){
 					return true;
 				}
-				else if ((questCard.Stages.Count == 4)&&(totalBattlePoints >= 60)){
+				else if ((questCard.StageCount == 4)&&(totalBattlePoints >= 60)){
 					return true;
 				}
-				else if ((questCard.Stages.Count == 5)&&(totalBattlePoints >= 100)){
+				else if ((questCard.StageCount == 5)&&(totalBattlePoints >= 100)){
 					return true;
 				}
 			}
@@ -71,7 +71,7 @@ namespace Quest.Core.Players {
             List<BattleCard> toPlay = new List<BattleCard>();
 
 			//if it's the last stage: sort hand and play all until current cards battle points = 0
-			if (questCard.CurrentStage == questCard.Stages.Count) {
+			if (questCard.CurrentStage == questCard.StageCount) {
                 //sort hand by battle points
                 yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
                 foreach (BattleCard card in yourCards) {
@@ -173,7 +173,7 @@ namespace Quest.Core.Players {
 			if (yourTestsCount == 0){
 				//if you don't have enough foes
 				//if (yourFoes.Count < questCard.Stages.Count){
-				if (yourFoes.Count < questCard.NumStages){
+				if (yourFoes.Count < questCard.StageCount){
 					return false;
 				}
 				
@@ -183,7 +183,7 @@ namespace Quest.Core.Players {
 						unplayableFoes += 1;
 					}
 				}
-				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.NumStages){
+				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.StageCount){
 					return false;
 				}
 				
@@ -193,7 +193,7 @@ namespace Quest.Core.Players {
 			else if (yourTestsCount >= 1){
 			//if you don't have enough foes
 				//if (yourFoes.Count < questCard.Stages.Count - 1){
-				if (yourFoes.Count < questCard.NumStages - 1){
+				if (yourFoes.Count < questCard.StageCount - 1){
 					return false;
 				}
 				for(int i = 1; i < yourFoes.Count; i++){
@@ -202,7 +202,7 @@ namespace Quest.Core.Players {
 						unplayableFoes += 1;
 					}
 				}
-				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.NumStages - 1){
+				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.StageCount - 1){
 					return false;
 				}
 			}

@@ -153,7 +153,8 @@ namespace NUnitTesting {
 
 			Assert.IsTrue(quest.Participants.Contains (p2));
 
-			List<QuestArea> lqa = new List<QuestArea> ();
+            quest.AddFoeStage(new Boar(match), new List<WeaponCard>() { new Sword(match), new Horse(match)});
+
 			QuestArea qa1 = new QuestArea(new List<Card>());
 			qa1.Add (new Boar(match));
 			qa1.Add (new Sword(match));
@@ -483,11 +484,14 @@ namespace NUnitTesting {
         [Test]
         public void TestPlayCardsInQuest() {
             // TODO: Create new preset scenario for fully initialized quest.
-            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            QuestMatch game = ScenarioCreator.GameNoDeal(2);
             Player aiPlayer = game.Players[0];
+            Player sponsorPlayer = game.Players[1];
             aiPlayer.Behaviour = new Strategy2();
 
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+            quest.Sponsor = sponsorPlayer;
+            quest.AddParticipant(aiPlayer);
 
             // Make player knight, 10 BP.
             aiPlayer.Rank.AddShields(5);

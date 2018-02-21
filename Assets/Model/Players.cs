@@ -341,7 +341,7 @@ namespace Quest.Core.Players {
 
         // for AI deciding to sponsor quest
         public bool promotableThroughQuest(Player player, QuestCard questCard) {
-            return (player.Rank.ShieldsToVictory() <= questCard.Stages.Count);
+            return (player.Rank.ShieldsToVictory() <= questCard.StageCount);
         }
     }
 
