@@ -336,9 +336,26 @@ namespace Quest.Core.Players {
         public bool promotableThroughQuest(Player player, QuestCard questCard) {
             return (player.Rank.ShieldsToVictory() <= questCard.StageCount);
         }
+
+        protected bool validateQuestStageCards(List<BattleCard>[] questChunks) {
+            int lastBattlePoints = 0;
+
+            foreach (List<BattleCard> questChunk in questChunks) {
+                BattleArea compareArea = new BattleArea();
+                foreach (BattleCard card in questChunk) {
+                    compareArea.Add(card);
+                }
+
+                if (compareArea.BattlePoints() - 10 <= lastBattlePoints) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 		
 		// assuming battleCards is sorted, starting from weakest
-		public List<BattleCard>[] QuestStageCards(List<BattleCard> battleCards, int size){
+		protected List<BattleCard>[] questStageCards(List<BattleCard> battleCards, int size){
 			List<BattleCard>[] cardsToPlay = new List<BattleCard>[size];
 			List<Amour> yourAmours = new List<Amour>();
 			List<AllyCard> yourAllies = new List<AllyCard>();
