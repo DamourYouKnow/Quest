@@ -385,6 +385,10 @@ namespace Quest.Core.Players {
 						foreach(BattleCard card in cardsToPlay[i]){
 							if (card.ToString() == yourWeapons[index].ToString()){
 								index += 1;
+								//if every single weapon is a duplicate
+								if (index > yourWeapons.Count - 1){
+									return cardsToPlay;
+								}
 							}
 							else{
 								break;
@@ -395,7 +399,7 @@ namespace Quest.Core.Players {
 					}
 					else if((yourAllies.Count == 0)
 						&&(yourWeapons.Count == 0)){
-							return null;
+							return cardsToPlay;
 						}
 				}
 			}
