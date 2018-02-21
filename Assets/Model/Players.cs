@@ -341,7 +341,7 @@ namespace Quest.Core.Players {
 		
 		// assuming battleCards is sorted, starting from weakest
 		public List<BattleCard>[] QuestStageCards(List<BattleCard> battleCards, int size){
-			List<BattleCard>[] cardsToSponsor = new List<BattleCard>[size];
+			List<BattleCard>[] cardsToPlay = new List<BattleCard>[size];
 			List<Amour> yourAmours = new List<Amour>();
 			List<AllyCard> yourAllies = new List<AllyCard>();
 			List<WeaponCard> yourWeapons = new List<WeaponCard>();
@@ -358,9 +358,47 @@ namespace Quest.Core.Players {
 					yourWeapons.Add((WeaponCard)card);
 				}
 			}
-			
-			
-			return cardsToSponsor;
+			//cards to use for the first stage
+			if(yourAmours.Count >= 1){
+				cardsToPlay[0].Add(yourAmours[0]);
+				yourAmours.Remove(yourAmours[0]);
+			}
+			else if(yourAllies.Count >= 1){
+				cardsToPlay[0].Add(yourAllies[0]);
+				yourAllies.Remove(yourAllies[0]);
+			}
+			else if(yourWeapons.Count >= 1){
+				cardsToPlay[0].Add(yourWeapons[0]);
+				yourWeapons.Remove(yourWeapons[0]);
+			}
+			//start at stage 2
+			for(int i = 1; i < size; i++){
+				int previousBP = 0;
+				int currentBP = 0;
+				foreach(BattleCard card in cardsToPlay[i-1]){
+					previousBP += card.BattlePoints;
+				}
+				while(currentBP - previousBP <= 10){
+					if(yourAmours.Count >= 1){
+						cardsToPlay[i].Add(yourAmours[0]);
+						yourAmours.Remove(yourAmours[0]);
+					}
+					else if(yourAllies.Count >= 1){
+						cardsToPlay[i].Add(yourAllies[0]);
+						yourAllies.Remove(yourAllies[0]);
+					}
+					else if(yourWeapons.Count >= 1){
+						cardsToPlay[i].Add(yourWeapons[0]);
+						yourWeapons.Remove(yourWeapons[0]);
+					}
+					else if((yourAmours.Count == 0)
+						&&(yourAllies.Count == 0)
+						&&(yourWeapons.Count == 0)){
+							return null;
+						}
+				}
+			}
+			return cardsToPlay;
 		}
     }
 
