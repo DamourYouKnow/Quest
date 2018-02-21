@@ -13,7 +13,7 @@ namespace Quest.Core.Cards{
 
         public QuestCard(QuestMatch match) : base(match) {
             this.questFoes = new List<Type>();
-            this.currentStage = 0;
+            this.currentStage = 1;
             this.sponsor = null;
             this.stages = new List<QuestArea>();
             this.participants = new List<Player>();
@@ -61,6 +61,10 @@ namespace Quest.Core.Cards{
 
         public QuestArea GetStage(int stageNumber) {
             return this.stages[stageNumber - 1];
+        }
+
+        public void ForceStage(int stageNumber) {
+            this.currentStage = stageNumber;
         }
 
 		public override void Run (){
