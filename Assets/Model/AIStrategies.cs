@@ -33,7 +33,8 @@ namespace Quest.Core.Players {
             List<BattleCard> yourCards = hand.BattleCards;
             int totalBattlePoints = 0;
             List<BattleCard> discardableFoeCards = new List<BattleCard>();
-
+			//sort hand by weakest
+			yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
             //filter your hand for non-foes and discardable foes
             //non-discardable foes are ignored
             foreach (BattleCard card in yourCards) {
@@ -177,7 +178,7 @@ namespace Quest.Core.Players {
 					return false;
 				}
 				
-				for(int i = 1; i < yourFoes.Count - 1; i++){
+				for(int i = 1; i < yourFoes.Count; i++){
 					//if there's not enough foes with increasing battle points
 					if(yourFoes[i].BattlePoints <= yourFoes[i-1].BattlePoints){
 						unplayableFoes += 1;
@@ -248,7 +249,7 @@ namespace Quest.Core.Players {
 				yourWeapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 				foreach(QuestArea stage in questCard.Stages){
 					//if last stage
-					if(stage == questCard.Stages[questCard.Stages.Count]){
+					if(stage == questCard.Stages[questCard.NumStages]){
 						//add the strongest foe
 						stage.Add(yourFoes[yourFoes.Count]);
 						while(stage.BattlePoints() < 40){
@@ -257,7 +258,7 @@ namespace Quest.Core.Players {
 							//i believe yourWeapons[1] will be shifted over to 0
 						}
 					}
-					else if(stage == questCard.Stages[questCard.Stages.Count - 1]){
+					else if(stage == questCard.Stages[questCard.NumStages - 1]){
 						//if you have a test card
 						if(yourTests.Count >= 1){
 							stage.Add(yourTests[0]);
