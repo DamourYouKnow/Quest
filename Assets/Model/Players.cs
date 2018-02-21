@@ -343,6 +343,30 @@ namespace Quest.Core.Players {
         public bool promotableThroughQuest(Player player, QuestCard questCard) {
             return (player.Rank.ShieldsToVictory() <= questCard.StageCount);
         }
+		
+		// assuming battleCards is sorted, starting from weakest
+		public List<BattleCard>[] QuestStageCards(List<BattleCard> battleCards, int size){
+			List<BattleCard>[] cardsToSponsor = new List<BattleCard>[size];
+			List<Amour> yourAmours = new List<Amour>();
+			List<AllyCard> yourAllies = new List<AllyCard>();
+			List<WeaponCard> yourWeapons = new List<WeaponCard>();
+			
+			//split your cards up into amour, allies, and weapons
+			foreach(BattleCard card in battleCards){
+				if(card is Amour){
+					yourAmours.Add((Amour)card);
+				}
+				else if(card is AllyCard){
+					yourAllies.Add((AllyCard)card);
+				}
+				else if(card is WeaponCard){
+					yourWeapons.Add((WeaponCard)card);
+				}
+			}
+			
+			
+			return cardsToSponsor;
+		}
     }
 
     internal class HumanPlayer : PlayerBehaviour {
