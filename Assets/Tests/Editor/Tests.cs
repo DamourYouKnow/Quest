@@ -368,6 +368,7 @@ namespace NUnitTesting {
             Player winningPlayer = game.Players[1];
 
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 Stages with bonus to Black Knight.
+            quest.Run();
 
             // Test case where another player can win.
             winningPlayer.Rank.AddShields(21);
@@ -410,6 +411,7 @@ namespace NUnitTesting {
             aiPlayer.Behaviour = new Strategy2();
 
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+            quest.Run();
 
             // Make player knight, 10 BP.
             aiPlayer.Rank.AddShields(5);
@@ -456,6 +458,7 @@ namespace NUnitTesting {
 
             // Setup quest
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+            quest.Run();
             quest.Sponsor = sponsorPlayer;
             quest.AddParticipant(aiPlayer);
 
