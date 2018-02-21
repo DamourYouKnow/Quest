@@ -150,7 +150,6 @@ namespace Quest.Core.Players {
         }
 
         public RankCard RankCard {
-            // TODO.
             get {
                 if (this.rank.Value == Players.Rank.Squire) return new Squire(this.match);
                 if (this.rank.Value == Players.Rank.Knight) return new Knight(this.match);
@@ -303,7 +302,6 @@ namespace Quest.Core.Players {
     }
 
     public abstract class PlayerBehaviour {
-        // TODO: Do we want to abstract quests, tests, and tournaments away from their cards?
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
         public abstract List<BattleCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player);
         public abstract bool SponsorQuest(QuestCard questCard, Hand hand);

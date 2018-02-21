@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler {
     Transform returnParent;
-    GameObject placeholder;
     CanvasGroup raycastBlocker;
 
     public Transform ReturnParent {
