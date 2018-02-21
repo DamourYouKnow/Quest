@@ -111,53 +111,30 @@ namespace Quest.Core {
         }
 
         public List<AdventureCard> AdventureCards {
-            get {
-                List<AdventureCard> retList = new List<AdventureCard>();
-                foreach (Card card in this.cards) {
-                    if (card is AdventureCard) {
-                        retList.Add((AdventureCard)card);
-                    }
-                }
-                return retList;
-            }
+            get { return this.GetCards<AdventureCard>(); }
         }
 
         public List<BattleCard> BattleCards {
-            get {
-                List<BattleCard> retList = new List<BattleCard>();
-                foreach (Card card in this.cards) {
-                    if (card is BattleCard) {
-                        retList.Add((BattleCard)card);
-                    }
-                }
-                return retList;
-            }
+            get { return this.GetCards<BattleCard>(); }
         }
 
         public List<StoryCard> StoryCards {
-            get {
-                List<StoryCard> retList = new List<StoryCard>();
-                foreach (Card card in this.cards) {
-                    if (card is StoryCard) {
-                        retList.Add((StoryCard)card);
-                    }
-                }
-                return retList;
-            }
+            get { return this.GetCards<StoryCard>(); }
         }
 
         public List<TestCard> TestCards {
-            get {
-                List<TestCard> retList = new List<TestCard>();
-                foreach (Card card in this.cards) {
-                    if (card is TestCard) {
-                        retList.Add((TestCard)card);
-                    }
-                }
-                return retList;
-            }
+            get { return this.GetCards<TestCard>(); }
         }
 
+        public List<T> GetCards<T>() {
+            List<T> retList = new List<T>();
+            foreach (Card card in this.cards) {
+                if (card is T) {
+                    retList.Add((T)(object)card);
+                } 
+            }
+            return retList;
+        }
 
         public virtual void Add(Card card) {
             this.cards.Add(card);
