@@ -249,7 +249,7 @@ namespace Quest.Core.Players {
 				yourWeapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 				foreach(QuestArea stage in questCard.Stages){
 					//if last stage
-					if(stage == questCard.Stages[questCard.NumStages]){
+					if(stage == questCard.Stages[questCard.StageCount]){
 						//add the strongest foe
 						stage.Add(yourFoes[yourFoes.Count]);
 						while(stage.BattlePoints() < 40){
@@ -258,7 +258,7 @@ namespace Quest.Core.Players {
 							//i believe yourWeapons[1] will be shifted over to 0
 						}
 					}
-					else if(stage == questCard.Stages[questCard.NumStages - 1]){
+					else if(stage == questCard.Stages[questCard.StageCount - 1]){
 						//if you have a test card
 						if(yourTests.Count >= 1){
 							stage.Add(yourTests[0]);

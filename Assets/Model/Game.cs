@@ -232,21 +232,6 @@ namespace Quest.Core {
         public Card MainCard {
             get { return mainCard; }
         }
-
-		public override int BattlePoints(){
-			int total = base.BattlePoints ();
-			if (mainCard != null
-				&& mainCard is FoeCard) {
-				FoeCard foe = mainCard as FoeCard;
-				total += foe.BattlePoints;
-			}
-			return total;
-		}
-		public override int Count {
-			get {
-				return this.cards.Count + 1;
-			}
-		}
 	}
 
     /// <summary>
