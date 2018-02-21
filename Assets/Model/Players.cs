@@ -219,13 +219,8 @@ namespace Quest.Core.Players {
 		}
 
         public void Play(List<BattleCard> cards) {
-            List<string> cardsPlayed = new List<string>();
-            foreach (Card card in cards) {
-                cardsPlayed.Add(card.ToString());
-            }
-
             this.hand.Transfer(this.battleArea, cards.Cast<Card>().ToList());
-            this.match.Log("Player " + this.username + " played " + String.Join(",", cardsPlayed.ToArray()));
+            this.match.Log("Player " + this.username + " played " + Utils.Stringify.CommaList(cards));
         }
 
         public static List<Player> LowestShields(List<Player> players) {

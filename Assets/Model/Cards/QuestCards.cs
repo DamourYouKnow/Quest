@@ -61,6 +61,10 @@ namespace Quest.Core.Cards{
             }
 
             this.stages.Add(area);
+
+            string stageString = foe.ToString();
+            if (weapons != null) stageString += " with weapons " + Utils.Stringify.CommaList(weapons);
+            this.match.Log(this.sponsor.Username + " adding stage " + stageString);
         }
 
         public void AddTestStage(TestCard test) {
@@ -69,6 +73,7 @@ namespace Quest.Core.Cards{
             QuestArea area = new QuestArea(test);
             this.sponsor.Hand.Transfer(area, test);
             this.stages.Add(area);
+            this.match.Log(this.sponsor.Username + " adding stage " + test.ToString() + " to " + this.name);
         }
 
         public QuestArea GetStage(int stageNumber) {

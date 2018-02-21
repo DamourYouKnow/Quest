@@ -47,4 +47,14 @@ namespace Utils {
             return UnityFont.Find("Arial");
         }
     }
+
+    public class Stringify {
+        public static string CommaList<T>(List<T> list) {
+            List<string> stringList = new List<string>();
+            foreach (T obj in list) {
+                stringList.Add(obj.ToString());
+            }
+            return string.Join(", ", stringList.ToArray());
+        }
+    }
 }
