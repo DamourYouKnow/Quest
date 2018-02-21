@@ -27,8 +27,7 @@ namespace Quest.Core.Players {
             }
             return bids;
         }
-
-        public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
+		 public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
 
             List<BattleCard> yourCards = hand.BattleCards;
             List<BattleCard> discardableFoeCards = new List<BattleCard>();
@@ -52,42 +51,26 @@ namespace Quest.Core.Players {
             //if you are able to increment by 10 per stage
             //and your list of discardable foes has at least 2 foe cards
 			if (discardableFoeCards.Count >= 2){
-<<<<<<< HEAD
-				
-				if ((questCard.NumStages == 2)
-					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 10)){
+				if ((questCard.StageCount == 2)
+					&&(totalBattlePoints - yourNonFoes[0].BattlePoints>= 10  )){
 					return true;
 				}
-				
-				else if ((questCard.NumStages == 3)
-					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 30)){
+				else if ((questCard.StageCount == 3)
+					&&(totalBattlePoints - yourNonFoes[0].BattlePoints>= 30  )){
 					return true;
 				}
-				
-				else if ((questCard.NumStages == 4)
-					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 60)){
+				else if ((questCard.StageCount == 4)
+					&&(totalBattlePoints - yourNonFoes[0].BattlePoints>= 60  )){
 					return true;
 				}
-				else if ((questCard.NumStages == 5)
-					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 100)){
-=======
-				if ((questCard.StageCount == 2)&&(totalBattlePoints >= 10)){
+				else if ((questCard.StageCount == 5)
+					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 100 )){
 					return true;
 				}
-				else if ((questCard.StageCount == 3)&&(totalBattlePoints >= 30)){
-					return true;
-				}
-				else if ((questCard.StageCount == 4)&&(totalBattlePoints >= 60)){
-					return true;
-				}
-				else if ((questCard.StageCount == 5)&&(totalBattlePoints >= 100)){
->>>>>>> 301ac716df2e8ba2a7260392045cf60cc38cdab5
-					return true;
-				}
-				
 			}
             return false;
         }
+
 
         public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
             //your current hand
