@@ -31,8 +31,9 @@ namespace Quest.Core.Players {
         public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
 
             List<BattleCard> yourCards = hand.BattleCards;
-            int totalBattlePoints = 0;
             List<BattleCard> discardableFoeCards = new List<BattleCard>();
+			List<BattleCard> yourNonFoes = new List<BattleCard>();
+			int totalBattlePoints = 0;
 			//sort hand by weakest
 			yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
             //filter your hand for non-foes and discardable foes
@@ -44,24 +45,33 @@ namespace Quest.Core.Players {
                 }
                 else if (!(card is FoeCard)) {
                     totalBattlePoints += card.BattlePoints;
+					yourNonFoes.Add(card);//should be sorted by default(weakest first)
                 }
             }
 
             //if you are able to increment by 10 per stage
             //and your list of discardable foes has at least 2 foe cards
 			if (discardableFoeCards.Count >= 2){
-				if ((questCard.NumStages == 2)&&(totalBattlePoints - yourCards[0].BattlePoints>= 10)){
+				
+				if ((questCard.NumStages == 2)
+					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 10)){
 					return true;
 				}
-				else if ((questCard.NumStages == 3)&&(totalBattlePoints >= 30)){
+				
+				else if ((questCard.NumStages == 3)
+					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 30)){
 					return true;
 				}
-				else if ((questCard.NumStages == 4)&&(totalBattlePoints >= 60)){
+				
+				else if ((questCard.NumStages == 4)
+					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 60)){
 					return true;
 				}
-				else if ((questCard.NumStages == 5)&&(totalBattlePoints >= 100)){
+				else if ((questCard.NumStages == 5)
+					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 100)){
 					return true;
 				}
+				
 			}
             return false;
         }
