@@ -210,22 +210,11 @@ namespace Quest.Core {
 	public class QuestArea : BattleArea {
 		private Card mainCard;
 
-		public QuestArea(FoeCard foe, List<WeaponCard> weapons = null){
-            List<Card> cards = new List<Card>();
-            cards.Add(foe);
-
-            if (weapons != null) {
-                foreach (WeaponCard weapon in weapons) {
-                    cards.Add(weapon);
-                }
-            }
-
+		public QuestArea(FoeCard foe){
             this.mainCard = foe;
-			this.cards = cards;
 		}
 
         public QuestArea(TestCard test) {
-            this.cards = new List<Card>() { test };
             this.mainCard = test;
         }
 

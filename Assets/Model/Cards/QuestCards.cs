@@ -51,12 +51,24 @@ namespace Quest.Core.Cards{
 
         public void AddFoeStage(FoeCard foe, List<WeaponCard> weapons = null) {
             if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
-            stages.Add(new QuestArea(foe, weapons));
+
+            QuestArea area = new QuestArea(foe);
+            this.sponsor.Hand.Transfer(area, foe);
+            if (weapons != null) {
+                foreach (WeaponCard weapon in weapons) {
+                    this.sponsor.Hand.Transfer(area, weapon);
+                }
+            }
+
+            this.stages.Add(area);
         }
 
         public void AddTestStage(TestCard test) {
             if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
-            stages.Add(new QuestArea(test));
+
+            QuestArea area = new QuestArea(test);
+            this.sponsor.Hand.Transfer(area, test);
+            this.stages.Add(area);
         }
 
         public QuestArea GetStage(int stageNumber) {

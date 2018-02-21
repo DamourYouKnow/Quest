@@ -122,10 +122,17 @@ namespace NUnitTesting {
 
 			Assert.IsTrue(quest.Participants.Contains (p2));
 
-            quest.AddFoeStage(new Boar(match), new List<WeaponCard>() { new Sword(match), new Horse(match)});
+            Boar boar = new Boar(match);
+            Sword sword = new Sword(match);
+            Horse horse = new Horse(match);
+            p1.Hand.Add(new List<Card>() {boar, sword, horse});
+
+            quest.AddFoeStage(boar, new List<WeaponCard>() {sword, horse});
 			Assert.AreEqual (35, quest.GetStage(1).BattlePoints());
 
-            quest.AddFoeStage(new Thieves(match));
+            Thieves thieves = new Thieves(match);
+            p1.Hand.Add(thieves);
+            quest.AddFoeStage(thieves);
 			Assert.AreEqual (5, quest.GetStage(2).BattlePoints());
 
 			p2.BattleArea.Add (new Sword(match));
@@ -452,9 +459,14 @@ namespace NUnitTesting {
             quest.Sponsor = sponsorPlayer;
             quest.AddParticipant(aiPlayer);
 
-            quest.AddFoeStage(new Thieves(game));
-            quest.AddFoeStage(new Saxons(game));
-            quest.AddFoeStage(new RobberKnight(game));
+            Thieves questThieves = new Thieves(game);
+            Saxons questSaxons = new Saxons(game);
+            RobberKnight questRobberKnight = new RobberKnight(game);
+            sponsorPlayer.Hand.Add(new List<Card>() {questThieves, questSaxons, questRobberKnight});
+
+            quest.AddFoeStage(questThieves);
+            quest.AddFoeStage(questSaxons);
+            quest.AddFoeStage(questRobberKnight);
 
             // Make player knight, 10 BP.
             aiPlayer.Rank.AddShields(5);
