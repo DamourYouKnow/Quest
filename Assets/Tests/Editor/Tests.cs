@@ -447,25 +447,48 @@ namespace NUnitTesting {
             Player sponsorPlayer = game.Players[1];
             aiPlayer.Behaviour = new Strategy2();
 
+            // Setup quest
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
             quest.Sponsor = sponsorPlayer;
             quest.AddParticipant(aiPlayer);
+
+            quest.AddFoeStage(new Thieves(game));
+            quest.AddFoeStage(new Saxons(game));
+            quest.AddFoeStage(new RobberKnight(game));
 
             // Make player knight, 10 BP.
             aiPlayer.Rank.AddShields(5);
 
             // Test cards.
-            Amour amour = new Amour(game);
-            SirTristan tristan = new SirTristan(game);
-            Sword sword = new Sword(game);
+            Amour amour1 = new Amour(game); // 10 BP.
+            Amour amour2 = new Amour(game); // Hopefully only one is played.
+            SirTristan tristan = new SirTristan(game); // 10 BP.
+            SirPercival percival = new SirPercival(game); // 5 BP.
+            Dagger dagger = new Dagger(game); // +5 BP
+            aiPlayer.Hand.Add(amour1);
+            aiPlayer.Hand.Add(amour2);
+            aiPlayer.Hand.Add(tristan);
+            aiPlayer.Hand.Add(dagger);
 
             // Test first stage. Amour should be played first.
+            List<BattleCard> played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
+            Assert.AreEqual(1, played.Count);
+            Assert.IsTrue((played.Contains(amour1) || played.Contains(amour2)));
+            aiPlayer.Play(played);
+            quest.ResolveStage();
 
             // Does ally get played second?
+            played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
+            Assert.AreEqual(1, played.Count);
+            Assert.IsTrue(played.Contains(tristan));
+            aiPlayer.Play(played);
+            quest.ResolveStage();
 
-            // Does weapon get played last?
-
-            // Test last stage, strongest valid combination
+            // Does weapon (and percival) get played last?
+            played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
+            Assert.AreEqual(2, played.Count);
+            Assert.IsTrue(played.Contains(tristan));
+            Assert.IsTrue(played.Contains(dagger));
         }
 
         [Test]
