@@ -345,7 +345,6 @@ namespace Quest.Core.Players {
 			List<Amour> yourAmours = new List<Amour>();
 			List<AllyCard> yourAllies = new List<AllyCard>();
 			List<WeaponCard> yourWeapons = new List<WeaponCard>();
-			
 			//split your cards up into amour, allies, and weapons
 			foreach(BattleCard card in battleCards){
 				if(card is Amour){
@@ -379,20 +378,24 @@ namespace Quest.Core.Players {
 					previousBP += card.BattlePoints;
 				}
 				while(currentBP - previousBP <= 10){
-					if(yourAmours.Count >= 1){
-						cardsToPlay[i].Add(yourAmours[0]);
-						yourAmours.Remove(yourAmours[0]);
-					}
-					else if(yourAllies.Count >= 1){
+					if(yourAllies.Count >= 1){
 						cardsToPlay[i].Add(yourAllies[0]);
 						yourAllies.Remove(yourAllies[0]);
 					}
 					else if(yourWeapons.Count >= 1){
-						cardsToPlay[i].Add(yourWeapons[0]);
-						yourWeapons.Remove(yourWeapons[0]);
+						int index = 0;//the next index that contains a non duplicate weapon
+						foreach(BattleCard card in cardsToPlay[i]){
+							if (card.ToString() == yourWeapons[index].ToString()){
+								index += 1;
+							}
+							else{
+								break;
+							}
+						}
+						cardsToPlay[i].Add(yourWeapons[index]);
+						yourWeapons.Remove(yourWeapons[index]);
 					}
-					else if((yourAmours.Count == 0)
-						&&(yourAllies.Count == 0)
+					else if((yourAllies.Count == 0)
 						&&(yourWeapons.Count == 0)){
 							return null;
 						}
