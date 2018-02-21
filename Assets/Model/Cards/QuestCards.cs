@@ -15,19 +15,13 @@ namespace Quest.Core.Cards{
             this.questFoes = new List<Type>();
             this.currentStage = 0;
             this.sponsor = null;
+            this.stages = new List<QuestArea>();
             this.participants = new List<Player>();
         }
 
         public List<QuestArea> Stages {
-			get { return this.stages; }
-			set {
-				if (value.Count == numStages) {
-					this.stages = value;
-				} else {
-					this.match.Log("Invalid number of stages.");
-				}
-			}
-		}
+            get { return this.stages; }
+        }
 
 		public List<Player> Participants {
 			get { return this.participants; }
@@ -38,7 +32,7 @@ namespace Quest.Core.Cards{
 			get { return this.currentStage; }
 		}
 		
-		public int NumStages {
+		public int StageCount {
 			get { return this.numStages; }
 		}
 
@@ -55,6 +49,20 @@ namespace Quest.Core.Cards{
             this.participants.Add(player);
         }
 
+        public void AddFoeStage(FoeCard foe, List<WeaponCard> weapons = null) {
+            if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
+            stages.Add(new QuestArea(foe, weapons));
+        }
+
+        public void AddTestStage(TestCard test) {
+            if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
+            stages.Add(new QuestArea(test));
+        }
+
+        public QuestArea GetStage(int stageNumber) {
+            return this.stages[stageNumber - 1];
+        }
+
 		public override void Run (){
 			if (this.sponsor == null ||
 			   this.participants == null ||
@@ -62,7 +70,7 @@ namespace Quest.Core.Cards{
 
 				this.sponsor = null;
 				this.participants = new List<Player>();
-				this.stages = null;
+				this.stages = new List<QuestArea>();
 
 				this.match.CurrentStory = this;
 			}
@@ -73,8 +81,11 @@ namespace Quest.Core.Cards{
 
 		public List<Player> ResolveStage(){
 			List<Player> winners = new List<Player>();
-			//TODO: Implement Test stage.
-			if (this.stages [currentStage-1].MainCard is FoeCard) {
+            if (this.stages[currentStage - 1].MainCard is TestCard) {
+                // TODO: Implement Test stage.
+                throw new NotImplementedException();
+            }
+            if (this.stages [currentStage-1].MainCard is FoeCard) {
 				foreach (var p in participants) {
 					if (p.BattleArea.BattlePoints() >= this.stages [currentStage-1].BattlePoints()) {
 						winners.Add (p);

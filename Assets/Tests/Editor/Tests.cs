@@ -102,37 +102,6 @@ namespace NUnitTesting {
 		}
 
 		[Test]
-		public void QuestAreaTest(){
-			QuestMatch match = new QuestMatch (new Quest.Core.Logger ("QuestAreaTest"));
-			QuestArea qarea = new QuestArea (new List<Card>());
-			Card card1 = new Boar (match);
-			qarea.Add (card1);
-
-			Assert.IsTrue (qarea.MainCard == card1);
-
-			Card card2 = new TestOfValor (match);
-			qarea.Add (card2);
-
-			Assert.IsTrue (qarea.MainCard == card1);
-			Assert.IsFalse (qarea.Cards.Contains (card2));
-
-			Assert.AreEqual (5, qarea.BattlePoints());
-
-			Card card3 = new Sword (match);
-
-			qarea.Add (card3);
-
-			Assert.IsTrue (qarea.MainCard == card1);
-			Assert.IsTrue (qarea.Cards.Contains (card3));
-
-			Assert.AreEqual (15, qarea.BattlePoints());
-
-			match.CurrentStory = new BoarHunt (match);
-
-			Assert.AreEqual (25, qarea.BattlePoints ());
-		}
-
-		[Test]
 		public void QuestTest(){
 			QuestMatch match = new QuestMatch (new Quest.Core.Logger ("QuestTest"));
 			Player p1 = new Player ("p1", match);
@@ -153,21 +122,11 @@ namespace NUnitTesting {
 
 			Assert.IsTrue(quest.Participants.Contains (p2));
 
-			List<QuestArea> lqa = new List<QuestArea> ();
-			QuestArea qa1 = new QuestArea(new List<Card>());
-			qa1.Add (new Boar(match));
-			qa1.Add (new Sword(match));
-			qa1.Add (new Horse(match));
-			lqa.Add (qa1);
-			Assert.AreEqual (35, qa1.BattlePoints());
+            quest.AddFoeStage(new Boar(match), new List<WeaponCard>() { new Sword(match), new Horse(match)});
+			Assert.AreEqual (35, quest.GetStage(1).BattlePoints());
 
-			QuestArea qa2 = new QuestArea (new List<Card>());
-			qa2.Add (new Thieves(match));
-			lqa.Add (qa2);
-
-			Assert.AreEqual (5, qa2.BattlePoints());
-
-			quest.Stages = lqa;
+            quest.AddFoeStage(new Thieves(match));
+			Assert.AreEqual (5, quest.GetStage(2).BattlePoints());
 
 			p2.BattleArea.Add (new Sword(match));
 			p2.BattleArea.Add (new Excalibur(match));
@@ -483,11 +442,14 @@ namespace NUnitTesting {
         [Test]
         public void TestPlayCardsInQuest() {
             // TODO: Create new preset scenario for fully initialized quest.
-            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            QuestMatch game = ScenarioCreator.GameNoDeal(2);
             Player aiPlayer = game.Players[0];
+            Player sponsorPlayer = game.Players[1];
             aiPlayer.Behaviour = new Strategy2();
 
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+            quest.Sponsor = sponsorPlayer;
+            quest.AddParticipant(aiPlayer);
 
             // Make player knight, 10 BP.
             aiPlayer.Rank.AddShields(5);

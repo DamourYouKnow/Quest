@@ -52,6 +52,7 @@ namespace Quest.Core.Players {
             //if you are able to increment by 10 per stage
             //and your list of discardable foes has at least 2 foe cards
 			if (discardableFoeCards.Count >= 2){
+<<<<<<< HEAD
 				
 				if ((questCard.NumStages == 2)
 					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 10)){
@@ -69,6 +70,18 @@ namespace Quest.Core.Players {
 				}
 				else if ((questCard.NumStages == 5)
 					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 100)){
+=======
+				if ((questCard.StageCount == 2)&&(totalBattlePoints >= 10)){
+					return true;
+				}
+				else if ((questCard.StageCount == 3)&&(totalBattlePoints >= 30)){
+					return true;
+				}
+				else if ((questCard.StageCount == 4)&&(totalBattlePoints >= 60)){
+					return true;
+				}
+				else if ((questCard.StageCount == 5)&&(totalBattlePoints >= 100)){
+>>>>>>> 301ac716df2e8ba2a7260392045cf60cc38cdab5
 					return true;
 				}
 				
@@ -82,7 +95,7 @@ namespace Quest.Core.Players {
             List<BattleCard> toPlay = new List<BattleCard>();
 
 			//if it's the last stage: sort hand and play all until current cards battle points = 0
-			if (questCard.CurrentStage == questCard.NumStages) {
+			if (questCard.CurrentStage == questCard.StageCount) {
                 //sort hand by battle points
                 yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
                 foreach (BattleCard card in yourCards) {
@@ -183,7 +196,8 @@ namespace Quest.Core.Players {
 			//if you don't have a test card in hand
 			if (yourTestsCount == 0){
 				//if you don't have enough foes
-				if (yourFoes.Count < questCard.NumStages){
+				//if (yourFoes.Count < questCard.Stages.Count){
+				if (yourFoes.Count < questCard.StageCount){
 					return false;
 				}
 				
@@ -193,7 +207,7 @@ namespace Quest.Core.Players {
 						unplayableFoes += 1;
 					}
 				}
-				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.NumStages){
+				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.StageCount){
 					return false;
 				}
 				
@@ -202,7 +216,8 @@ namespace Quest.Core.Players {
 			//if you have a test card in hand
 			else if (yourTestsCount >= 1){
 			//if you don't have enough foes
-				if (yourFoes.Count < questCard.NumStages - 1){
+				//if (yourFoes.Count < questCard.Stages.Count - 1){
+				if (yourFoes.Count < questCard.StageCount - 1){
 					return false;
 				}
 				for(int i = 1; i < yourFoes.Count; i++){
@@ -211,7 +226,7 @@ namespace Quest.Core.Players {
 						unplayableFoes += 1;
 					}
 				}
-				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.NumStages - 1){
+				if(yourFoes.Count - unplayableFoes + yourWeapons.Count < questCard.StageCount - 1){
 					return false;
 				}
 			}
@@ -257,7 +272,7 @@ namespace Quest.Core.Players {
 				yourWeapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 				foreach(QuestArea stage in questCard.Stages){
 					//if last stage
-					if(stage == questCard.Stages[questCard.NumStages]){
+					if(stage == questCard.Stages[questCard.StageCount]){
 						//add the strongest foe
 						stage.Add(yourFoes[yourFoes.Count]);
 						while(stage.BattlePoints() < 40){
@@ -266,7 +281,7 @@ namespace Quest.Core.Players {
 							//i believe yourWeapons[1] will be shifted over to 0
 						}
 					}
-					else if(stage == questCard.Stages[questCard.NumStages - 1]){
+					else if(stage == questCard.Stages[questCard.StageCount - 1]){
 						//if you have a test card
 						if(yourTests.Count >= 1){
 							stage.Add(yourTests[0]);

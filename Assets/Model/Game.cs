@@ -209,40 +209,29 @@ namespace Quest.Core {
 	/// </summary>
 	public class QuestArea : BattleArea {
 		private Card mainCard;
-		public Card MainCard {
-			get{ return mainCard; }
+
+		public QuestArea(FoeCard foe, List<WeaponCard> weapons = null){
+            List<Card> cards = new List<Card>();
+            cards.Add(foe);
+
+            if (weapons != null) {
+                foreach (WeaponCard weapon in weapons) {
+                    cards.Add(weapon);
+                }
+            }
+
+            this.mainCard = foe;
+			this.cards = cards;
 		}
 
-		public QuestArea(List<Card> stageCards){
-			this.mainCard = null;
-			this.cards = stageCards;
-		}
-		public override void Add(Card card) {
-			if (mainCard == null) {
-				if (card is FoeCard
-					|| card is TestCard){
-					mainCard = card;
-				}
-			} 
-			else if (!(card is FoeCard)
-				&& !(card is TestCard)){
-				base.Add (card);
-			}
-		}
-		public override int BattlePoints(){
-			int total = base.BattlePoints ();
-			if (mainCard != null
-				&& mainCard is FoeCard) {
-				FoeCard foe = mainCard as FoeCard;
-				total += foe.BattlePoints;
-			}
-			return total;
-		}
-		public override int Count {
-			get {
-				return this.cards.Count + 1;
-			}
-		}
+        public QuestArea(TestCard test) {
+            this.cards = new List<Card>() { test };
+            this.mainCard = test;
+        }
+
+        public Card MainCard {
+            get { return mainCard; }
+        }
 	}
 
     /// <summary>
