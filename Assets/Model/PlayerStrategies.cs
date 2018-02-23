@@ -7,7 +7,7 @@ namespace Quest.Core.Players {
         public abstract bool ParticipateInTournament(TournamentCard tournamentCard);
         public abstract List<BattleCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player);
         public abstract bool SponsorQuest(QuestCard questCard, Hand hand);
-        public abstract void SetupQuest(QuestCard questCard, Hand hand);
+        public abstract List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand);
         public abstract bool ParticipateInQuest(QuestCard questCard, Hand hand);
         public abstract List<AdventureCard> NextBid(TestCard testCard, Hand hand);
         public abstract List<Card> DiscardAfterWinningTest();
@@ -166,7 +166,7 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override void SetupQuest(QuestCard questCard, Hand hand) {
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
             throw new NotImplementedException();
         }
     }
