@@ -94,11 +94,11 @@ namespace Quest.Core {
 
             if (story is QuestCard) {
                 QuestCard quest = (QuestCard)story;
-                if (this.CurrentPlayer.Behaviour.SponsorQuest(quest, this.CurrentPlayer.Hand) {
+                if (this.CurrentPlayer.Behaviour.SponsorQuest(quest, this.CurrentPlayer.Hand)) {
                     // TODO: Move logic somewhere else.
                     quest.Sponsor = this.CurrentPlayer;
                     foreach (Player player in this.OtherPlayers) {
-                        if (player.Behaviour.ParticipateInQuest(quest, player.Hand) {
+                        if (player.Behaviour.ParticipateInQuest(quest, player.Hand)) {
                             quest.AddParticipant(player);
                         }
                     }
