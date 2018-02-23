@@ -106,10 +106,11 @@ namespace Quest.Core.Players {
 						currentBP += yourAllies[0].BattlePoints;
                         yourAllies.Remove(yourAllies[0]);
                     }
-                    else if (yourWeapons.Count >= 1) {
-						
+                    //else if (yourWeapons.Count >= 1) {
+					if ((yourWeapons.Count >= 1)&&(currentBP - previousBP <= 10)) {	
                         int index = 0;//the next index that contains a non duplicate weapon
 						/*
+						//check for duplicate weapons
                         foreach (BattleCard card in cardsToPlay[i]) {
                             if (card.ToString() == yourWeapons[index].ToString()) {
                                 index += 1;
