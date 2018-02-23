@@ -32,7 +32,6 @@ namespace Quest.Core.Players {
             List<BattleCard> yourCards = hand.BattleCards;
             List<BattleCard> discardableFoeCards = new List<BattleCard>();
 			List<BattleCard> yourNonFoes = new List<BattleCard>();
-			List<BattleCard>[] cardsToPlay = new List<BattleCard>[questCard.StageCount];
 			int totalBattlePoints = 0;
 			//sort hand by weakest
 			yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
@@ -49,37 +48,12 @@ namespace Quest.Core.Players {
                 }
             }
 
-            //if you are able to increment by 10 per stage
-            //and your list of discardable foes has at least 2 foe cards
-			if ((discardableFoeCards.Count >= 2)&&(yourNonFoes.Count > 0)){
-				for(int i = 0; i < questCard.StageCount; i++){
-					cardsToPlay[i] = new List<BattleCard>();
-				}
-				cardsToPlay = questStageCards(yourNonFoes, questCard.StageCount);
-				return validateQuestStageCards(cardsToPlay);
-				
-				/*
-				if ((questCard.StageCount == 2)
-					&&(totalBattlePoints - yourNonFoes[0].BattlePoints>= 10  )){
-					return true;
-				}
-				else if ((questCard.StageCount == 3)
-					&&(totalBattlePoints - yourNonFoes[0].BattlePoints>= 30  )){
-					return true;
-				}
-				else if ((questCard.StageCount == 4)
-					&&(totalBattlePoints - yourNonFoes[0].BattlePoints>= 60  )){
-					return true;
-				}
-				else if ((questCard.StageCount == 5)
-					&&(totalBattlePoints - yourNonFoes[0].BattlePoints >= 100 )){
-					return true;
-				}
-				*/
-			}
-            return false;
-        }
+            // Do not participate if there is less than 2 discardable foes.
+            if (discardableFoeCards.Count < 2) return false;
 
+            List<BattleCard>[] bestQuestParticipation = this.bestCardsToPlayInTest(hand.BattleCards, questCard.StageCount);
+            return validateCardsToPlayInTest(bestQuestParticipation);
+        }
 
         public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
             //your current hand
@@ -293,6 +267,104 @@ namespace Quest.Core.Players {
 
             // TODO: Return cards instead of modifyig quest directly.
             return null;
+        }
+
+        // assuming battleCards is sorted, starting from weakest
+        private List<BattleCard>[] bestCardsToPlayInTest(List<BattleCard> battleCards, int size) {
+            List<BattleCard>[] cardsToPlay = new List<BattleCard>[size];
+            List<Amour> yourAmours = new List<Amour>();
+            List<AllyCard> yourAllies = new List<AllyCard>();
+            List<WeaponCard> yourWeapons = new List<WeaponCard>();
+
+            for (int i = 0; i < size; i++) {
+                cardsToPlay[i] = new List<BattleCard>();
+            }
+
+            //split your cards up into amour, allies, and weapons
+            foreach (BattleCard card in battleCards) {
+                if (card is Amour) {
+                    yourAmours.Add((Amour)card);
+                }
+                else if (card is AllyCard) {
+                    yourAllies.Add((AllyCard)card);
+                }
+                else if (card is WeaponCard) {
+                    yourWeapons.Add((WeaponCard)card);
+                }
+            }
+            //cards to use for the first stage
+            if (yourAmours.Count >= 1) {
+                cardsToPlay[0].Add(yourAmours[0]);
+                yourAmours.Remove(yourAmours[0]);
+            }
+            else if (yourAllies.Count >= 1) {
+                cardsToPlay[0].Add(yourAllies[0]);
+                yourAllies.Remove(yourAllies[0]);
+            }
+            else if (yourWeapons.Count >= 1) {
+                cardsToPlay[0].Add(yourWeapons[0]);
+                yourWeapons.Remove(yourWeapons[0]);
+            }
+            //start at stage 2
+            for (int i = 1; i < size; i++) {
+                int previousBP = 0;
+                int currentBP = 0;
+                foreach (BattleCard card in cardsToPlay[i - 1]) {
+                    previousBP += card.BattlePoints;
+                }
+                //while current stage's BP is still 10 less than the previous stage's BP
+                while (currentBP - previousBP <= 10) {
+                    if (yourAllies.Count >= 1) {
+                        cardsToPlay[i].Add(yourAllies[0]);
+                        currentBP += yourAllies[0].BattlePoints;
+                        yourAllies.Remove(yourAllies[0]);
+                    }
+                    //else if (yourWeapons.Count >= 1) {
+                    if ((yourWeapons.Count >= 1) && (currentBP - previousBP <= 10)) {
+                        int index = 0;//the next index that contains a non duplicate weapon
+                                      /*
+                                      //check for duplicate weapons
+                                      foreach (BattleCard card in cardsToPlay[i]) {
+                                          if (card.ToString() == yourWeapons[index].ToString()) {
+                                              index += 1;
+                                              //if every single weapon is a duplicate
+                                              if (index > yourWeapons.Count - 1) {
+                                                  return cardsToPlay;
+                                              }
+                                          }
+                                          else {
+                                              break;
+                                          }
+                                      }
+                                      */
+                        cardsToPlay[i].Add(yourWeapons[index]);
+                        currentBP += yourWeapons[index].BattlePoints;
+                        yourWeapons.Remove(yourWeapons[index]);
+                    }
+                    else if ((yourAllies.Count == 0)
+                        && (yourWeapons.Count == 0)) {
+                        return cardsToPlay;
+                    }
+                }
+            }
+            return cardsToPlay;
+        }
+
+        private bool validateCardsToPlayInTest(List<BattleCard>[] questChunks) {
+            int lastBattlePoints = 0;
+
+            foreach (List<BattleCard> questChunk in questChunks) {
+                BattleArea compareArea = new BattleArea();
+                foreach (BattleCard card in questChunk) {
+                    compareArea.Add(card);
+                }
+
+                if (compareArea.BattlePoints() - 10 <= lastBattlePoints) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
