@@ -65,8 +65,13 @@ namespace Quest.Core {
             }
         }
 
+        /// <summary>
+        /// Called by logic to wait for a response from the UI.
+        /// </summary>
         public void Wait() {
-            throw new NotImplementedException();
+            Thread waitThread = new Thread(new ThreadStart(Wait));
+            waitThread.Start();
+            waitThread.Join();
         }
 
         private void waitTask() {
@@ -75,8 +80,11 @@ namespace Quest.Core {
             }
         }
 
+        /// <summary>
+        /// Called by the UI to return control.
+        /// </summary>
         public void Continue() {
-            throw new NotImplementedException();
+            this.waiting = false;
         }
 
         public void RunGame() {
