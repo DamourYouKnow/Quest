@@ -45,13 +45,14 @@ namespace NUnitTesting {
 			Assert.IsTrue (match.CurrentStory == null);
 
 			BoarHunt boarhunt = new BoarHunt(match);
-			boarhunt.Run ();
-
+			
+            // These tests are no longer relevant!
+            //boarhunt.Run();
 			//match currentstory is initiated after quest.run
-			Assert.IsTrue (match.CurrentStory == boarhunt);
+			//Assert.IsTrue(match.CurrentStory == boarhunt);
 
 			//questFoes are initialized
-			Assert.IsTrue (boarhunt.QuestFoes.Contains (typeof(Boar)));
+			Assert.IsTrue(boarhunt.QuestFoes.Contains (typeof(Boar)));
 		}
 
 		[Test]
@@ -110,7 +111,7 @@ namespace NUnitTesting {
 			Player p4 = new Player ("p4", match);
 
 			QuestCard quest = new BoarHunt (match);
-			quest.Run ();
+			match.CurrentStory = quest;
 
 			quest.Sponsor = p1;
 
@@ -152,8 +153,6 @@ namespace NUnitTesting {
 			p4.BattleArea.Add (new Sword (match));
 
 			Assert.AreEqual (10, p4.BattleArea.BattlePoints ());
-
-			quest.Run ();
 
 			quest.ResolveStage ();
 
@@ -368,7 +367,7 @@ namespace NUnitTesting {
             Player winningPlayer = game.Players[1];
 
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 Stages with bonus to Black Knight.
-            quest.Run();
+            game.CurrentStory = quest;
 
             // Test case where another player can win.
             winningPlayer.Rank.AddShields(21);
@@ -411,7 +410,7 @@ namespace NUnitTesting {
             aiPlayer.Behaviour = new Strategy2();
 
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
-            quest.Run();
+            game.CurrentStory = quest;
 
             // Make player knight, 10 BP.
             aiPlayer.Rank.AddShields(5);
@@ -458,7 +457,7 @@ namespace NUnitTesting {
 
             // Setup quest
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
-            quest.Run();
+            game.CurrentStory = quest;
             quest.Sponsor = sponsorPlayer;
             quest.AddParticipant(aiPlayer);
 
