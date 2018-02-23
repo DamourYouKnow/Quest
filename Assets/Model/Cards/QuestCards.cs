@@ -84,20 +84,37 @@ namespace Quest.Core.Cards{
             this.currentStage = stageNumber;
         }
 
-		public override void Run (){
-			if (this.sponsor == null ||
-			   this.participants == null ||
-			   this.stages == null) {
+		public override void Run() {
+            // Ask current player to sponsor.
+            Player currentPlayer = this.match.CurrentPlayer;
+            if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
+                return;
+            }
 
-				this.sponsor = null;
-				this.participants = new List<Player>();
-				this.stages = new List<QuestArea>();
+            // Ask other players if they would like to participate.
+            List<Player> otherPlayers = this.match.OtherPlayers;
+            foreach (Player player in otherPlayers) {
+                if (player.Behaviour.ParticipateInQuest(this, player.Hand)) {
+                    this.AddParticipant(player);
+                }
+            }
 
-				this.match.CurrentStory = this;
-			}
-			else {
-				this.currentStage = 1;
-			}
+            // TODO: Player behaviour functions for individual stage setup.
+            // TODO: Setp logic calling player strategies.
+
+            while (this.currentStage <= this.numStages) {
+                // Participants play cards.
+                foreach (Player participant in this.participants) {
+                    participant.Play(participant.Behaviour.PlayCardsInQuest(this, participant.Hand));
+                }
+
+                // Resolve.
+                List<Player> winners = this.ResolveStage();
+                this.match.Log(Utils.Stringify.CommaList<Player>(winners) + " have won stage " + this.numStages);
+                this.currentStage++;
+            }
+
+            // TODO: Clean up everything.
 		}
 
 		public List<Player> ResolveStage(){
