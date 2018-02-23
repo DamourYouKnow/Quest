@@ -30,10 +30,18 @@ namespace Quest.Core.Players {
             get { return this.ranks[currentRank].Value; }
         }
 
+        public RankCard RankCard {
+            get { return this.ranks[currentRank].RankCard; }
+        }
+
         public int Shields {
             get { return this.shields; }
         }
-		
+
+        public override string ToString() {
+            return this.RankCard.ToString();
+        }
+
         public void AddShields(int count) {
             this.shields += count;
             if (this.currentRank == this.ranks.Count - 1) {
@@ -107,6 +115,15 @@ namespace Quest.Core.Players {
             get { return this.value; }
         }
 
+        public RankCard RankCard {
+            get {
+                if (this.value == Players.Rank.Squire) return new Squire(null);
+                if (this.value == Players.Rank.Knight) return new Knight(null);
+                if (this.value == Players.Rank.ChampionKnight) return new ChampionKnight(null);
+                return new KnightOfTheRoundTable(null);
+            }
+        }
+
         public int RequiredShields {
             get { return this.requiredShields; }
         }
@@ -150,16 +167,15 @@ namespace Quest.Core.Players {
         }
 
         public RankCard RankCard {
-            get {
-                if (this.rank.Value == Players.Rank.Squire) return new Squire(this.match);
-                if (this.rank.Value == Players.Rank.Knight) return new Knight(this.match);
-                if (this.rank.Value == Players.Rank.ChampionKnight) return new ChampionKnight(this.match);
-                return new KnightOfTheRoundTable(this.match);
-            }
+            get { return this.rank.RankCard; }
         }
 
         public BattleArea BattleArea{
             get { return battleArea; }
+        }
+
+        public override string ToString() {
+            return this.username;
         }
 	
         public void Draw(Deck deck, int count=1) {

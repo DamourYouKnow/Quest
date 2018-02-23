@@ -79,6 +79,15 @@ namespace Quest.Core {
             throw new NotImplementedException();
         }
 
+        public void RunGame() {
+            while (!this.hasWinner()) {
+                this.NextTurn();
+            }
+
+            List<Player> winner = this.getWinners();
+            this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
+        }
+
         public void NextTurn() {
             if (this.currentPlayer + 1 >= this.players.Count) {
                 this.currentPlayer = 0;
@@ -160,6 +169,20 @@ namespace Quest.Core {
             if (this.logger != null) {
                 this.logger.Log(message);
             }
+        }
+
+        private List<Player> getWinners() {
+            List<Player> winners = new List<Player>();
+            foreach (Player player in this.players) {
+                if (player.Rank.Value == Rank.KnightOfTheRoundTable) {
+                    winners.Add(player);
+                }
+            }
+            return winners;
+        }
+
+        private bool hasWinner() {
+            return this.getWinners().Count > 0;
         }
     }
 
