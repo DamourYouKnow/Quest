@@ -99,13 +99,17 @@ namespace Quest.Core.Players {
                 foreach (BattleCard card in cardsToPlay[i - 1]) {
                     previousBP += card.BattlePoints;
                 }
+				//while current stage's BP is still 10 less than the previous stage's BP
                 while (currentBP - previousBP <= 10) {
                     if (yourAllies.Count >= 1) {
                         cardsToPlay[i].Add(yourAllies[0]);
+						currentBP += yourAllies[0].BattlePoints;
                         yourAllies.Remove(yourAllies[0]);
                     }
                     else if (yourWeapons.Count >= 1) {
+						
                         int index = 0;//the next index that contains a non duplicate weapon
+						/*
                         foreach (BattleCard card in cardsToPlay[i]) {
                             if (card.ToString() == yourWeapons[index].ToString()) {
                                 index += 1;
@@ -118,7 +122,9 @@ namespace Quest.Core.Players {
                                 break;
                             }
                         }
+						*/
                         cardsToPlay[i].Add(yourWeapons[index]);
+						currentBP += yourWeapons[index].BattlePoints;
                         yourWeapons.Remove(yourWeapons[index]);
                     }
                     else if ((yourAllies.Count == 0)
