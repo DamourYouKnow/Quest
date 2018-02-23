@@ -420,10 +420,10 @@ namespace NUnitTesting {
             SirLancelot lancelot = new SirLancelot(game); // 15 BP.
             SirGalahad galahad = new SirGalahad(game); // 15 BP.
             Boar boar = new Boar(game); // 5 BP, should be discarded.
-            Thieves thieves = new Thieves(game);
+            Thieves thieves = new Thieves(game); // 5 BP, should be discarded.
             BlackKnight blackKnight = new BlackKnight(game); // 25 BP, should not be discarded.
             Dagger dagger = new Dagger(game); // +5 BP.
-            Lance lance = new Lance(game);
+            Lance lance = new Lance(game); // + 20 BP.
 
             // Cannot increase for all 3 stages, expect false.
             aiPlayer.Hand.Add(boar);
