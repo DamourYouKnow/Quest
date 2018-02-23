@@ -62,6 +62,11 @@ namespace Quest.Core.Players {
             List<Amour> yourAmours = new List<Amour>();
             List<AllyCard> yourAllies = new List<AllyCard>();
             List<WeaponCard> yourWeapons = new List<WeaponCard>();
+			
+			for(int i = 0; i<size; i++){
+				cardsToPlay[i] = new List<BattleCard>();
+			}
+			
             //split your cards up into amour, allies, and weapons
             foreach (BattleCard card in battleCards) {
                 if (card is Amour) {
