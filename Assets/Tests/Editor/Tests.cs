@@ -507,7 +507,47 @@ namespace NUnitTesting {
 
         [Test]
         public void TestDiscardAfterWinningTest() {
+            throw new NotImplementedException();
+        }
 
+        [Test]
+        public void TestSetupTest() {
+            // TODO: Create new preset scenario for fully initialized quest.
+            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            Player sponsorPlayer = game.Players[0];
+            sponsorPlayer.Behaviour = new Strategy2();
+
+            // Setup quest
+            SearchForTheQuestingBeast quest = new SearchForTheQuestingBeast(game); // 4 stages.
+            game.CurrentStory = quest;
+            quest.Sponsor = sponsorPlayer;
+
+            // Test cards.
+            TestOfTemptation testOfTemptation = new TestOfTemptation(game); // Play second last (stage 3).
+            Boar boar = new Boar(game); // 5 BP.
+            Saxons saxons = new Saxons(game); // 10 BP.
+            Giant giant = new Giant(game); // 40 BP, played last stage.
+            Sword sword = new Sword(game); // 10 BP, played last stage.
+
+            List<AdventureCard>[] stages = sponsorPlayer.Behaviour.SetupQuest(quest, sponsorPlayer.Hand);
+            Assert.AreEqual(4, stages.Length);
+
+            // Validate stage 1.
+            Assert.AreEqual(1, stages[0].Count);
+            Assert.IsTrue(stages[0].Contains(boar));
+
+            // Validate stage 2.
+            Assert.AreEqual(1, stages[1].Count);
+            Assert.IsTrue(stages[0].Contains(saxons));
+
+            // Validate stage 3.
+            Assert.AreEqual(1, stages[2].Count);
+            Assert.IsTrue(stages[0].Contains(testOfTemptation));
+
+            // Validate stage 4.
+            Assert.AreEqual(2, stages[3].Count);
+            Assert.IsTrue(stages[0].Contains(giant));
+            Assert.IsTrue(stages[0].Contains(sword));
         }
     }
 }

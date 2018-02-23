@@ -226,7 +226,7 @@ namespace Quest.Core.Players {
 			return true;
         }
 
-        public override void SetupQuest(QuestCard questCard, Hand hand) {
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
 			//i'm not actually sure if we're passing questCard by reference or value
 			//but if it's by value i think something like 'stage.Add(...)' wouldn't work,
 			//either way it's no big deal (i could just return a list of List<BattleCard>)
@@ -290,6 +290,9 @@ namespace Quest.Core.Players {
 					}
 				}
 			}
+
+            // TODO: Return cards instead of modifyig quest directly.
+            return null;
         }
     }
 }
