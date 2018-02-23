@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Quest.Core.Cards;
 using Quest.Core.Players;
 using Utils;
@@ -10,22 +11,25 @@ namespace Quest.Core {
     }
 
     public class QuestMatch : Subject{
-		private Queue<Player> playerQueue;
         private List<Player> players;
+        private int currentPlayer;
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
         private StoryCard currentStory;
         private Logger logger;
+        private bool waiting;
 
         public QuestMatch(Logger logger=null) {
             this.players = new List<Player>();
+            this.currentPlayer = 0;
             this.storyDeck = new StoryDeck(this);
             this.adventureDeck = new AdventureDeck(this);
             this.discardPile = new DiscardPile(this);
 			this.currentStory = null;
             this.logger = logger;
             this.Log("Creating new Quest match");
+            this.waiting = false;
         }
 
         public List<Player> Players {
@@ -48,6 +52,67 @@ namespace Quest.Core {
 			get { return this.currentStory; }
 			set { this.currentStory = value; }
 		}
+
+        public Player CurrentPlayer {
+            get { return this.players[this.currentPlayer]; }
+        }
+
+        public List<Player> OtherPlayers {
+            get {
+                List<Player> retList = new List<Player>();
+                retList.Remove(this.CurrentPlayer);
+                return retList;
+            }
+        }
+
+        public void Wait() {
+            throw new NotImplementedException();
+        }
+
+        private void waitTask() {
+            while (this.waiting) {
+                Thread.Sleep(100);
+            }
+        }
+
+        public void Continue() {
+            throw new NotImplementedException();
+        }
+
+        public void NextTurn() {
+            if (this.currentPlayer + 1 >= this.players.Count) {
+                this.currentPlayer = 0;
+            }
+            Player nextPlayer = this.players[this.currentPlayer];
+            this.NextStory();
+        }
+
+        public void NextStory() {
+            StoryCard story = (StoryCard)this.storyDeck.Draw();
+            story.Run();
+
+
+            if (story is QuestCard) {
+                QuestCard quest = (QuestCard)story;
+                if (this.CurrentPlayer.Behaviour.SponsorQuest(quest, this.CurrentPlayer.Hand) {
+                    // TODO: Move logic somewhere else.
+                    quest.Sponsor = this.CurrentPlayer;
+                    foreach (Player player in this.OtherPlayers) {
+                        if (player.Behaviour.ParticipateInQuest(quest, player.Hand) {
+                            quest.AddParticipant(player);
+                        }
+                    }
+                }
+            }
+
+            if (story is EventCard) {
+                
+            }
+
+            if (story is TournamentCard) {
+
+            }
+        }
 
         public void AddPlayer(Player player) {
             this.players.Add(player);
