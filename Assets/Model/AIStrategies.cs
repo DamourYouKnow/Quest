@@ -201,72 +201,51 @@ namespace Quest.Core.Players {
         }
 
         public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
-			//i'm not actually sure if we're passing questCard by reference or value
-			//but if it's by value i think something like 'stage.Add(...)' wouldn't work,
-			//either way it's no big deal (i could just return a list of List<BattleCard>)
-			
-			//not sure if i need to make this 'if' statement here
-			if(SponsorQuest(questCard, hand)){
-				List<AdventureCard> yourCards = hand.AdventureCards;
-				List<FoeCard> yourFoes = new List<FoeCard>();
-				List<WeaponCard> yourWeapons = new List<WeaponCard>();
-				List<TestCard> yourTests = new List<TestCard>();
-				
-				foreach(AdventureCard card in yourCards){
-						if(card is FoeCard){
-							yourFoes.Add((FoeCard)card);
-						}
-						else if(card is TestCard){
-							yourTests.Add((TestCard)card);
-						}
-						else if(card is WeaponCard){
-							//Check for duplicate weapons (by card name)
-							bool isDuplicate = false;
-							foreach(WeaponCard weapon in yourWeapons){
-								if (card.ToString() == weapon.ToString()){
-									isDuplicate = true;
-								}
-							}
-							if(!isDuplicate){
-								yourWeapons.Add((WeaponCard)card);
-							}
-						}
-				}
-				//sort foes, starting with the weakest
-				yourFoes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
-				//sort weapons by strongest
-				yourWeapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
-				foreach(QuestArea stage in questCard.Stages){
-					//if last stage
-					if(stage == questCard.Stages[questCard.StageCount]){
-						//add the strongest foe
-						stage.Add(yourFoes[yourFoes.Count]);
-						while(stage.BattlePoints() < 40){
-							stage.Add(yourWeapons[0]);
-							yourWeapons.Remove(yourWeapons[0]);
-							//i believe yourWeapons[1] will be shifted over to 0
-						}
-					}
-					else if(stage == questCard.Stages[questCard.StageCount - 1]){
-						//if you have a test card
-						if(yourTests.Count >= 1){
-							stage.Add(yourTests[0]);
-						}
-						//if you don't
-						else{
-							stage.Add(yourFoes[0]);
-							yourFoes.Remove(yourFoes[0]);
-						}
-					}
-					else{
-						stage.Add(yourFoes[0]);
-						yourFoes.Remove(yourFoes[0]);
-					}
-				}
-			}
+            List<AdventureCard>[] stages = new List<AdventureCard>[questCard.StageCount];
 
-            // TODO: Return cards instead of modifyig quest directly.
-            return null;
+            List<TestCard> tests = hand.GetCards<TestCard>();
+            List<FoeCard> foes = new List<FoeCard>(hand.GetCards<FoeCard>());
+            List<WeaponCard> weapons = new List<WeaponCard>(hand.GetCards<WeaponCard>());
+
+            foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP.
+            weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP.
+
+            int lastStageBP = 0;
+            for (int s = 0; s < stages.Length; s++) {
+                List<AdventureCard> nextStage = new List<AdventureCard>();
+                stages[s] = nextStage;
+
+                if (s + 1 == questCard.StageCount - 1 && tests.Count > 0) {
+                    nextStage.Add(tests[0]);
+                }
+                else if (s + 1 == questCard.StageCount) {
+                    int currentStageBP = 0;
+                    while ((currentStageBP < 40 || currentStageBP <= lastStageBP) && weapons.Count + foes.Count > 0) {
+                        if (foes.Count > 0) {
+                            nextStage.Add(foes[0]);
+                            currentStageBP += foes[0].BattlePoints;
+                            foes.RemoveAt(0);
+                        }
+                        else if (weapons.Count > 0) {
+                            nextStage.Add(weapons[0]);
+                            currentStageBP += weapons[0].BattlePoints;
+                            weapons.RemoveAt(0);
+                        }
+                    }
+                    lastStageBP = currentStageBP;
+                }
+                else {
+                    int currentStageBP = 0;
+                    while (currentStageBP <= lastStageBP && foes.Count > 0) {
+                        nextStage.Add(foes[0]);
+                        currentStageBP += foes[0].BattlePoints;
+                        foes.RemoveAt(0);
+                    }
+                    lastStageBP = currentStageBP;
+                }
+            }
+
+            return stages;
         }
 
         // assuming battleCards is sorted, starting from weakest

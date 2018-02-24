@@ -197,10 +197,6 @@ namespace Quest.Core {
             get { return this.GetCards<StoryCard>(); }
         }
 
-        public List<TestCard> TestCards {
-            get { return this.GetCards<TestCard>(); }
-        }
-
         public List<T> GetCards<T>() {
             List<T> retList = new List<T>();
             foreach (Card card in this.cards) {
