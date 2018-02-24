@@ -36,10 +36,6 @@ namespace Quest.Core.Cards {
 
         }
 
-        public override int BidValue {
-            get { return this.freeBids + 1; }
-        }
-
 		public int FreeBids {
 			get { return this.freeBids; }
 		}

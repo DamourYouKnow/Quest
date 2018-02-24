@@ -30,7 +30,6 @@ namespace Quest.Core.Cards {
             if (card.BidValue <= currentBid) {
                 throw new Exception("Value of bid must be higher than current bid");
             }
-            // TODO: Add bids from cards in play.
             this.bids[player].Add(card);
             this.currentBid = card.BidValue;
             this.currentBidPlayer = player;
@@ -55,6 +54,14 @@ namespace Quest.Core.Cards {
             int bids = this.bids[player].Count;
             // TODO: Add bids from cards in play.
             return bids;
+        }
+
+        public int WinnerFreeBids() {
+            int freeBids = 0;
+            foreach (AdventureCard card in this.currentBidPlayer.BattleArea.AdventureCards) {
+                freeBids += card.FreeBids;
+            }
+            return freeBids;
         }
     }
 

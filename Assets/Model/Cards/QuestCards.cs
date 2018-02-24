@@ -151,7 +151,11 @@ namespace Quest.Core.Cards{
 					if (p.BattleArea.BattlePoints() >= this.stages [currentStage-1].BattlePoints()) {
 						winners.Add (p);
 					}
-					p.BattleArea.Cards.Clear ();
+
+                    // Discard weapons.
+                    List<Card> discardWeapons = p.BattleArea.Cards.FindAll(x => x is WeaponCard);
+                    p.BattleArea.Transfer(p.Hand, discardWeapons);
+                    p.Discard(discardWeapons);
 				}
 			}
 			this.participants = winners;
