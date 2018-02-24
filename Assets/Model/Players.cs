@@ -141,7 +141,7 @@ namespace Quest.Core.Players {
             this.match = match;
             this.username = username;
             this.rank = new PlayerRank();
-            this.hand = new Hand();
+            this.hand = new Hand(this);
 			this.battleArea = new BattleArea();
         }
 

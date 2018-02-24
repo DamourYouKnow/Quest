@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Quest.Core.Cards;
 
@@ -56,29 +57,27 @@ namespace Quest.Core.Players {
         }
 
         public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
-            //your current hand
-            List<BattleCard> yourCards = hand.BattleCards;
-            List<BattleCard> toPlay = new List<BattleCard>();
+            List<BattleCard> playing = new List<BattleCard>();
+            List<BattleCard> lastPlay = questCard.GetLastHistory(hand.Player);
+            List<BattleCard> playable = playableInQuest(questCard, hand);
 
-			//if it's the last stage: sort hand and play all until current cards battle points = 0
-			if (questCard.CurrentStage == questCard.StageCount) {
-                //sort hand by battle points
-                yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
-                foreach (BattleCard card in yourCards) {
-                    if (!(card is FoeCard)) {
-                        if (card.BattlePoints == 0) {
-                            break;
-                        } else {
-                            toPlay.Add(card);
-                        }
-                    }
+            if (questCard.CurrentStage == questCard.StageCount) {
+                // Play best valid combination.
+                playing = playable;
+            } else {
+                // Increment by 10.
+                int lastBattlePoints = 0;
+                lastPlay.ForEach(c => lastBattlePoints += c.BattlePoints);
+
+                int currentBattlePoints = 0;
+                foreach (BattleCard card in playable) {
+                    currentBattlePoints += card.BattlePoints;
+                    playing.Add(card);
+                    if (currentBattlePoints >= lastBattlePoints + 10) break;
                 }
-
             }
-            //else, (if not last stage and not test)
-            //...not sure how to check how many battle points were played last stage
-            //i'll get back to this
-            return toPlay;
+
+            return playing;
         }
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
