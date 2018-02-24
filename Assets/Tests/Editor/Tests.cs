@@ -449,7 +449,6 @@ namespace NUnitTesting {
 
         [Test]
         public void TestPlayCardsInQuest() {
-            // TODO: Create new preset scenario for fully initialized quest.
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
             Player aiPlayer = game.Players[0];
             Player sponsorPlayer = game.Players[1];
@@ -512,7 +511,6 @@ namespace NUnitTesting {
 
         [Test]
         public void TestSetupTest() {
-            // TODO: Create new preset scenario for fully initialized quest.
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
             Player sponsorPlayer = game.Players[0];
             sponsorPlayer.Behaviour = new Strategy2();
