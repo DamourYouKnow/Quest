@@ -76,6 +76,7 @@ namespace Quest.Core {
 		public void LoadScene(string sceneName){
 			SceneManager.LoadScene(sceneName);
 			sceneSet = false;
+
 		}
 		private void SetupMatchScene (){
 			Debug.Log (this.gm.Players.Count);
@@ -85,7 +86,30 @@ namespace Quest.Core {
 				opponent.transform.SetParent (opponents.transform);
 				opponent.transform.localScale = new Vector3 (1, 1, 1);
 			}
+			this.gm.Setup ();
+			this.ShowHand ();
 		}
+
+		public void ShowHand(){
+			GameObject hand = GameObject.Find ("HandPanel");
+			for (int i = 0; i < this.gm.CurrentPlayer.Hand.Count; i++) {
+				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+				Debug.Log ("here");
+				card.transform.SetParent (hand.transform);
+				card.transform.localScale = new Vector3 (1, 1, 1);
+
+
+				/*Ideas to change the card image that dident work but might with some tweeking
+				 
+				card.GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> ();
+				Sprite cardSprite = Resources.Load (this.gm.CurrentPlayer.Hand.Cards [i].getFilename) as Sprite;
+				card.GetComponent<SpriteRenderer> ().sprite = cardSprite;
+				Renderer rend = card.GetComponent<Renderer> ();
+				rend.material.mainTexture = Resources.Load (this.gm.CurrentPlayer.Hand.Cards [i].getFilename) as Texture;
+				*/
+			}
+		}
+
 
 		public void QuitGame(){
 			//When game is run in editor, the application cannot be quit as this would close editor
