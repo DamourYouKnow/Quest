@@ -138,7 +138,6 @@ namespace Quest.Core.Players {
 			}
 			
 			if(yourFoes.Count > 0){
-				//sort foes, weakest first
 				yourFoes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
 				finalFoeBP = yourFoes[yourFoes.Count - 1].BattlePoints;
 			}
@@ -162,7 +161,6 @@ namespace Quest.Core.Players {
 			//if you don't have a test card in hand
 			if (yourTestsCount == 0){
 				//if you don't have enough foes
-				//if (yourFoes.Count < questCard.Stages.Count){
 				if (yourFoes.Count < questCard.StageCount){
 					return false;
 				}
@@ -182,7 +180,6 @@ namespace Quest.Core.Players {
 			//if you have a test card in hand
 			else if (yourTestsCount >= 1){
 			//if you don't have enough foes
-				//if (yourFoes.Count < questCard.Stages.Count - 1){
 				if (yourFoes.Count < questCard.StageCount - 1){
 					return false;
 				}
