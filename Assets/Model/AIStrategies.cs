@@ -7,7 +7,7 @@ namespace Quest.Core.Players {
     public class Strategy2 : PlayerBehaviour {
         private const int tournamentTargetBattlePoints = 50;
 
-        public override List<Card> DiscardAfterWinningTest() {
+        public override List<Card> DiscardAfterWinningTest(Hand hand, int discardCount) {
             throw new NotImplementedException();
         }
 
