@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Quest.Core.Cards;
 
 namespace Quest.Core.Players {
@@ -35,8 +36,36 @@ namespace Quest.Core.Players {
         }
 
         // for AI deciding to sponsor quest
-        public bool promotableThroughQuest(Player player, QuestCard questCard) {
+        protected bool promotableThroughQuest(Player player, QuestCard questCard) {
             return (player.Rank.ShieldsToVictory() <= questCard.StageCount);
+        }
+
+        protected List<BattleCard> playableInQuest(QuestCard questCard, Hand hand) {
+            List<BattleCard> playable = new List<BattleCard>();
+
+            List<BattleCard> lastPlay = questCard.GetLastHistory(hand.Player);
+            List<BattleCard> fullHistory = questCard.GetFullHistory(hand.Player);
+            List<Amour> amours = hand.GetDistinctCards<Amour>();
+            List<AllyCard> allies = hand.GetCards<AllyCard>();
+            List<WeaponCard> weapons = hand.GetDistinctCards<WeaponCard>();
+
+            // Amour can only be played once.
+            foreach (BattleCard card in fullHistory) {
+                if (card is Amour) {
+                    amours.Clear();
+                    break;
+                }
+            }
+
+            weapons.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+            allies.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+
+            playable.AddRange(amours.Cast<BattleCard>());
+            playable.AddRange(allies.Cast<BattleCard>());
+            playable.AddRange(weapons.Cast<BattleCard>());
+
+
+            return playable;
         }
     }
 

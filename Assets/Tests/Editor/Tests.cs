@@ -28,7 +28,7 @@ namespace NUnitTesting {
         public void TransferCards() {
             // Transfer cards from player hand to battle area.
             KingArthur testCard = new KingArthur(ScenarioCreator.EmptyGame());
-            Hand playerHand = new Hand();
+            Hand playerHand = new Hand(null);
             BattleArea battleArea = new BattleArea();
             playerHand.Add(testCard);
             playerHand.Transfer(battleArea, testCard);
@@ -475,13 +475,16 @@ namespace NUnitTesting {
             // Test cards.
             Amour amour1 = new Amour(game); // 10 BP.
             Amour amour2 = new Amour(game); // Hopefully only one is played.
+            SirGawain gawain = new SirGawain(game); // 10 BP.
             SirTristan tristan = new SirTristan(game); // 10 BP.
-            SirPercival percival = new SirPercival(game); // 5 BP.
-            Dagger dagger = new Dagger(game); // +5 BP
+            SirGalahad galahad = new SirGalahad(game); // 15 BP.
+            BattleAx axe = new BattleAx(game); // +5 BP
             aiPlayer.Hand.Add(amour1);
             aiPlayer.Hand.Add(amour2);
+            aiPlayer.Hand.Add(gawain);
             aiPlayer.Hand.Add(tristan);
-            aiPlayer.Hand.Add(dagger);
+            aiPlayer.Hand.Add(galahad);
+            aiPlayer.Hand.Add(axe);
 
             // Test first stage. Amour should be played first.
             List<BattleCard> played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
@@ -490,18 +493,19 @@ namespace NUnitTesting {
             aiPlayer.Play(played);
             quest.ResolveStage();
 
-            // Does ally get played second?
+            // Does allies get played second?
             played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
-            Assert.AreEqual(1, played.Count);
+            Assert.AreEqual(2, played.Count);
+            Assert.IsTrue(played.Contains(gawain));
             Assert.IsTrue(played.Contains(tristan));
             aiPlayer.Play(played);
             quest.ResolveStage();
 
-            // Does weapon (and percival) get played last?
+            // Does weapon (and galahad) get played last?
             played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
             Assert.AreEqual(2, played.Count);
-            Assert.IsTrue(played.Contains(tristan));
-            Assert.IsTrue(played.Contains(dagger));
+            Assert.IsTrue(played.Contains(galahad));
+            Assert.IsTrue(played.Contains(axe));
         }
 
         [Test]

@@ -11,6 +11,10 @@ namespace Quest.Core.Cards {
         public Card(QuestMatch match) {
 			this.match = match;
         }
+
+        public string Name {
+            get { return this.name; }
+        }
 		
 		public QuestMatch Match {
 			get { return match; }

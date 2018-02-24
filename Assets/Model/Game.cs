@@ -207,6 +207,27 @@ namespace Quest.Core {
             return retList;
         }
 
+        public List<T> GetDistinctCards<T>() {
+            List<T> retList = new List<T>();
+            HashSet<string> cardNames = new HashSet<string>();
+            foreach (Card card in this.cards) {
+                if (card is T && !cardNames.Contains(card.Name)) {
+                    retList.Add((T)(object)card);
+                    cardNames.Add(card.Name);
+                }
+            }
+            return retList;
+        }
+
+        public bool ContainsCopy(Card card) {
+            foreach (Card c in this.cards) {
+                if (c.Name == card.Name) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public virtual void Add(Card card) {
             this.cards.Add(card);
         }
@@ -275,6 +296,14 @@ namespace Quest.Core {
     /// Card hand beloning to a player.
     /// </summary>
     public class Hand : CardArea {
+        private Player player;
 
+        public Player Player {
+            get { return this.player; }
+        }
+
+        public Hand(Player player) : base() {
+            this.player = player;
+        }
     }
 }

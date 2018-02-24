@@ -10,6 +10,7 @@ namespace Quest.Core.Cards{
 		protected List<Player> participants;
 		protected List<QuestArea> stages;
 		protected List<Type> questFoes;
+        protected Dictionary<Player, Stack<List<BattleCard>>> battleHistory;
 
         public QuestCard(QuestMatch match) : base(match) {
             this.questFoes = new List<Type>();
@@ -17,6 +18,7 @@ namespace Quest.Core.Cards{
             this.sponsor = null;
             this.stages = new List<QuestArea>();
             this.participants = new List<Player>();
+            this.battleHistory = new Dictionary<Player, Stack<List<BattleCard>>>();
         }
 
         public List<QuestArea> Stages {
@@ -47,6 +49,7 @@ namespace Quest.Core.Cards{
 
         public void AddParticipant(Player player) {
             this.participants.Add(player);
+            this.battleHistory.Add(player, new Stack<List<BattleCard>>());
         }
 
         public void AddFoeStage(FoeCard foe, List<WeaponCard> weapons = null) {
@@ -78,6 +81,23 @@ namespace Quest.Core.Cards{
 
         public QuestArea GetStage(int stageNumber) {
             return this.stages[stageNumber - 1];
+        }
+
+        public List<BattleCard> GetLastHistory(Player player) {
+            Stack<List<BattleCard>> historyStack = this.battleHistory[player];
+            if (historyStack.Count > 0) {
+                return new List<BattleCard>(historyStack.Peek());
+            }
+            return new List<BattleCard>();
+        }
+
+        public List<BattleCard> GetFullHistory(Player player) {
+            List<BattleCard> historyList = new List<BattleCard>();
+            Stack<List<BattleCard>> historyStack = this.battleHistory[player];
+            foreach (List<BattleCard> cards in historyStack) {
+                historyList.AddRange(cards);
+            }
+            return historyList;
         }
 
         public void ForceStage(int stageNumber) {
@@ -125,6 +145,9 @@ namespace Quest.Core.Cards{
             }
             if (this.stages [currentStage-1].MainCard is FoeCard) {
 				foreach (var p in participants) {
+                    // Update history.
+                    this.battleHistory[p].Push(p.BattleArea.BattleCards);
+
 					if (p.BattleArea.BattlePoints() >= this.stages [currentStage-1].BattlePoints()) {
 						winners.Add (p);
 					}
