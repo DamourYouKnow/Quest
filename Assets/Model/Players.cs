@@ -194,7 +194,7 @@ namespace Quest.Core.Players {
 			//if play, players needs to choose which cards,
 			//and some cards are unplayable.		
 			if (this.hand.Count > Constants.MaxHandSize){
-				for (int i = this.hand.Count; i>Constants.MaxHandSize; i--){
+				for (int i = this.hand.Count - 1; this.hand.Count > Constants.MaxHandSize; i--){
 					//discards the most recently drawn cards
 					//change later
 					Discard(this.hand.Cards[i]);

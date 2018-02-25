@@ -68,7 +68,7 @@ namespace Quest.Core.Cards{
             this.stages.Add(area);
 
             string stageString = foe.ToString();
-            if (weapons != null) stageString += " with weapons " + Utils.Stringify.CommaList(weapons);
+            if (weapons != null && weapons.Count > 0) stageString += " with weapons " + Utils.Stringify.CommaList(weapons);
             this.match.Log(this.sponsor.Username + " adding stage " + stageString);
         }
 
