@@ -110,6 +110,10 @@ namespace Quest.Core {
 			}
 		}
 
+		public void StartGame(){
+			gm.RunGame ();
+		}
+
 
 		public void QuitGame(){
 			//When game is run in editor, the application cannot be quit as this would close editor
