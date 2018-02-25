@@ -69,14 +69,14 @@ namespace Quest.Core.Cards {
         public TestOfMorganLeFey(QuestMatch match) : base(match) {
             this.minBid = 3;
 			this.name = "Test Of Morgan Le Fey";
-			this.imageFilename = "test_of_morgan_le_fey.png";
+			this.imageFilename = "test_of_morgan_le_fey";
         }
     }
 
     public class TestOfTemptation : TestCard {
         public TestOfTemptation(QuestMatch match) : base(match) {
 			this.name = "Test Of Temptation";
-			this.imageFilename = "test_of_temptation.png";
+			this.imageFilename = "test_of_temptation";
         }
     }
 
@@ -86,14 +86,14 @@ namespace Quest.Core.Cards {
             this.minBidQuest = new SearchForTheQuestingBeast(match);
             this.minBid = 4;
 			this.name = "Test Of The Questing Beast";
-			this.imageFilename = "test_of_the_questing_beast.png";
+			this.imageFilename = "test_of_the_questing_beast";
         }
     }
 
     public class TestOfValor : TestCard {
         public TestOfValor(QuestMatch match) : base(match) {
 			this.name = "Test Of Valor";
-			this.imageFilename = "test_of_valor.png";
+			this.imageFilename = "test_of_valor";
         }
     }
 }
