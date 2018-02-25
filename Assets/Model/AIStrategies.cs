@@ -130,7 +130,6 @@ namespace Quest.Core.Players {
 			List<WeaponCard> yourWeapons = new List<WeaponCard>();
 			int yourTestsCount = 0;
 			int unplayableFoes = 0;
-			int finalFoeBP = 0;
 			
 			//if someone can be promoted by winning
             foreach(Player player in questCard.Participants){
