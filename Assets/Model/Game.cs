@@ -164,9 +164,6 @@ namespace Quest.Core {
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
 				player.Draw(this.adventureDeck, Constants.MaxHandSize);
-				for (int i = 0; i < this.CurrentPlayer.Hand.Count; i++) {
-					this.logger.Log ("here" +player.Hand.Cards [i].Name);
-				}
             }
 
             this.Log("Setup Quest match complete.");

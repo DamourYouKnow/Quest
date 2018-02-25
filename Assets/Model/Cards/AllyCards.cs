@@ -10,7 +10,7 @@ namespace Quest.Core.Cards {
     public class KingArthur : AllyCard {
         public KingArthur(QuestMatch match) : base(match) {
             this.name = "King Arthur";
-            this.imageFilename = "ally_king_arthur.png";
+            this.imageFilename = "ally_king_arthur";
             this.battlePoints = 10;
             this.freeBids = 2;
         }
@@ -19,7 +19,7 @@ namespace Quest.Core.Cards {
     public class KingPellinore : AllyCard {
         public KingPellinore(QuestMatch match) : base(match) {
             this.name = "King Pellinore";
-            this.imageFilename = "ally_king_pellinore.png";
+            this.imageFilename = "ally_king_pellinore";
             this.battlePoints = 10;
         }
     }
@@ -45,7 +45,7 @@ namespace Quest.Core.Cards {
     public class SirGalahad : AllyCard {
         public SirGalahad(QuestMatch match) : base(match) {
             this.name = "Sir Galahad";
-            this.imageFilename = "ally_sir_galahad.png";
+            this.imageFilename = "ally_sir_galahad";
             this.battlePoints = 15;
         }
     }
@@ -53,7 +53,7 @@ namespace Quest.Core.Cards {
     public class SirGawain : AllyCard {
         public SirGawain(QuestMatch match) : base(match) {
             this.name = "Sir Gawain";
-            this.imageFilename = "ally_sir_gawain.png";
+            this.imageFilename = "ally_sir_gawain";
             this.battlePoints = 10;
         }
     }
@@ -61,7 +61,7 @@ namespace Quest.Core.Cards {
     public class SirLancelot : AllyCard {
         public SirLancelot(QuestMatch match) : base(match) {
             this.name = "Sir Lancelot";
-            this.imageFilename = "ally_sir_lancelot.png";
+            this.imageFilename = "ally_sir_lancelot";
             this.battlePoints = 15;
         }
     }
@@ -69,7 +69,7 @@ namespace Quest.Core.Cards {
     public class SirPercival : AllyCard {
         public SirPercival(QuestMatch match) : base(match) {
             this.name = "Sir Percival";
-            this.imageFilename = "ally_sir_percival.png";
+            this.imageFilename = "ally_sir_percival";
             this.battlePoints = 5;
         }
     }
@@ -77,7 +77,7 @@ namespace Quest.Core.Cards {
     public class SirTristan : AllyCard {
         public SirTristan(QuestMatch match) : base(match) {
             this.name = "Sir Tristan";
-            this.imageFilename = "ally_sir_tristan.png";
+            this.imageFilename = "ally_sir_tristan";
             this.battlePoints = 10;
         }
     }
