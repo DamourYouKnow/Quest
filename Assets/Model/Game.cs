@@ -158,8 +158,6 @@ namespace Quest.Core {
         }
 
 		public void Setup() {
-			this.logger.Log ("here"+this.players.Count);
-        public void Setup() {
             this.storyDeck.Shuffle();
             this.adventureDeck.Shuffle();
 
