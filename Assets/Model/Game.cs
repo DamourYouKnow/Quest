@@ -88,6 +88,8 @@ namespace Quest.Core {
         }
 
         public void RunGame() {
+            this.Log("Running game...");
+
             while (!this.hasWinner()) {
                 this.NextTurn();
             }
@@ -101,6 +103,7 @@ namespace Quest.Core {
                 this.currentPlayer = 0;
             }
             Player nextPlayer = this.players[this.currentPlayer];
+            this.Log("Starting " + nextPlayer.ToString() + "'s turn");
             this.NextStory();
         }
 
@@ -257,6 +260,10 @@ namespace Quest.Core {
             foreach (Card card in cards) {
                 this.Transfer(target, card);
             }
+        }
+
+        public override string ToString() {
+            return Utils.Stringify.CommaList<Card>(this.cards);
         }
     }
 
