@@ -162,24 +162,12 @@ namespace Quest.Core.Players {
 			
 			if(yourFoes.Count > 0){
 				yourFoes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
-				finalFoeBP = yourFoes[yourFoes.Count - 1].BattlePoints;
+				//finalFoeBP = yourFoes[yourFoes.Count - 1].BattlePoints;
 			}
 			//if theres no foes in hand
 			else{
 				return false;
 			}
-			/*
-			foreach(WeaponCard weapon in yourWeapons){
-				if(finalFoeBP >= 40){
-					break;
-				}
-				finalFoeBP += weapon.BattlePoints;
-			}
-			
-			if (finalFoeBP < 40){
-				return false;
-			}
-			*/
 			
 			//if you don't have a test card in hand
 			if (yourTestsCount == 0){
@@ -247,11 +235,20 @@ namespace Quest.Core.Players {
                             foes.RemoveAt(0);
                     }
                     while ((currentStageBP < 40 || currentStageBP <= lastStageBP) && weapons.Count > 0) {
-                        
                         if (weapons.Count > 0) {
-                            nextStage.Add(weapons[0]);
-                            currentStageBP += weapons[0].BattlePoints;
-                            weapons.RemoveAt(0);
+							int index = 0;
+							foreach (AdventureCard card in stages[s]) {
+								if (card.ToString() == weapons[index].ToString()) {
+									index += 1;
+								}
+								
+								if (index > yourWeapons.Count - 1) {
+										return stages;
+								}
+							}
+                            nextStage.Add(weapons[index]);
+                            currentStageBP += weapons[index].BattlePoints;
+                            weapons.RemoveAt(index);
                         }
                     }
                     lastStageBP = currentStageBP;
@@ -263,9 +260,19 @@ namespace Quest.Core.Players {
                     currentStageBP += foes[0].BattlePoints;
                     foes.RemoveAt(0);
                     while (currentStageBP <= lastStageBP && foes.Count > 0) {
-                        nextStage.Add(weapons[0]);
-						currentStageBP += weapons[0].BattlePoints;
-						weapons.RemoveAt(0);
+						int index = 0;
+						foreach (AdventureCard card in stages[s]) {
+                            if (card.ToString() == weapons[index].ToString()) {
+                                index += 1;
+							}
+							
+							if (index > weapons.Count - 1) {
+                                    return stages;
+                                }
+						}
+                        nextStage.Add(weapons[index]);
+						currentStageBP += weapons[index].BattlePoints;
+						weapons.RemoveAt(index);
                     }
                     lastStageBP = currentStageBP;
                 }
