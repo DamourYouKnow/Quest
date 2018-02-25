@@ -241,13 +241,14 @@ namespace Quest.Core.Players {
 				//if last stage
                 else if (s + 1 == questCard.StageCount) {
                     int currentStageBP = 0;
-                    while ((currentStageBP < 40 || currentStageBP <= lastStageBP) && weapons.Count + foes.Count > 0) {
-                        if (foes.Count > 0) {
+					if (foes.Count > 0) {
                             nextStage.Add(foes[0]);
                             currentStageBP += foes[0].BattlePoints;
                             foes.RemoveAt(0);
-                        }
-                        else if (weapons.Count > 0) {
+                    }
+                    while ((currentStageBP < 40 || currentStageBP <= lastStageBP) && weapons.Count > 0) {
+                        
+                        if (weapons.Count > 0) {
                             nextStage.Add(weapons[0]);
                             currentStageBP += weapons[0].BattlePoints;
                             weapons.RemoveAt(0);
