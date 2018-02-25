@@ -59,7 +59,7 @@ namespace Quest.Core {
 
         public List<Player> OtherPlayers {
             get {
-                List<Player> retList = new List<Player>();
+                List<Player> retList = this.players;
                 retList.Remove(this.CurrentPlayer);
                 return retList;
             }
@@ -109,8 +109,19 @@ namespace Quest.Core {
 
         public void NextStory() {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
+            this.Log("Story " + story.ToString() + " drawn");
             this.currentStory = story;
-            story.Run();
+
+            try {
+                story.Run();
+            }
+            catch (NotImplementedException e) {
+                this.Log("Feature not implemented");
+            }
+            catch (Exception e) {
+                this.Log(e.Message);
+                this.Log(e.StackTrace);
+            } 
         }
 
         public void AddPlayer(Player player) {
@@ -147,12 +158,15 @@ namespace Quest.Core {
         }
 
         public void Setup() {
+            this.storyDeck.Shuffle();
+            this.adventureDeck.Shuffle();
+
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
                 player.Draw(this.adventureDeck, Constants.MaxHandSize);
             }
 
-            this.Log("Setup Quest match.");
+            this.Log("Setup Quest match complete.");
         }
 
         public void Log(string message) {

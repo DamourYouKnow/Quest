@@ -149,7 +149,6 @@ namespace Quest.Core.Cards {
 
         public Card Draw() {
             Card drawn = this.cards.Pop();
-            this.match.Log(drawn.ToString() + " was drawn from " + this.ToString());
             return drawn;
         }
 
@@ -162,7 +161,7 @@ namespace Quest.Core.Cards {
 			return cardn.ToString ();
 		}
 
-        protected void shuffle() {
+        public void Shuffle() {
             this.match.Log("Shuffling " + this.ToString());
             List<Card> shuffleList = new List<Card>(this.cards);
             Utils.Random.Shuffle<Card>(shuffleList);

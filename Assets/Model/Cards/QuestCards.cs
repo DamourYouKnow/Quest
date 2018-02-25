@@ -48,6 +48,7 @@ namespace Quest.Core.Cards{
 		}
 
         public void AddParticipant(Player player) {
+            this.match.Log("Added " + player.ToString() + " as " + this.ToString() + " participant");
             this.participants.Add(player);
             this.battleHistory.Add(player, new Stack<List<BattleCard>>());
         }
