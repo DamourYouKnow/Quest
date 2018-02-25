@@ -7,8 +7,32 @@ namespace Quest.Core.Players {
     public class Strategy2 : PlayerBehaviour {
         private const int tournamentTargetBattlePoints = 50;
 
-        public override List<Card> DiscardAfterWinningTest(Hand hand, int discardCount) {
-            throw new NotImplementedException();
+        public override List<Card> DiscardExcessCards(Hand hand) {
+            List<Card> discards = new List<Card>();
+            int discarded = 0;
+            while (hand.Count - discarded >= 12) {
+                discards.Add(hand.Cards[discarded]);
+                discarded++;
+            }
+            return discards;
+        }
+
+        public override List<Card> DiscardAfterWinningTest(QuestCard questCard, Hand hand, int discardCount) {
+            List<Card> discards = new List<Card>();
+
+            if (questCard.CurrentStage == 1) {
+
+            }
+            if (questCard.CurrentStage == 2) {
+                List<FoeCard> round1Foes = questCard.GetStage(1).GetCards<FoeCard>();
+                foreach (FoeCard handFoe in hand.GetCards<FoeCard>()) {
+                    if (round1Foes.FindAll(f => f.Name == handFoe.Name).Count > 0) {
+                        discards.Add(handFoe);
+                    }
+                }
+            }
+
+            return discards;
         }
 
         public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
