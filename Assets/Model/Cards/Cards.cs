@@ -12,9 +12,13 @@ namespace Quest.Core.Cards {
 			this.match = match;
         }
 
-        public string Name {
-            get { return this.name; }
-        }
+		public string Name {
+			get { return this.name; }
+		}
+
+		public string ImageFilename {
+			get { return this.imageFilename; }
+		}
 		
 		public QuestMatch Match {
 			get { return match; }
@@ -63,7 +67,7 @@ namespace Quest.Core.Cards {
     public class Amour : BattleCard {
         public Amour(QuestMatch match) : base(match) {
             this.name = "Amour";
-            this.imageFilename = "amour.png";
+            this.imageFilename = "amour";
             this.battlePoints = 10;
             this.freeBids = 1;
         }
@@ -90,7 +94,7 @@ namespace Quest.Core.Cards {
     public class Squire : RankCard {
         public Squire(QuestMatch match) : base(match) {
             this.name = "Squire";
-            this.imageFilename = "rank_squire.png";
+            this.imageFilename = "rank_squire";
             this.rank = Rank.Squire;
             this.battlePoints = 5;
         }
@@ -99,7 +103,7 @@ namespace Quest.Core.Cards {
     public class Knight : RankCard {
         public Knight(QuestMatch match) : base(match) {
             this.name = "Knight";
-            this.imageFilename = "rank_knight.png";
+            this.imageFilename = "rank_knight";
             this.rank = Rank.Knight;
             this.battlePoints = 10;
         }
@@ -108,7 +112,7 @@ namespace Quest.Core.Cards {
     public class ChampionKnight : RankCard {
         public ChampionKnight(QuestMatch match) : base(match) {
             this.name = "Champion Knight";
-            this.imageFilename = "champion_knight.png";
+            this.imageFilename = "champion_knight";
             this.rank = Rank.ChampionKnight;
             this.battlePoints = 20;
         }
@@ -172,63 +176,41 @@ namespace Quest.Core.Cards {
 
         }
 
-        protected override void Init() {
-			List<StoryCard> story_deck = new List<StoryCard> {
-				new SearchForTheHolyGrail (this.match),             //1
-				new TestOfTheGreenKnight (this.match),              //2
-				new SearchForTheQuestingBeast (this.match),         //3
-				new DefendTheQueensHonor (this.match),              //4
-				new RescueTheFairMaiden (this.match),               //5
-				new JourneyThroughTheEnchantedForest (this.match),  //6
-				new VanquishKingArthursEnemies (this.match),        //7
-				new SlayTheDragon (this.match),                     //8
-				new BoarHunt (this.match),                          //9
-				new RepelTheSaxonRaiders (this.match),              //10
-				new TournamentAtCamelot(this.match),                //11
-				new TournamentAtOrkney(this.match),                 //12
-				new TournamentAtTintagle(this.match),               //13
-				new TournamentAtYork(this.match),                   //14
-				new RecognitionEvent(this.match),                   //15
-				new QueensFavourEvent(this.match),                  //16
-				new CourtCalledEvent(this.match),                   //17
-				new PoxEvent(this.match),                           //18
-				new PlagueEvent(this.match),                        //19
-				new ChivalrousDeedEvent(this.match),                //20
-				new ProsperityEvent(this.match),                    //21
-				new CallToArmsEvent(this.match)                     //22
-			};
-
-
-			List<int> deck_quantity_list = new List<int>{ 
-				1,  //1
-				1,  //2
-				1,  //3
-				1,  //4
-				1,  //5
-				1,  //6
-				2,  //7
-				1,  //8
-				2,  //9
-				2,  //10
-				1,  //11
-				1,  //12
-				1,  //13
-				1,  //14
-				2,  //15
-				2,  //16
-				2,  //17
-				1,  //18
-				1,  //19
-				1,  //20
-				1,  //21
-				1}; //22
-
-			for (int i = 0; i < story_deck.Count; i++) {
-				int deck_quantity = deck_quantity_list[i];
-				for (int j = 0; j < deck_quantity; j++) {
-					this.cards.Push(story_deck[i]);
-				} 
-			} 
+		protected override void Init() {
+			this.cards.Push (new SearchForTheHolyGrail (this.match));
+			this.cards.Push (new TestOfTheGreenKnight (this.match));
+			this.cards.Push (new SearchForTheQuestingBeast (this.match));
+			this.cards.Push (new DefendTheQueensHonor (this.match));
+			this.cards.Push (new RescueTheFairMaiden (this.match));
+			this.cards.Push (new JourneyThroughTheEnchantedForest (this.match));
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new VanquishKingArthursEnemies (this.match));
+			}
+			this.cards.Push (new SlayTheDragon (this.match));
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new BoarHunt (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new RepelTheSaxonRaiders (this.match));
+			}
+			this.cards.Push (new TournamentAtCamelot (this.match));
+			this.cards.Push (new TournamentAtOrkney (this.match));
+			this.cards.Push (new TournamentAtTintagle (this.match));
+			this.cards.Push (new TournamentAtYork (this.match));
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new RecognitionEvent (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new QueensFavourEvent (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new CourtCalledEvent (this.match));
+			}
+			this.cards.Push (new PoxEvent (this.match));
+			this.cards.Push (new PlagueEvent (this.match));
+			this.cards.Push (new ChivalrousDeedEvent (this.match));
+			this.cards.Push (new ProsperityEvent (this.match));
+			this.cards.Push (new CallToArmsEvent (this.match));
 
 			//this.shuffle(); //comment out for testing deck
 		}
@@ -247,63 +229,68 @@ namespace Quest.Core.Cards {
             this.cards.Push(new SirGawain(this.match));
             this.cards.Push(new SirLancelot(this.match));
             this.cards.Push(new SirPercival(this.match));
-            this.cards.Push(new SirTristan(this.match)); 
-
-			//create the rest of the adventure cards and add them to deck
-			List<AdventureCard> adventure_list = new List<AdventureCard>{
-				new Horse(this.match),                  //1
-				new Sword(this.match),                  //2
-				new Dagger(this.match),                 //3
-				new Excalibur(this.match),              //4
-				new Lance(this.match),                  //5
-				new BattleAx(this.match),               //6
-				new Dragon(this.match),                 //7
-				new Giant(this.match),                  //8
-				new Mordred(this.match),                //9
-				new GreenKnight(this.match),            //10
-				new BlackKnight(this.match),            //11
-				new EvilKnight(this.match),             //12
-				new SaxonKnight(this.match),            //13
-				new RobberKnight(this.match),           //14
-				new Saxons(this.match),                 //15
-				new Boar(this.match),                   //16
-				new Thieves(this.match),                //17
-				new TestOfValor(this.match),            //18
-				new TestOfTemptation(this.match),       //19
-				new TestOfMorganLeFey(this.match),      //20
-				new TestOfTheQuestingBeast(this.match)  //21 
-			};
-			
-
-			List<int> deck_quantity_list = new List<int> {
-				11, //1 
-				16, //2
-				6,  //3
-				2,  //4
-				6,  //5
-				8,  //6
-				1,  //7
-				2,  //8
-				4,  //9
-				2,  //10
-				3,  //11
-				6,  //12
-				8,  //13
-				7,  //14
-				5,  //15
-				4,  //16
-				8,  //17
-				2,  //18
-				2,  //19
-				2,  //20
-				2}; //21 
-
-			for (int i = 0; i < adventure_list.Count; i++) {
-				int deck_quantity = deck_quantity_list[i];
-				for (int j = 0; j < deck_quantity; j++) {
-					this.cards.Push(adventure_list[i]);
-				} 
-			} 
+			this.cards.Push(new SirTristan(this.match)); 
+			for (int i = 0; i < 11; i++) {
+				this.cards.Push (new Horse (this.match));
+			}
+			for (int i = 0; i < 16; i++) {
+				this.cards.Push (new Sword (this.match));
+			}
+			for (int i = 0; i < 6; i++) {
+				this.cards.Push (new Dagger (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new Excalibur (this.match));
+			}
+			for (int i = 0; i < 6; i++) {
+				this.cards.Push (new Lance (this.match));
+			}
+			for (int i = 0; i < 8; i++) {
+				this.cards.Push (new BattleAx (this.match));
+			}
+			this.cards.Push (new Dragon (this.match));
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new Giant (this.match));
+			}
+			for (int i = 0; i < 4; i++) {
+				this.cards.Push (new Mordred (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new GreenKnight (this.match));
+			}
+			for (int i = 0; i < 3; i++) {
+				this.cards.Push (new BlackKnight (this.match));
+			}
+			for (int i = 0; i < 6; i++) {
+				this.cards.Push (new EvilKnight (this.match));
+			}
+			for (int i = 0; i < 8; i++) {
+				this.cards.Push (new SaxonKnight (this.match));
+			}
+			for (int i = 0; i < 7; i++) {
+				this.cards.Push (new RobberKnight (this.match));
+			}
+			for (int i = 0; i < 5; i++) {
+				this.cards.Push (new Saxons (this.match));
+			}
+			for (int i = 0; i < 4; i++) {
+				this.cards.Push (new Boar (this.match));
+			}
+			for (int i = 0; i < 8; i++) {
+				this.cards.Push (new Thieves (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new TestOfValor (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new TestOfTemptation (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new TestOfMorganLeFey (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new TestOfTheQuestingBeast (this.match));
+			}
 
 			//this.shuffle(); //comment out for testing deck
 		}
