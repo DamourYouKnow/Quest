@@ -238,6 +238,7 @@ namespace Quest.Core.Players {
                 if (s + 1 == questCard.StageCount - 1 && tests.Count > 0) {
                     nextStage.Add(tests[0]);
                 }
+				//if last stage
                 else if (s + 1 == questCard.StageCount) {
                     int currentStageBP = 0;
                     while ((currentStageBP < 40 || currentStageBP <= lastStageBP) && weapons.Count + foes.Count > 0) {
@@ -254,12 +255,16 @@ namespace Quest.Core.Players {
                     }
                     lastStageBP = currentStageBP;
                 }
+				//if not last stage
                 else {
                     int currentStageBP = 0;
+					nextStage.Add(foes[0]);
+                    currentStageBP += foes[0].BattlePoints;
+                    foes.RemoveAt(0);
                     while (currentStageBP <= lastStageBP && foes.Count > 0) {
-                        nextStage.Add(foes[0]);
-                        currentStageBP += foes[0].BattlePoints;
-                        foes.RemoveAt(0);
+                        nextStage.Add(weapons[0]);
+						currentStageBP += weapons[0].BattlePoints;
+						weapons.RemoveAt(0);
                     }
                     lastStageBP = currentStageBP;
                 }
