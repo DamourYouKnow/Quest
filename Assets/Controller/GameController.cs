@@ -129,6 +129,7 @@ namespace Quest.Core {
 										this.ShowHand ();};
 			GameObject storyCardArea = GameObject.Find ("StoryCard");
 			storyCardArea.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentStory.ImageFilename);
+			this.gm.Continue ();
 			this.gm.NextStory();
 		}
 		public void QuitGame(){
