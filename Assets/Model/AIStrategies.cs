@@ -242,7 +242,7 @@ namespace Quest.Core.Players {
 									index += 1;
 								}
 								
-								if (index > yourWeapons.Count - 1) {
+								if (index > weapons.Count - 1) {
 										return stages;
 								}
 							}
