@@ -12,11 +12,13 @@ namespace Quest.Core.Players {
     };
 
     public class PlayerRank {
+        private Player player;
         private List<RankNode> ranks;
         private int currentRank;
         private int shields;
 
-        public PlayerRank() {
+        public PlayerRank(Player player = null) {
+            this.player = player;
             this.currentRank = 0;
             this.shields = 0;
             ranks = new List<RankNode>();
@@ -44,6 +46,7 @@ namespace Quest.Core.Players {
 
         public void AddShields(int count) {
             this.shields += count;
+            this.player.Match.Log("Adding " + count + " shields to " + this.player.ToString());
             if (this.currentRank == this.ranks.Count - 1) {
                 return;
             }
@@ -52,6 +55,7 @@ namespace Quest.Core.Players {
             int required = this.ranks[currentRank + 1].RequiredShields;
             if (this.shields >= required) {
                 currentRank++;
+                this.player.Match.Log(this.player.ToString() + " promoted to " + this.ToString());
                 this.shields = this.shields - required;
             }
         }
@@ -140,7 +144,7 @@ namespace Quest.Core.Players {
         public Player(string username, QuestMatch match=null) {
             this.match = match;
             this.username = username;
-            this.rank = new PlayerRank();
+            this.rank = new PlayerRank(this);
             this.hand = new Hand(this);
 			this.battleArea = new BattleArea();
         }
@@ -188,8 +192,7 @@ namespace Quest.Core.Players {
 			//not sure how to fully implement this 'limit' right now.
 			//player needs to choose whether to discard or play,
 			//if play, players needs to choose which cards,
-			//and some cards are unplayable.
-			
+			//and some cards are unplayable.		
 			if (this.hand.Count > Constants.MaxHandSize){
 				for (int i = this.hand.Count; i>Constants.MaxHandSize; i--){
 					//discards the most recently drawn cards
@@ -197,8 +200,6 @@ namespace Quest.Core.Players {
 					Discard(this.hand.Cards[i]);
 				}
 			}
-			
-			
         }
 
         public void Discard(Card card) {

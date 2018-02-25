@@ -152,7 +152,8 @@ namespace Quest.Core.Cards {
         }
 
         public Card Draw() {
-            return this.cards.Pop();
+            Card drawn = this.cards.Pop();
+            return drawn;
         }
 
         public void Push(Card card) {
@@ -164,10 +165,15 @@ namespace Quest.Core.Cards {
 			return cardn.ToString ();
 		}
 
-        protected void shuffle() {
+        public void Shuffle() {
+            this.match.Log("Shuffling " + this.ToString());
             List<Card> shuffleList = new List<Card>(this.cards);
             Utils.Random.Shuffle<Card>(shuffleList);
             this.cards = new Stack<Card>(shuffleList);
+        }
+
+        public override string ToString() {
+            return this.GetType().ToString();
         }
     }
 

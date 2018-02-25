@@ -13,6 +13,22 @@ using Utils;
 
 namespace NUnitTesting {
     [TestFixture]
+    public class GameTests {
+        [Test]
+        public void ThreePlayerAIGameTest() {
+            QuestMatch game = new QuestMatch(new Quest.Core.Logger("TestGame"));
+            for (int i = 1; i <= 3; i++) {
+                Player newPlayer = new Player("AI Player " + i, game);
+                newPlayer.Behaviour = new Strategy2();
+                game.AddPlayer(newPlayer);
+            }
+
+            game.Setup();
+            game.RunGame();
+        }
+    }
+
+
     public class CardTests {
         [Test]
         public void TestDraw() {
@@ -300,7 +316,9 @@ namespace NUnitTesting {
     public class PlayerTests {
         [Test]
         public void Ranking() {
-            Player player = new Player("Test Player");
+            QuestMatch game = new QuestMatch();
+                
+            Player player = new Player("Test Player", game);
             Assert.AreEqual(Rank.Squire, player.Rank.Value);
             Assert.AreEqual(0, player.Rank.Shields);
 

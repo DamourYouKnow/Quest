@@ -11,7 +11,8 @@ namespace Quest.Core.Players {
         public abstract List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand);
         public abstract bool ParticipateInQuest(QuestCard questCard, Hand hand);
         public abstract List<AdventureCard> NextBid(TestCard testCard, Hand hand);
-        public abstract List<Card> DiscardAfterWinningTest(Hand hand, int discardCount);
+        public abstract List<Card> DiscardAfterWinningTest(QuestCard questCard, Hand hand, int discardCount);
+        public abstract List<Card> DiscardExcessCards(Hand hand);
         public abstract List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand);
 
         protected static AdventureCard strongestCard(List<BattleCard> cards) {
@@ -74,7 +75,11 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override List<Card> DiscardAfterWinningTest(Hand hand, int discardCount) {
+        public override List<Card> DiscardExcessCards(Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override List<Card> DiscardAfterWinningTest(QuestCard questCard, Hand hand, int discardCount) {
             throw new NotImplementedException();
         }
 
