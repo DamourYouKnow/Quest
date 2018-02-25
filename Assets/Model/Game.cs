@@ -137,7 +137,7 @@ namespace Quest.Core {
             try {
                 story.Run();
             }
-            catch (NotImplementedException e) {
+            catch (NotImplementedException) {
                 this.Log("Feature not implemented");
             }
             catch (Exception e) {

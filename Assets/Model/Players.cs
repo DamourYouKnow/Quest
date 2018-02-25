@@ -189,17 +189,6 @@ namespace Quest.Core.Players {
                 this.match.Log("Player " + this.username + " drew " + drawnCard.ToString());
             }
 			
-			//not sure how to fully implement this 'limit' right now.
-			//player needs to choose whether to discard or play,
-			//if play, players needs to choose which cards,
-			//and some cards are unplayable.		
-			if (this.hand.Count > Constants.MaxHandSize){
-				for (int i = this.hand.Count; i>Constants.MaxHandSize; i--){
-					//discards the most recently drawn cards
-					//change later
-					Discard(this.hand.Cards[i]);
-				}
-			}
         }
 
         public void Discard(Card card) {
