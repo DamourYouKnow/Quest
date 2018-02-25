@@ -150,7 +150,7 @@ namespace Quest.Core.Cards {
         public Card Draw() {
             Card drawn = this.cards.Pop();
             this.match.Log(drawn.ToString() + " was drawn from " + this.ToString());
-            return this.cards.Pop();
+            return drawn;
         }
 
         public void Push(Card card) {

@@ -315,7 +315,9 @@ namespace NUnitTesting {
     public class PlayerTests {
         [Test]
         public void Ranking() {
-            Player player = new Player("Test Player");
+            QuestMatch game = new QuestMatch();
+                
+            Player player = new Player("Test Player", game);
             Assert.AreEqual(Rank.Squire, player.Rank.Value);
             Assert.AreEqual(0, player.Rank.Shields);
 
