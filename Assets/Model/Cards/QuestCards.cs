@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Quest.Core.Players;
 
 namespace Quest.Core.Cards{
@@ -110,6 +111,8 @@ namespace Quest.Core.Cards{
             Player currentPlayer = this.match.CurrentPlayer;
             if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
                 return;
+            } else {
+                this.sponsor = currentPlayer;
             }
 
             // Ask other players if they would like to participate.
@@ -120,9 +123,18 @@ namespace Quest.Core.Cards{
                 }
             }
 
-            // TODO: Player behaviour functions for individual stage setup.
-            // TODO: Setp logic calling player strategies.
-
+            // Player behaviour functions for individual stage setup.
+            List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
+            foreach (List<AdventureCard> stage in stages) {
+                if (stage.Count == 1 && stage[0] is TestCard) {
+                    this.AddTestStage((TestCard)stage[0]);
+                } else {
+                    FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
+                    List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
+                    this.AddFoeStage(foe, weapons);
+                }
+            }
+           
             while (this.currentStage <= this.numStages) {
                 // Participants play cards.
                 foreach (Player participant in this.participants) {
