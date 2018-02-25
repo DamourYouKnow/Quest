@@ -143,10 +143,14 @@ namespace Quest.Core {
             return maxPlayer;
         }
 
-        public void Setup() {
+		public void Setup() {
+			this.logger.Log ("here"+this.players.Count);
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
-                player.Draw(this.adventureDeck, Constants.MaxHandSize);
+				player.Draw(this.adventureDeck, Constants.MaxHandSize);
+				for (int i = 0; i < this.CurrentPlayer.Hand.Count; i++) {
+					this.logger.Log ("here" +player.Hand.Cards [i].Name);
+				}
             }
 
             this.Log("Setup Quest match.");

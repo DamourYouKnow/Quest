@@ -79,7 +79,6 @@ namespace Quest.Core {
 
 		}
 		private void SetupMatchScene (){
-			Debug.Log (this.gm.Players.Count);
 			GameObject opponents = GameObject.Find ("Opponents");
 			for (int i = 0; i < this.gm.Players.Count; i++) {
 				GameObject opponent = Instantiate (Resources.Load("Opponent", typeof(GameObject))) as GameObject;
@@ -94,9 +93,11 @@ namespace Quest.Core {
 			GameObject hand = GameObject.Find ("HandPanel");
 			for (int i = 0; i < this.gm.CurrentPlayer.Hand.Count; i++) {
 				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
-				Debug.Log ("here");
 				card.transform.SetParent (hand.transform);
 				card.transform.localScale = new Vector3 (1, 1, 1);
+				Debug.Log (this.gm.CurrentPlayer.Hand.Cards [i]);
+				Debug.Log ("Cards/" + this.gm.CurrentPlayer.Hand.Cards [i].ImageFilename);
+				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentPlayer.Hand.Cards [i].ImageFilename);
 
 
 				/*Ideas to change the card image that dident work but might with some tweeking

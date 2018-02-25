@@ -183,7 +183,7 @@ namespace Quest.Core.Cards{
 	public class BoarHunt : QuestCard{
 		public BoarHunt(QuestMatch match) : base(match) {
 			this.name = "Boar Hunt";
-			this.imageFilename = "quest_boar_hunt.png";
+			this.imageFilename = "quest_boar_hunt";
 			this.numStages = 2;
 			this.questFoes.Add (typeof(Boar));
 		}
@@ -196,7 +196,7 @@ namespace Quest.Core.Cards{
 	public class DefendTheQueensHonor : QuestCard{
 		public DefendTheQueensHonor(QuestMatch match) : base(match) {
 			this.name = "Defend The Queen's Honor";
-			this.imageFilename = "quest_defend_the_queens_honor.png";
+			this.imageFilename = "quest_defend_the_queens_honor";
 			this.numStages = 4;
 			this.questFoes.Add (typeof(BlackKnight));
 			this.questFoes.Add (typeof(Boar));
@@ -219,7 +219,7 @@ namespace Quest.Core.Cards{
 	public class JourneyThroughTheEnchantedForest : QuestCard{
 		public JourneyThroughTheEnchantedForest(QuestMatch match) : base(match) {
 			this.name = "Journey Through The Enchanted Forest";
-			this.imageFilename = "quest_journey_through_the_enchanted_forest.png";
+			this.imageFilename = "quest_journey_through_the_enchanted_forest";
 			this.numStages = 3;
 			this.questFoes.Add (typeof(EvilKnight));
 		}
@@ -232,7 +232,7 @@ namespace Quest.Core.Cards{
 	public class RepelTheSaxonRaiders : QuestCard{
 		public RepelTheSaxonRaiders(QuestMatch match) : base(match) {
 			this.name = "Repel The Saxon Raiders";
-			this.imageFilename = "quest_repel_the_saxon_raiders.png";
+			this.imageFilename = "quest_repel_the_saxon_raiders";
 			this.numStages = 2;
 			this.questFoes.Add (typeof(SaxonKnight));
 			this.questFoes.Add (typeof(Saxons));
@@ -246,7 +246,7 @@ namespace Quest.Core.Cards{
 	public class RescueTheFairMaiden : QuestCard{
 		public RescueTheFairMaiden(QuestMatch match) : base(match) {
 			this.name = "Rescue The Fair Maiden";
-			this.imageFilename = "quest_rescue_the_fair_maiden.png";
+			this.imageFilename = "quest_rescue_the_fair_maiden";
 			this.numStages = 3;
 			this.questFoes.Add (typeof(BlackKnight));
 		}
@@ -259,7 +259,7 @@ namespace Quest.Core.Cards{
 	public class SearchForTheHolyGrail : QuestCard{
 		public SearchForTheHolyGrail(QuestMatch match) : base(match) {
 			this.name = "Search For The Holy Grail";
-			this.imageFilename = "quest_search_for_the_holy_grail.png";
+			this.imageFilename = "quest_search_for_the_holy_grail";
 			this.numStages = 5;
 			this.questFoes.Add (typeof(BlackKnight));
 			this.questFoes.Add (typeof(Boar));
@@ -293,7 +293,7 @@ namespace Quest.Core.Cards{
 	public class SlayTheDragon : QuestCard{
 		public SlayTheDragon(QuestMatch match) : base(match) {
 			this.name = "Slay The Dragon";
-			this.imageFilename = "quest_slay_the_dragon.png";
+			this.imageFilename = "quest_slay_the_dragon";
 			this.stages = new List<QuestArea> (3);
 			this.questFoes.Add (typeof(Dragon));
 		}
@@ -306,7 +306,7 @@ namespace Quest.Core.Cards{
 	public class TestOfTheGreenKnight : QuestCard{
 		public TestOfTheGreenKnight(QuestMatch match) : base(match) {
 			this.name = "Test Of The Green Knight";
-			this.imageFilename = "quest_test_of_the_green_knight.png";
+			this.imageFilename = "quest_test_of_the_green_knight";
 			this.numStages = 4;
 			this.questFoes.Add (typeof(GreenKnight));
 		}
@@ -318,7 +318,7 @@ namespace Quest.Core.Cards{
 	public class VanquishKingArthursEnemies : QuestCard{
 		public VanquishKingArthursEnemies(QuestMatch match) : base(match) {
 			this.name = "Vanquish King Arthur's Enemies";
-			this.imageFilename = "quest_vanquish_king_arthurs_enemies.png";
+			this.imageFilename = "quest_vanquish_king_arthurs_enemies";
 			this.numStages = 3;
 		}
 
