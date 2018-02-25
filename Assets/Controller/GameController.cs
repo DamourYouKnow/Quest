@@ -95,8 +95,6 @@ namespace Quest.Core {
 				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
 				card.transform.SetParent (hand.transform);
 				card.transform.localScale = new Vector3 (1, 1, 1);
-				Debug.Log (this.gm.CurrentPlayer.Hand.Cards [i]);
-				Debug.Log ("Cards/" + this.gm.CurrentPlayer.Hand.Cards [i].ImageFilename);
 				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentPlayer.Hand.Cards [i].ImageFilename);
 
 
