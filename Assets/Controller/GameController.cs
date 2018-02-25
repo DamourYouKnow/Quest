@@ -69,6 +69,14 @@ namespace Quest.Core {
 					SetupMatchScene ();
 					sceneSet = true;
 				}
+				if (this.gm.Waiting) {
+					if (this.gm.State == MatchState.START_GAME) {
+						this.gm.RunGame();
+					}
+					if (this.gm.State == MatchState.START_TURN) {
+						StartTurnPrompt ();
+					}
+				}
 			}
 		}
 
@@ -86,7 +94,6 @@ namespace Quest.Core {
 				opponent.transform.localScale = new Vector3 (1, 1, 1);
 			}
 			this.gm.Setup ();
-			this.ShowHand ();
 		}
 
 		public void ShowHand(){
@@ -113,7 +120,17 @@ namespace Quest.Core {
 			gm.RunGame ();
 		}
 
-
+		public void StartTurnPrompt(){
+			
+			GameObject promptObj = new GameObject("PlayerPrompt");
+			Prompt prompt = promptObj.AddComponent<Prompt>();
+			prompt.Message = this.gm.CurrentPlayer.Username +" ready?";
+			prompt.OnYesClick = () => { Debug.Log("Player Ready clicked");
+										this.ShowHand ();};
+			GameObject storyCardArea = GameObject.Find ("StoryCard");
+			storyCardArea.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentStory.ImageFilename);
+			this.gm.NextStory();
+		}
 		public void QuitGame(){
 			//When game is run in editor, the application cannot be quit as this would close editor
 			//Therefore, have to specifically stop it through editor
