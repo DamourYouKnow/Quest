@@ -76,7 +76,7 @@ namespace Quest.Core.Players {
             // Do not participate if there is less than 2 discardable foes.
             if (discardableFoeCards.Count < 2) return false;
 
-            List<BattleCard>[] bestQuestParticipation = this.bestCardsToPlayInQuest(hand.BattleCards, questCard.StageCount);
+            List<BattleCard>[] bestQuestParticipation = this.bestCardsToPlayInQuest(yourCards, questCard.StageCount);
             return validateCardsToPlayInQuest(bestQuestParticipation);
         }
 
