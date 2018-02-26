@@ -109,12 +109,21 @@ namespace Quest.Core {
 							}
 						}
 						this.gm.PromptingPlayer = i;
-						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + qc.Stages.Count + 1 + " Area";
+						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + (qc.Stages.Count + 1) + " Area";
 						this.ConfText.GetComponent<Text>().text = "Confirm Stage";
 						QuestArea qa = new QuestArea ();
 						qc.Stages.Add (qa);
+						this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
 						this.GameOtherArea.GetComponent<GameCardArea> ().Cards = qa;
 						ConfirmSponsorPrompt ();
+					}
+					if (this.gm.State == MatchState.RUN_STAGE) {
+						this.waiting = true;
+						QuestCard qc = this.gm.CurrentStory as QuestCard;
+						this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
+						this.GameOtherArea.GetComponent<GameCardArea> ().Cards = qc.Stages [qc.CurrentStage];
+						this.PopulateGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
+						this.PlayerQuestTurnPrompt ();
 					}
 				}
 			}
@@ -144,7 +153,18 @@ namespace Quest.Core {
 				this.gm.NextTurn ();
 			}
 			if (this.gm.State == MatchState.REQUEST_STAGE) {
-				
+				this.gm.Continue ();
+				this.waiting = false;
+				this.gm.CurrentStory.Run ();
+			}
+			if (this.gm.State == MatchState.RUN_STAGE) {
+				QuestCard qc = this.gm.CurrentStory as QuestCard;
+				this.gm.Continue ();
+				this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % this.gm.Players.Count;
+				this.waiting = false;
+				if (this.gm.Players [this.gm.PromptingPlayer] == qc.Sponsor) {
+					qc.ResolveStage ();
+				}
 			}
 		}
 
@@ -179,8 +199,23 @@ namespace Quest.Core {
 			}
 		}
 
+		public void PopulateGameArea(GameCardArea gca){
+			for (int i = 0; i < gca.Cards.Count; i++) {
+				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+				card.GetComponent<GameCard>().Card = gca.Cards.Cards[i];
+				card.transform.SetParent (gca.transform);
+				card.transform.localScale = new Vector3 (1, 1, 1);
+				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + gca.Cards.Cards[i].ImageFilename);
+			}
+		}
 		public void HideHand(){
 			foreach (Transform child in this.GameHandArea.transform) {
+				GameObject.Destroy (child.gameObject);
+			}
+		}
+
+		public void ClearGameArea(GameCardArea gca){
+			foreach (Transform child in gca.transform) {
 				GameObject.Destroy (child.gameObject);
 			}
 		}
@@ -288,6 +323,19 @@ namespace Quest.Core {
 			}
 		}
 
+		public void PlayerQuestTurnPrompt(){
+			GameObject promptObj = new GameObject("SponsorQuestPrompt");
+			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
+			prompt.Quest = this.gm.CurrentStory;
+			prompt.Message = this.gm.Players[this.gm.PromptingPlayer].Username +" ready?";
+			prompt.OnYesClick = this.PlayerQuestTurnReady;
+			prompt.OnNoClick = this.PlayerQuestTurnReady;
+		}
+
+		public void PlayerQuestTurnReady(){
+			this.ShowHand (this.gm.Players[this.gm.PromptingPlayer]);
+			this.ConfText.GetComponent<Text>().text = "Confirm Cards";
+		}
 		public void DiscardCardsPrompt(){
 			/*
 			GameObject promptObj = new GameObject("PlayerPrompt");

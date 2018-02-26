@@ -18,6 +18,7 @@ namespace Quest.Core {
 		REQUEST_SPONSOR,
 		REQUEST_PARTICIPANTS,
 		REQUEST_STAGE,
+		RUN_STAGE,
 		END_STORY
 	};
     public class QuestMatch : Subject{

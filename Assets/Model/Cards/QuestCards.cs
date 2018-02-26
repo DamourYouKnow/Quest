@@ -128,12 +128,32 @@ namespace Quest.Core.Cards{
 			this.match.State = MatchState.REQUEST_STAGE;
 			this.match.Wait ();
 		}
+		public void RunStage(){
+			this.match.State = MatchState.RUN_STAGE;
+			this.match.Wait ();
+		}
 		public override void Run() {
 			if (this.sponsor == null) {
 				this.requestSponsor ();
 			}
 			else if (this.stages.Count < this.numStages) {
 				requestStage ();
+			}
+			else {
+				int i = 0;
+				for (; i < this.match.Players.Count; i++) {
+					if (this.match.Players [i] == this.Sponsor) {
+						break;
+					}
+				}
+				this.match.PromptingPlayer = i + 1;
+				foreach (Player p in this.match.Players){
+					if (p != this.sponsor){
+						p.Draw (this.match.AdventureDeck, 1);
+					}
+				}
+				this.currentStage = 0;
+				this.RunStage ();
 			}
 			/*
             // Player behaviour functions for individual stage setup.
