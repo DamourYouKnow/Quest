@@ -110,6 +110,7 @@ namespace Quest.Core.Cards{
             // Ask current player to sponsor.
             Player currentPlayer = this.match.CurrentPlayer;
             if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
+                this.match.Log("Quest not sponsored");
                 return;
             } else {
                 this.sponsor = currentPlayer;

@@ -74,7 +74,7 @@ namespace Quest.Core {
 
         public List<Player> OtherPlayers {
             get {
-                List<Player> retList = this.players;
+                List<Player> retList = new List<Player>(this.players);
                 retList.Remove(this.CurrentPlayer);
                 return retList;
             }
@@ -118,14 +118,15 @@ namespace Quest.Core {
         }
 
         public void NextTurn() {
-            if (this.currentPlayer + 1 >= this.players.Count) {
+            if (this.currentPlayer >= this.players.Count) {
                 this.currentPlayer = 0;
-            }
+            } 
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
 			this.state = MatchState.START_TURN;
             //this.Wait ();
             this.NextStory();
+            this.currentPlayer++;
         }
 
         public void NextStory() {
