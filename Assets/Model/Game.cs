@@ -109,14 +109,12 @@ namespace Quest.Core {
 
         public void RunGame() {
             this.Log("Running game...");
+            while (!this.hasWinner()) {
+                this.NextTurn();
+            }
 
-			if (!this.hasWinner ()) {
-				this.NextTurn ();
-			}
-			else {
-				List<Player> winner = this.getWinners();
-				this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
-			}
+		    List<Player> winner = this.getWinners();
+			this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
         }
 
         public void NextTurn() {
