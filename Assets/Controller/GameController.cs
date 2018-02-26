@@ -12,6 +12,8 @@ namespace Quest.Core {
 	public class GameController : MonoBehaviour {
 		QuestMatch gm;
 		Logger logger;
+		CardUI ui;
+
 
 		//Specifies if a scene has been setup yet
 		//Necessary because scenes are not loaded when Load is run, but rather at next update cycle
@@ -30,6 +32,7 @@ namespace Quest.Core {
 			this.logger = gc.logger;
 			this.sceneSet = gc.sceneSet;
 		}
+
 		//Awake is called before Start function, guaranteeing we'll have it setup for other scripts
 		void Awake(){
 			//This setup ensures only one GameController is running at a time.
@@ -62,20 +65,15 @@ namespace Quest.Core {
 		// Update is called once per frame
 		void Update () {
 			if (sceneSet) {
-				
+				if (this.gm.getState () == 1) {
+					flipStoryDeck ();
+				}
 			}
 			else{
 				if(SceneManager.GetActiveScene().name == "Match"){
+					this.ui = new CardUI ();
 					SetupMatchScene ();
 					sceneSet = true;
-				}
-				if (this.gm.Waiting) {
-					if (this.gm.State == MatchState.START_GAME) {
-						this.gm.RunGame();
-					}
-					if (this.gm.State == MatchState.START_TURN) {
-						StartTurnPrompt ();
-					}
 				}
 			}
 		}
@@ -87,51 +85,24 @@ namespace Quest.Core {
 
 		}
 		private void SetupMatchScene (){
-			GameObject opponents = GameObject.Find ("Opponents");
-			for (int i = 0; i < this.gm.Players.Count; i++) {
-				GameObject opponent = Instantiate (Resources.Load("Opponent", typeof(GameObject))) as GameObject;
-				opponent.transform.SetParent (opponents.transform);
-				opponent.transform.localScale = new Vector3 (1, 1, 1);
-			}
+			this.ui.ShowOpponents (this.gm.Players.Count);
 			this.gm.Setup ();
+			this.ui.ShowHand (this.gm.CurrentPlayer.Hand.Count, this.gm);
 		}
 
-		public void ShowHand(){
-			GameObject hand = GameObject.Find ("HandPanel");
-			for (int i = 0; i < this.gm.CurrentPlayer.Hand.Count; i++) {
-				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
-				card.transform.SetParent (hand.transform);
-				card.transform.localScale = new Vector3 (1, 1, 1);
-				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentPlayer.Hand.Cards [i].ImageFilename);
-
-
-				/*Ideas to change the card image that dident work but might with some tweeking
-				 
-				card.GetComponent<Image> ().overrideSprite = Resources.Load<Sprite> ();
-				Sprite cardSprite = Resources.Load (this.gm.CurrentPlayer.Hand.Cards [i].getFilename) as Sprite;
-				card.GetComponent<SpriteRenderer> ().sprite = cardSprite;
-				Renderer rend = card.GetComponent<Renderer> ();
-				rend.material.mainTexture = Resources.Load (this.gm.CurrentPlayer.Hand.Cards [i].getFilename) as Texture;
-				*/
-			}
+		public void flipStoryDeck(){
+			GameObject storyHolder = GameObject.Find ("StoryCard");
+			GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+			card.transform.SetParent (storyHolder.transform);
+			card.transform.localScale = new Vector3 (1, 1, 1);
+			card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentStory.ImageFilename);
 		}
 
 		public void StartGame(){
 			gm.RunGame ();
 		}
 
-		public void StartTurnPrompt(){
-			
-			GameObject promptObj = new GameObject("PlayerPrompt");
-			Prompt prompt = promptObj.AddComponent<Prompt>();
-			prompt.Message = this.gm.CurrentPlayer.Username +" ready?";
-			prompt.OnYesClick = () => { Debug.Log("Player Ready clicked");
-										this.ShowHand ();};
-			GameObject storyCardArea = GameObject.Find ("StoryCard");
-			storyCardArea.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentStory.ImageFilename);
-			this.gm.Continue ();
-			this.gm.NextStory();
-		}
+
 		public void QuitGame(){
 			//When game is run in editor, the application cannot be quit as this would close editor
 			//Therefore, have to specifically stop it through editor
@@ -173,5 +144,6 @@ namespace Quest.Core {
 				}
 			}
 		}
+			
 	}
 }

@@ -10,11 +10,6 @@ namespace Quest.Core {
         public const int MaxHandSize = 12;
     }
 
-	public enum MatchState {
-		INIT,
-		START_GAME,
-		START_TURN
-	};
     public class QuestMatch : Subject{
         private List<Player> players;
         private int currentPlayer;
@@ -24,7 +19,7 @@ namespace Quest.Core {
         private StoryCard currentStory;
         private Logger logger;
         private bool waiting;
-		private MatchState state;
+		private int state;
 
         public QuestMatch(Logger logger=null) {
             this.players = new List<Player>();
@@ -36,24 +31,24 @@ namespace Quest.Core {
             this.logger = logger;
             this.Log("Creating new Quest match");
             this.waiting = false;
-			this.state = MatchState.INIT;
+			this.state = 0;
         }
 
-		public bool Waiting {
-			get { return this.waiting; }
+		public int getState(){
+			return this.state;
 		}
 
-		public MatchState State {
-			get { return this.state; }
+		public void addObserver(Observer observer){
+			this.register(observer);
 		}
 
         public List<Player> Players {
             get { return this.players; }
         }
 
-		public Deck StoryDeck {
-			get { return this.storyDeck; }
-		}
+        public Deck StoryDeck {
+            get { return this.storyDeck; }
+        }
 
         public Deck AdventureDeck {
             get { return this.adventureDeck; }
@@ -84,20 +79,15 @@ namespace Quest.Core {
         /// Called by logic to wait for a response from the UI.
         /// </summary>
         public void Wait() {
-			this.waiting = true;
-			/*
             Thread waitThread = new Thread(new ThreadStart(Wait));
             waitThread.Start();
             waitThread.Join();
-            */
         }
 
         private void waitTask() {
-			/*
             while (this.waiting) {
                 Thread.Sleep(100);
             }
-            */
         }
 
         /// <summary>
@@ -110,13 +100,12 @@ namespace Quest.Core {
         public void RunGame() {
             this.Log("Running game...");
 
-			if (!this.hasWinner ()) {
-				this.NextTurn ();
-			}
-			else {
-				List<Player> winner = this.getWinners();
-				this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
-			}
+            while (!this.hasWinner()) {
+                this.NextTurn();
+            }
+
+            List<Player> winner = this.getWinners();
+            this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
         }
 
         public void NextTurn() {
@@ -125,19 +114,19 @@ namespace Quest.Core {
             }
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
-			this.state = MatchState.START_TURN;
-			this.Wait ();
+            this.NextStory();
         }
 
         public void NextStory() {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
             this.Log("Story " + story.ToString() + " drawn");
             this.currentStory = story;
+			this.state = 1;
 
             try {
                 story.Run();
             }
-            catch (NotImplementedException) {
+            catch (NotImplementedException e) {
                 this.Log("Feature not implemented");
             }
             catch (Exception e) {
@@ -186,9 +175,11 @@ namespace Quest.Core {
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
 				player.Draw(this.adventureDeck, Constants.MaxHandSize);
+				for (int i = 0; i < this.CurrentPlayer.Hand.Count; i++) {
+					this.logger.Log ("here" +player.Hand.Cards [i].Name);
+				}
             }
-			this.state = MatchState.START_TURN;
-			this.Wait ();
+
             this.Log("Setup Quest match complete.");
         }
 
