@@ -70,11 +70,10 @@ namespace Quest.Core.Players {
         }
     }
 
-    internal class HumanPlayer : PlayerBehaviour {
-        public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+	internal class HumanPlayer : PlayerBehaviour {
+		public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
+			throw new NotImplementedException();
         }
-
         public override List<Card> DiscardExcessCards(Hand hand) {
             throw new NotImplementedException();
         }

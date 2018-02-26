@@ -105,9 +105,14 @@ namespace Quest.Core.Cards{
         public void ForceStage(int stageNumber) {
             this.currentStage = stageNumber;
         }
-
+		public void requestSponsor(){
+			this.match.State = MatchState.REQUEST_SPONSOR;
+			this.match.Wait ();
+		}
 		public override void Run() {
+			this.requestSponsor ();
             // Ask current player to sponsor.
+			/*
             Player currentPlayer = this.match.CurrentPlayer;
             if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
                 return;
@@ -146,6 +151,7 @@ namespace Quest.Core.Cards{
                 this.match.Log(Utils.Stringify.CommaList<Player>(winners) + " have won stage " + this.numStages);
                 this.currentStage++;
             }
+            */
 
             // TODO: Clean up everything.
 		}

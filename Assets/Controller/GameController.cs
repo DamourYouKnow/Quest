@@ -76,6 +76,9 @@ namespace Quest.Core {
 					if (this.gm.State == MatchState.START_TURN) {
 						StartTurnPrompt ();
 					}
+					if (this.gm.State == MatchState.REQUEST_SPONSOR) {
+						RequestSponsorPrompt();
+					}
 				}
 			}
 		}
@@ -131,6 +134,36 @@ namespace Quest.Core {
 			storyCardArea.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentStory.ImageFilename);
 			this.gm.Continue ();
 			this.gm.NextStory();
+		}
+
+		public void RequestSponsorPrompt(){
+
+			GameObject promptObj = new GameObject("SponsorQuestPrompt");
+			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
+			prompt.Message = "Would you like to sponsor"+ this.gm.CurrentStory.Name +"?";
+			prompt.OnYesClick = () => { Debug.Log("Sponsor Yes Clicked");
+				this.gm.Sponsor = this.gm.PromptingPlayer;};
+			prompt.OnNoClick = () =>{Debug.Log("Sponsor No Clicked");
+					this.gm.PromptingPlayer = (this.gm.PromptingPlayer+1)%this.gm.Players.Count;
+					if (this.gm.PromptingPlayer == 0){
+						EndQuest();
+					}};
+			prompt.Quest = this.gm.CurrentStory;
+			this.gm.Continue ();
+			this.gm.NextStory();
+		}
+
+		public void DiscardCardsPrompt(){
+			GameObject promptObj = new GameObject("PlayerPrompt");
+			Prompt prompt = promptObj.AddComponent<Prompt>();
+			prompt.Message = "You have too many cards.";
+			prompt.OnYesClick = () => { Debug.Log("Player Ready clicked");
+				this.ShowHand ();};
+			GameObject storyCardArea = GameObject.Find ("StoryCard");
+		}
+
+		public void EndQuest(){
+			this.gm.NextTurn ();
 		}
 		public void QuitGame(){
 			//When game is run in editor, the application cannot be quit as this would close editor

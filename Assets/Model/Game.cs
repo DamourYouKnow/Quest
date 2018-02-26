@@ -13,11 +13,13 @@ namespace Quest.Core {
 	public enum MatchState {
 		INIT,
 		START_GAME,
-		START_TURN
+		START_TURN,
+		REQUEST_SPONSOR
 	};
     public class QuestMatch : Subject{
         private List<Player> players;
         private int currentPlayer;
+		private int promptingPlayer;
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
@@ -25,6 +27,7 @@ namespace Quest.Core {
         private Logger logger;
         private bool waiting;
 		private MatchState state;
+		private int sponsor;
 
         public QuestMatch(Logger logger=null) {
             this.players = new List<Player>();
@@ -37,14 +40,26 @@ namespace Quest.Core {
             this.Log("Creating new Quest match");
             this.waiting = false;
 			this.state = MatchState.INIT;
+			this.sponsor = 0;
         }
 
 		public bool Waiting {
 			get { return this.waiting; }
 		}
 
+		public int Sponsor {
+			get { return this.sponsor; }
+			set { this.sponsor = value; }
+		}
+
+		public int PromptingPlayer{
+			get{ return this.promptingPlayer; }
+			set{ this.promptingPlayer = value; }
+		}
+
 		public MatchState State {
 			get { return this.state; }
+			set { this.state = value; }
 		}
 
         public List<Player> Players {
@@ -129,7 +144,7 @@ namespace Quest.Core {
 			this.Wait ();
         }
 
-        public void NextStory() {
+		public void NextStory() {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
             this.Log("Story " + story.ToString() + " drawn");
             this.currentStory = story;
