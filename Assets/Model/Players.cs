@@ -220,12 +220,12 @@ namespace Quest.Core.Players {
             //will need to check if a card is playable or not
             //(that might be handled elsewhere, not in this function (not sure))
 
-            this.match.Log("Player " + this.username + " played " + card.ToString());
+            this.match.Log(this.username + " played " + card.ToString());
 		}
 
         public void Play(List<BattleCard> cards) {
             this.hand.Transfer(this.battleArea, cards.Cast<Card>().ToList());
-            this.match.Log("Player " + this.username + " played " + Utils.Stringify.CommaList(cards));
+            this.match.Log(this.username + " played " + Utils.Stringify.CommaList(cards));
         }
 
         public static List<Player> LowestShields(List<Player> players) {

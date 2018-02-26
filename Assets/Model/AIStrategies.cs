@@ -130,12 +130,9 @@ namespace Quest.Core.Players {
 			return validateCardsToSponsorQuest(stages);
         }
 
-        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
-			
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {		
 			return CardsToSponsorQuest(hand, questCard.StageCount);
         }
-		
-		
 		
 		private List<AdventureCard>[] CardsToSponsorQuest(Hand hand, int size) {
 			List<AdventureCard>[] stages = new List<AdventureCard>[size];
@@ -192,13 +189,15 @@ namespace Quest.Core.Players {
                     while (currentStageBP <= lastStageBP && foes.Count > 0) {
 						int index = 0;
 						foreach (AdventureCard card in stages[s]) {
+                            if (weapons.Count == 0) return stages;
+
                             if (card.ToString() == weapons[index].ToString()) {
                                 index += 1;
 							}
 							
 							if (index > weapons.Count - 1) {
-                                    return stages;
-                                }
+                                return stages;
+                            }
 						}
                         nextStage.Add(weapons[index]);
 						currentStageBP += weapons[index].BattlePoints;
