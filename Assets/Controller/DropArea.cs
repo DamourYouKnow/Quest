@@ -14,12 +14,49 @@ class DropArea : MonoBehaviour, IDropHandler {
         if (draggable != null) {
 			Card c = draggable.gameObject.GetComponent<GameCard> ().Card;
 			if (c != null) {
-				CardArea ca1 = draggable.ReturnParent.gameObject.GetComponent<GameCardArea> ().Cards;
-				CardArea ca2 = this.transform.gameObject.GetComponent<GameCardArea> ().Cards;
+				GameCardArea gca = draggable.ReturnParent.gameObject.GetComponent<GameCardArea> ();
+				CardArea ca1 = null;
+				QuestArea qa1 = null;
+				if (gca == null) {
+					qa1 = draggable.ReturnParent.gameObject.GetComponent<QuestGameCardArea> ().QuestCards;
+				}
+				else {
+					ca1 = gca.Cards;
+				}
+				gca = null;
+				gca = this.transform.gameObject.GetComponent<GameCardArea> ();
+				CardArea ca2 = null;
+				QuestArea qa2 = null;
+				if (gca == null) {
+					qa2 = this.transform.gameObject.GetComponent<QuestGameCardArea> ().QuestCards;
+				}
+				else {
+					ca2 = gca.Cards;
+				}
+
 				if (ca2 != null) {
-					ca1.Transfer (ca2, c);
-					if (ca2.Cards.Contains (c)) {
-						draggable.ReturnParent = this.transform;
+					if (ca1 != null) {
+						ca1.Transfer (ca2, c);
+						if (ca2.Cards.Contains (c)) {
+							draggable.ReturnParent = this.transform;
+						}
+					} else {
+						qa1.Transfer (ca2, c);
+						if (ca2.Cards.Contains (c)) {
+							draggable.ReturnParent = this.transform;
+						}
+					}
+				} else if (qa2 != null) {
+					if (ca1 != null) {
+						ca1.Transfer (qa2, c);
+						if (qa2.Cards.Contains (c)) {
+							draggable.ReturnParent = this.transform;
+						}
+					} else {
+						qa1.Transfer (qa2, c);
+						if (qa2.Cards.Contains (c)) {
+							draggable.ReturnParent = this.transform;
+						}
 					}
 				}
 			}

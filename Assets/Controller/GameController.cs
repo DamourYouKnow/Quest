@@ -113,8 +113,15 @@ namespace Quest.Core {
 						this.ConfText.GetComponent<Text>().text = "Confirm Stage";
 						QuestArea qa = new QuestArea ();
 						qc.Stages.Add (qa);
-						this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
-						this.GameOtherArea.GetComponent<GameCardArea> ().Cards = qa;
+						GameCardArea gca = this.GameOtherArea.GetComponent<GameCardArea> ();
+						if (gca != null) {
+							this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
+							GameObject.Destroy (this.GameOtherArea.GetComponent<GameCardArea> ());
+							this.GameOtherArea.AddComponent<QuestGameCardArea> ().QuestCards = qa;
+						}
+						else {
+							this.ClearQuestGameArea (this.GameOtherArea.GetComponent<QuestGameCardArea> ());
+						}
 						ConfirmSponsorPrompt ();
 					}
 					if (this.gm.State == MatchState.RUN_STAGE) {
@@ -216,6 +223,12 @@ namespace Quest.Core {
 
 		public void ClearGameArea(GameCardArea gca){
 			foreach (Transform child in gca.transform) {
+				GameObject.Destroy (child.gameObject);
+			}
+		}
+
+		public void ClearQuestGameArea(QuestGameCardArea qgca){
+			foreach (Transform child in qgca.transform) {
 				GameObject.Destroy (child.gameObject);
 			}
 		}
