@@ -126,7 +126,8 @@ namespace Quest.Core {
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
 			this.state = MatchState.START_TURN;
-			this.Wait ();
+            //this.Wait ();
+            this.NextStory();
         }
 
         public void NextStory() {

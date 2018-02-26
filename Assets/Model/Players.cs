@@ -186,7 +186,7 @@ namespace Quest.Core.Players {
             for (int i = 0; i < count; i++) {
                 Card drawnCard = deck.Draw();
                 this.Hand.Add(drawnCard);
-                this.match.Log("Player " + this.username + " drew " + drawnCard.ToString());
+                this.match.Log(this.username + " drew " + drawnCard.ToString());
             }
 			
         }
@@ -194,7 +194,7 @@ namespace Quest.Core.Players {
         public void Discard(Card card) {
             this.hand.Remove(card);
             this.match.DiscardPile.Push(card);
-            this.match.Log("Player " + this.username + " discarded " + card.ToString());
+            this.match.Log(this.username + " discarded " + card.ToString());
         }
 
         public void Discard(List<Card> cards) {

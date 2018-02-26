@@ -143,7 +143,12 @@ namespace Quest.Core.Cards{
 
                 // Resolve.
                 List<Player> winners = this.ResolveStage();
-                this.match.Log(Utils.Stringify.CommaList<Player>(winners) + " have won stage " + this.numStages);
+                if (winners.Count > 0) {
+                    this.match.Log(Utils.Stringify.CommaList<Player>(winners) + " have won stage " + this.numStages);
+                } else {
+                    this.match.Log("Stage " + this.currentStage + " has no winners");
+                }
+
                 this.currentStage++;
             }
 
@@ -172,21 +177,18 @@ namespace Quest.Core.Cards{
 				}
 			}
 			this.participants = winners;
-			this.currentStage += 1;
 
 			//If no more stages or no more players, resolve quest.
 			if (this.participants.Count == 0
-				|| this.currentStage > this.numStages) {
+				|| this.currentStage >= this.numStages) {
 				foreach (var p in this.participants) {
 					p.Rank.AddShields (this.numStages);
 				}
 				int numDraw = 0;
 				foreach (var item in this.stages) {
 					numDraw += item.Count;
-					this.match.Log (numDraw.ToString ());
 				}
 				numDraw += this.numStages;
-				this.match.Log (numDraw.ToString ());
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
 			}
 			return winners;

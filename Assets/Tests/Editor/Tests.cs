@@ -441,7 +441,7 @@ namespace NUnitTesting {
             Boar boar = new Boar(game); // 5 BP, should be discarded.
             Thieves thieves = new Thieves(game); // 5 BP, should be discarded.
             BlackKnight blackKnight = new BlackKnight(game); // 25 BP, should not be discarded.
-            Dagger dagger = new Dagger(game); // +5 BP.
+            Excalibur excalibur = new Excalibur(game); // +30 BP.
             Lance lance = new Lance(game); // + 20 BP.
 
             // Cannot increase for all 3 stages, expect false.
@@ -453,11 +453,8 @@ namespace NUnitTesting {
             aiPlayer.Hand.Add(galahad);
             Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
 
-            // Add weapon, expect false, still increments by +5 for a stage.
-            aiPlayer.Hand.Add(dagger);
-            Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
-
-            // Add another weapon, expect true.
+            // Add weapons, expect true.
+            aiPlayer.Hand.Add(excalibur);
             aiPlayer.Hand.Add(lance);
             Assert.IsTrue(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
 
