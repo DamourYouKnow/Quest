@@ -18,7 +18,9 @@ class DropArea : MonoBehaviour, IDropHandler {
 				CardArea ca2 = this.transform.gameObject.GetComponent<GameCardArea> ().Cards;
 				if (ca2 != null) {
 					ca1.Transfer (ca2, c);
-					draggable.ReturnParent = this.transform;
+					if (ca2.Cards.Contains (c)) {
+						draggable.ReturnParent = this.transform;
+					}
 				}
 			}
         }

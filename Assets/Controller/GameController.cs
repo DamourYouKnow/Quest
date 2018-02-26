@@ -100,9 +100,21 @@ namespace Quest.Core {
 						RequestParticipantsPrompt ();
 					}
 					if (this.gm.State == MatchState.REQUEST_STAGE) {
+						QuestCard qc = this.gm.CurrentStory as QuestCard;
 						this.waiting = true;
-						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + (this.gm.CurrentStory as QuestCard).Stages.Count + 1 + " Area";
+						int i = 0;
+						for (; i < this.gm.Players.Count; i++) {
+							if (this.gm.Players [i] == qc.Sponsor) {
+								break;
+							}
+						}
+						this.gm.PromptingPlayer = i;
+						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + qc.Stages.Count + 1 + " Area";
 						this.ConfText.GetComponent<Text>().text = "Confirm Stage";
+						QuestArea qa = new QuestArea ();
+						qc.Stages.Add (qa);
+						this.GameOtherArea.GetComponent<GameCardArea> ().Cards = qa;
+						ConfirmSponsorPrompt ();
 					}
 				}
 			}
@@ -126,6 +138,7 @@ namespace Quest.Core {
 				this.gm.NextStory();
 			}
 			if (this.gm.State == MatchState.END_STORY) {
+				this.gm.CurrentPlayerNum = (this.gm.CurrentPlayerNum + 1) % this.gm.Players.Count;
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.NextTurn ();
@@ -167,8 +180,8 @@ namespace Quest.Core {
 		}
 
 		public void HideHand(){
-			for (int i = 0; i < this.GameHandArea.transform.childCount; i++) {
-				Destroy (this.GameHandArea.transform.GetChild (0).gameObject);
+			foreach (Transform child in this.GameHandArea.transform) {
+				GameObject.Destroy (child.gameObject);
 			}
 		}
 
@@ -177,7 +190,6 @@ namespace Quest.Core {
 		}
 
 		public void StartTurnPrompt(){
-			
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = this.gm.CurrentPlayer.Username +" ready?";
@@ -187,7 +199,13 @@ namespace Quest.Core {
 			GameObject storyCardArea = GameObject.Find ("StoryCard");
 			storyCardArea.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + "story_card_back");
 		}
-
+		public void ConfirmSponsorPrompt(){
+			GameObject promptObj = new GameObject("PlayerPrompt");
+			Prompt prompt = promptObj.AddComponent<Prompt>();
+			prompt.Message = "Sponsor ready?";
+			prompt.OnYesClick = () => { Debug.Log("Sponsor Ready clicked");
+				this.ShowHand ((this.gm.CurrentStory as QuestCard).Sponsor);};
+		}
 		public void RequestSponsorPrompt(){
 			this.HideHand ();
 			GameObject promptObj = new GameObject("SponsorQuestPrompt");

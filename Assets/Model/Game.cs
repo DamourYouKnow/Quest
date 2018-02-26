@@ -85,6 +85,7 @@ namespace Quest.Core {
 		}
 		public int CurrentPlayerNum {
 			get { return this.currentPlayer; }
+			set { this.currentPlayer = value; }
 		}
 
         public List<Player> OtherPlayers {
@@ -134,8 +135,7 @@ namespace Quest.Core {
 			}
         }
 
-        public void NextTurn() {
-			this.currentPlayer = (currentPlayer + 1) % this.players.Count;
+		public void NextTurn() {
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
 			this.state = MatchState.START_TURN;
@@ -289,9 +289,9 @@ namespace Quest.Core {
             return false;
         }
 
-        public virtual void Add(Card card) {
-            this.cards.Add(card);
-        }
+		public virtual void Add(Card card) {
+			this.cards.Add(card);
+		}
 
         public virtual void Add(List<Card> cards) {
             foreach (Card card in cards) {
@@ -306,15 +306,32 @@ namespace Quest.Core {
             this.cards.Remove(card);
         }
 
-        public void Transfer(CardArea target, Card card) {
+		public void Transfer(CardArea target, Card card) {
+			if (target.GetType ().Equals (typeof(QuestArea))) {
+				QuestArea qatarget = target as QuestArea;
+				if (this.cards.Contains(card)) {
+					qatarget.cards.Add(card);
+					if (qatarget.cards.Contains (card)) {
+						this.cards.Remove(card);
+					}
+				}
+			}
             if (this.cards.Contains(card)) {
                 target.cards.Add(card);
-                this.cards.Remove(card);
+				if (target.cards.Contains (card)) {
+					this.cards.Remove(card);
+				}
             }
         }
 
-        public void Transfer(CardArea target, List<Card> cards) {
-            cards = new List<Card>(cards); // Stop bad things from happening.
+		public void Transfer(CardArea target, List<Card> cards) {
+			cards = new List<Card>(cards); // Stop bad things from happening.
+			if (target.GetType ().Equals (typeof(QuestArea))) {
+				QuestArea qatarget = target as QuestArea;
+				foreach (Card card in cards) {
+					this.Transfer(qatarget, card);
+				}
+			}
             foreach (Card card in cards) {
                 this.Transfer(target, card);
             }
@@ -344,6 +361,10 @@ namespace Quest.Core {
 	public class QuestArea : BattleArea {
 		private Card mainCard;
 
+		public QuestArea(){
+			this.mainCard = null;
+		}
+
 		public QuestArea(FoeCard foe){
             this.mainCard = foe;
 		}
@@ -355,6 +376,22 @@ namespace Quest.Core {
         public Card MainCard {
             get { return mainCard; }
         }
+
+		public override void Add(Card card){
+			Logger log = new Logger ("QuestArea");
+			log.Log ((card.GetType ().BaseType.Equals (typeof(FoeCard)) || card.GetType ().BaseType.Equals (typeof(TestCard))).ToString());
+			if (card.GetType().BaseType.Equals(typeof(FoeCard)) || card.GetType().BaseType.Equals(typeof(TestCard))) {
+				if (this.mainCard == null) {
+					this.mainCard = card;
+				}
+				else {
+					return;
+				}
+			}
+			else {
+				this.cards.Add(card);
+			}
+		}
 	}
 
     /// <summary>
@@ -369,6 +406,6 @@ namespace Quest.Core {
 
         public Hand(Player player) : base() {
             this.player = player;
-        }
+		}
     }
 }
