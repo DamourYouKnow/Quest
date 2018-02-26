@@ -14,7 +14,11 @@ namespace Quest.Core {
 		INIT,
 		START_GAME,
 		START_TURN,
-		REQUEST_SPONSOR
+		RUN_STORY,
+		REQUEST_SPONSOR,
+		REQUEST_PARTICIPANTS,
+		REQUEST_STAGE,
+		END_STORY
 	};
     public class QuestMatch : Subject{
         private List<Player> players;
@@ -27,7 +31,6 @@ namespace Quest.Core {
         private Logger logger;
         private bool waiting;
 		private MatchState state;
-		private int sponsor;
 
         public QuestMatch(Logger logger=null) {
             this.players = new List<Player>();
@@ -40,16 +43,10 @@ namespace Quest.Core {
             this.Log("Creating new Quest match");
             this.waiting = false;
 			this.state = MatchState.INIT;
-			this.sponsor = 0;
         }
 
 		public bool Waiting {
 			get { return this.waiting; }
-		}
-
-		public int Sponsor {
-			get { return this.sponsor; }
-			set { this.sponsor = value; }
 		}
 
 		public int PromptingPlayer{
@@ -83,9 +80,12 @@ namespace Quest.Core {
 			set { this.currentStory = value; }
 		}
 
-        public Player CurrentPlayer {
-            get { return this.players[this.currentPlayer]; }
-        }
+		public Player CurrentPlayer {
+			get { return this.players[this.currentPlayer]; }
+		}
+		public int CurrentPlayerNum {
+			get { return this.currentPlayer; }
+		}
 
         public List<Player> OtherPlayers {
             get {
@@ -135,9 +135,7 @@ namespace Quest.Core {
         }
 
         public void NextTurn() {
-            if (this.currentPlayer + 1 >= this.players.Count) {
-                this.currentPlayer = 0;
-            }
+			this.currentPlayer = (currentPlayer + 1) % this.players.Count;
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
 			this.state = MatchState.START_TURN;
@@ -148,19 +146,27 @@ namespace Quest.Core {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
             this.Log("Story " + story.ToString() + " drawn");
             this.currentStory = story;
-
-            try {
-                story.Run();
-            }
-            catch (NotImplementedException) {
-                this.Log("Feature not implemented");
-            }
-            catch (Exception e) {
-                this.Log(e.Message);
-                this.Log(e.StackTrace);
-            } 
+			this.state = MatchState.RUN_STORY;
+			this.Wait ();
         }
+		public void RunStory() {
+			try {
+				CurrentStory.Run();
 
+			}
+			catch (NotImplementedException) {
+				this.Log("Feature not implemented");
+			}
+			catch (Exception e) {
+				this.Log(e.Message);
+				this.Log(e.StackTrace);
+			} 
+		}
+
+		public void EndStory(){
+			this.state = MatchState.END_STORY;
+			this.Wait ();
+		}
         public void AddPlayer(Player player) {
             this.players.Add(player);
             this.Log("Added player " + player.Username + " to Quest match");

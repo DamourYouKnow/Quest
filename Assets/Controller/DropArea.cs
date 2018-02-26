@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using Quest.Core.Cards;
+using Quest.Core;
 
 class DropArea : MonoBehaviour, IDropHandler {
     private const int defaultOffset = 3;
@@ -10,6 +12,16 @@ class DropArea : MonoBehaviour, IDropHandler {
     public void OnDrop(PointerEventData eventData) {
         Draggable draggable = eventData.pointerDrag.GetComponent<Draggable>();
         if (draggable != null) {
+			Card c = draggable.gameObject.GetComponent<GameCard> ().Card;
+			if (c != null) {
+				CardArea ca1 = draggable.ReturnParent.gameObject.GetComponent<GameCardArea> ().Cards;
+				CardArea ca2 = this.transform.gameObject.GetComponent<GameCardArea> ().Cards;
+				Debug.Log (ca1);
+				Debug.Log (ca2);
+				ca1.Transfer (ca2, c);
+				Debug.Log (ca1);
+				Debug.Log (ca2);
+			}
             draggable.ReturnParent = this.transform;
         }
     }

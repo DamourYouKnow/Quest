@@ -106,28 +106,36 @@ namespace Quest.Core.Cards{
             this.currentStage = stageNumber;
         }
 		public void requestSponsor(){
+			this.match.Log ("Requesting Sponsor");
 			this.match.State = MatchState.REQUEST_SPONSOR;
 			this.match.Wait ();
 		}
+		public void requestParticipation(){
+			this.match.Log ("Requesting Participants");
+			this.match.State = MatchState.REQUEST_PARTICIPANTS;
+
+			int i = 0;
+			for (; i < this.match.Players.Count; i++) {
+				if (this.match.Players [i] == this.Sponsor) {
+					break;
+				}
+			}
+
+			this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
+			this.match.Wait ();
+		}
+		public void requestStage(){
+			this.match.State = MatchState.REQUEST_STAGE;
+			this.match.Wait ();
+		}
 		public override void Run() {
-			this.requestSponsor ();
-            // Ask current player to sponsor.
+			if (this.sponsor == null) {
+				this.requestSponsor ();
+			}
+			else if (this.stages.Count < this.numStages) {
+				requestStage ();
+			}
 			/*
-            Player currentPlayer = this.match.CurrentPlayer;
-            if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
-                return;
-            } else {
-                this.sponsor = currentPlayer;
-            }
-
-            // Ask other players if they would like to participate.
-            List<Player> otherPlayers = this.match.OtherPlayers;
-            foreach (Player player in otherPlayers) {
-                if (player.Behaviour.ParticipateInQuest(this, player.Hand)) {
-                    this.AddParticipant(player);
-                }
-            }
-
             // Player behaviour functions for individual stage setup.
             List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
             foreach (List<AdventureCard> stage in stages) {
@@ -151,8 +159,8 @@ namespace Quest.Core.Cards{
                 this.match.Log(Utils.Stringify.CommaList<Player>(winners) + " have won stage " + this.numStages);
                 this.currentStage++;
             }
-            */
-
+            
+			*/
             // TODO: Clean up everything.
 		}
 

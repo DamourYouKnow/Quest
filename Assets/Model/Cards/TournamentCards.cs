@@ -9,30 +9,31 @@ namespace Quest.Core.Cards{
 		}
 
 		public override void Run(){
-			
+			this.match.EndStory ();
 		}
 	}
 
 	public class TournamentAtCamelot : TournamentCard {
 		public TournamentAtCamelot(QuestMatch match) : base(match) {
 			this.name = "Tournament At Camelot";
-			this.imageFilename = "tournament_at_camelot.png";
+			this.imageFilename = "tournament_at_camelot";
 			this.bonusSheilds = 3;
 		}
+
 	}
 
 	public class TournamentAtOrkney : TournamentCard {
 		public TournamentAtOrkney(QuestMatch match) : base(match) {
 			this.name = "Tournament At Orkney";
-			this.imageFilename = "tournament_at_orkney.png";
+			this.imageFilename = "tournament_at_orkney";
 			this.bonusSheilds = 2;
 		}
 	}
 
 	public class TournamentAtTintagle : TournamentCard {
 		public TournamentAtTintagle(QuestMatch match) : base(match) {
-			this.name = "Tournament At tintagle";
-			this.imageFilename = "tournament_at_tintagle.png";
+			this.name = "Tournament At Tintagel";
+			this.imageFilename = "tournament_at_tintagel";
 			this.bonusSheilds = 1;
 		}
 	}
@@ -40,7 +41,7 @@ namespace Quest.Core.Cards{
 	public class TournamentAtYork : TournamentCard {
 		public TournamentAtYork(QuestMatch match) : base(match) {
 			this.name = "Tournament At York";
-			this.imageFilename = "tournament_at_York.png";
+			this.imageFilename = "tournament_at_York";
 			this.bonusSheilds = 0;
 		}
 	}

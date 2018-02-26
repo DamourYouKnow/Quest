@@ -85,7 +85,7 @@ public class CardPrompt : MonoBehaviour {
 
 		for (int i = 0; i < currentCards.Count; i++) {
 			GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
-			card.transform.SetParent (cards.transform);
+			card.transform.SetParent (cards.transform, false);
 			card.transform.localScale = new Vector3 (1, 1, 1);
 			card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + currentCards.Cards [i].ImageFilename);
 		}
@@ -111,7 +111,7 @@ public class CardPrompt : MonoBehaviour {
 public class SponsorQuestPrompt : MonoBehaviour {
 	private GameObject promptObj;
 	private Text messageText;
-	private GameObject cards;
+	private GameObject card;
 	private Button yesButton;
 	private Button noButton;
 	private Card quest;
@@ -142,17 +142,16 @@ public class SponsorQuestPrompt : MonoBehaviour {
 		this.yesButton.onClick.AddListener(closePrompt);
 		this.noButton.onClick.AddListener(closePrompt);
 
-		this.cards = Instantiate (Resources.Load ("CardPanel")) as GameObject;
-
-		GameObject card = Instantiate (Resources.Load ("Card", typeof(GameObject))) as GameObject;
-		card.transform.SetParent (cards.transform);
-		card.transform.localScale = new Vector3 (1, 1, 1);
-		card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + quest.ImageFilename);
 	}
 
 	void Start() {
 		this.gameObject.transform.SetParent(GameObject.Find("GameCanvas").transform, false);
 		this.promptObj.transform.SetParent(GameObject.Find("GameCanvas").transform, false);
+		GameObject SponsorCard = GameObject.Find ("SponsorQuestCards");
+		this.card = Instantiate (Resources.Load ("Card", typeof(GameObject))) as GameObject;
+		card.transform.SetParent (SponsorCard.transform, false);
+		card.transform.localScale = new Vector3 (1, 1, 1);
+		card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + quest.ImageFilename);
 	}
 
 	public void SetParent(Transform transform) {
@@ -163,5 +162,6 @@ public class SponsorQuestPrompt : MonoBehaviour {
 		Debug.Log("Closing prompt...");
 		Destroy(this.gameObject);
 		Destroy(promptObj);
+		Destroy (this.card);
 	}
 }
