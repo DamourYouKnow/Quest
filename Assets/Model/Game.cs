@@ -10,6 +10,12 @@ namespace Quest.Core {
         public const int MaxHandSize = 12;
     }
 
+	public enum MatchState {
+		INIT,
+		START_GAME,
+		START_TURN
+	};
+
     public class QuestMatch : Subject{
         private List<Player> players;
         private int currentPlayer;
@@ -19,7 +25,8 @@ namespace Quest.Core {
         private StoryCard currentStory;
         private Logger logger;
         private bool waiting;
-		private int state;
+		private int scheck;
+		private MatchState state;
 
         public QuestMatch(Logger logger=null) {
             this.players = new List<Player>();
@@ -31,11 +38,12 @@ namespace Quest.Core {
             this.logger = logger;
             this.Log("Creating new Quest match");
             this.waiting = false;
-			this.state = 0;
+			this.scheck = 0;
+			this.state = MatchState.INIT;
         }
 
 		public int getState(){
-			return this.state;
+			return this.scheck;
 		}
 
 		public void addObserver(Observer observer){
@@ -69,7 +77,7 @@ namespace Quest.Core {
 
         public List<Player> OtherPlayers {
             get {
-                List<Player> retList = this.players;
+                List<Player> retList = new List<Player>(this.players);
                 retList.Remove(this.CurrentPlayer);
                 return retList;
             }
@@ -99,29 +107,35 @@ namespace Quest.Core {
 
         public void RunGame() {
             this.Log("Running game...");
-
             while (!this.hasWinner()) {
                 this.NextTurn();
             }
 
-            List<Player> winner = this.getWinners();
-            this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
+
+		    List<Player> winner = this.getWinners();
+			this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
         }
 
         public void NextTurn() {
-            if (this.currentPlayer + 1 >= this.players.Count) {
+            if (this.currentPlayer >= this.players.Count) {
                 this.currentPlayer = 0;
-            }
+            } 
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
+
+
+			this.state = MatchState.START_TURN;
+            //this.Wait ();
             this.NextStory();
+            this.currentPlayer++;
+
         }
 
         public void NextStory() {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
             this.Log("Story " + story.ToString() + " drawn");
             this.currentStory = story;
-			this.state = 1;
+			this.scheck = 1;
 
             try {
                 story.Run();
