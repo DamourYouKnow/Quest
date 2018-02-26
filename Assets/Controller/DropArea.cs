@@ -16,13 +16,11 @@ class DropArea : MonoBehaviour, IDropHandler {
 			if (c != null) {
 				CardArea ca1 = draggable.ReturnParent.gameObject.GetComponent<GameCardArea> ().Cards;
 				CardArea ca2 = this.transform.gameObject.GetComponent<GameCardArea> ().Cards;
-				Debug.Log (ca1);
-				Debug.Log (ca2);
-				ca1.Transfer (ca2, c);
-				Debug.Log (ca1);
-				Debug.Log (ca2);
+				if (ca2 != null) {
+					ca1.Transfer (ca2, c);
+					draggable.ReturnParent = this.transform;
+				}
 			}
-            draggable.ReturnParent = this.transform;
         }
     }
 
