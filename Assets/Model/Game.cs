@@ -19,7 +19,8 @@ namespace Quest.Core {
 		REQUEST_PARTICIPANTS,
 		REQUEST_STAGE,
 		RUN_STAGE,
-		END_STORY
+		END_STORY,
+		START_TOURNAMENT
 	};
     public class QuestMatch : Subject{
         private List<Player> players;

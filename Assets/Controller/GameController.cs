@@ -80,10 +80,12 @@ namespace Quest.Core {
 						this.gm.RunGame();
 					}
 					if (this.gm.State == MatchState.START_TURN) {
+						Debug.Log ("start turn");
 						this.waiting = true;
 						StartTurnPrompt ();
 					}
 					if (this.gm.State == MatchState.REQUEST_SPONSOR) {
+						Debug.Log ("requesting sponsor");
 						this.waiting = true;
 						RequestSponsorPrompt();
 					}
@@ -99,6 +101,12 @@ namespace Quest.Core {
 						this.waiting = true;
 						RequestParticipantsPrompt ();
 					}
+					if (this.gm.State == MatchState.START_TOURNAMENT) {
+						Debug.Log ("went into tournament");
+						this.waiting = true;
+						RequestParticipationTournament ();
+					}
+
 					if (this.gm.State == MatchState.REQUEST_STAGE) {
 						QuestCard qc = this.gm.CurrentStory as QuestCard;
 						this.waiting = true;
@@ -153,6 +161,7 @@ namespace Quest.Core {
 				this.gm.NextTurn ();
 			}
 			if (this.gm.State == MatchState.REQUEST_STAGE) {
+				Debug.Log ("requested stage");
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.CurrentStory.Run ();
@@ -242,6 +251,7 @@ namespace Quest.Core {
 				this.ShowHand ((this.gm.CurrentStory as QuestCard).Sponsor);};
 		}
 		public void RequestSponsorPrompt(){
+			Debug.Log ("requesting sponsor");
 			this.HideHand ();
 			GameObject promptObj = new GameObject("SponsorQuestPrompt");
 			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
@@ -252,6 +262,7 @@ namespace Quest.Core {
 		}
 
 		public void SponsorYes(){
+			Debug.Log ("sponser yes func");
 			this.gm.Log("Sponsor Yes Clicked");
 			QuestCard qc = this.gm.CurrentStory as QuestCard;
 			qc.Sponsor = this.gm.Players[this.gm.PromptingPlayer];
@@ -272,8 +283,59 @@ namespace Quest.Core {
 				this.waiting = false;
 			}
 		}
+			
+		public void RequestParticipationTournament(){
+			GameObject promptObj = new GameObject ("ParticipateInTournament");
+			Prompt prompt = promptObj.AddComponent<Prompt>();
+			prompt.Message = "Would " + this.gm.Players[this.gm.PromptingPlayer].Username +" like to participate in "+ this.gm.CurrentStory.Name +"?";
+			prompt.OnYesClick = this.ParticipateTournament;
+			prompt.OnNoClick = this.NoParticipateTournament;
+		}
+
+		public void ParticipateTournament(){
+			Debug.Log ("participate in touny");
+			TournamentCard tc = this.gm.CurrentStory as TournamentCard;
+			int i = 0;
+			for (; i < this.gm.Players.Count; i++) {
+				if (this.gm.Players [i] == tc.FirstPlayer) {
+					break;
+				}
+			}
+			this.gm.Log ("Participate Yes Clicked");
+			Debug.Log (tc);
+			tc.Participants.Add(this.gm.Players[this.gm.PromptingPlayer]);
+			this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % this.gm.Players.Count;
+			if (this.gm.PromptingPlayer == i) {
+				this.gm.Continue ();
+				this.waiting = false;
+				this.gm.CurrentStory.Run ();
+			}
+			else {
+				this.waiting = false;
+			}
+		}
+		public void NoParticipateTournament(){
+			TournamentCard tc = this.gm.CurrentStory as TournamentCard;
+			int i = 0;
+			for (; i < this.gm.Players.Count; i++) {
+				if (this.gm.Players [i] == tc.FirstPlayer) {
+					break;
+				}
+			}
+			this.gm.Log("Participate No Clicked");
+			this.gm.PromptingPlayer = (this.gm.PromptingPlayer+1)%this.gm.Players.Count;
+			if (this.gm.PromptingPlayer == i){
+				this.gm.Continue();
+				this.waiting = false;
+				this.gm.CurrentStory.Run ();
+			}
+			else{
+				this.waiting = false;
+			}
+		}
 
 		public void RequestParticipantsPrompt(){
+			Debug.Log ("wut");
 			GameObject promptObj = new GameObject("SponsorQuestPrompt");
 			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
 			prompt.Quest = this.gm.CurrentStory;
@@ -281,6 +343,7 @@ namespace Quest.Core {
 			prompt.OnYesClick = this.ParticipateYes;
 			prompt.OnNoClick = this.ParticipateNo;
 		}
+			
 
 		public void ParticipateYes(){
 			QuestCard qc = this.gm.CurrentStory as QuestCard;

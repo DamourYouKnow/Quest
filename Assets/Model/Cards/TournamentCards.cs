@@ -1,15 +1,47 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Quest.Core.Players;
+
 
 namespace Quest.Core.Cards{
 	public abstract class TournamentCard : StoryCard {
 		protected int bonusSheilds;
+		protected List<Player> participants;
+		protected Player firstPlayer;
 
 		public TournamentCard(QuestMatch match) : base(match) {
+		}
 
+		public Player FirstPlayer {
+			get { return this.firstPlayer; }
+			set { this.firstPlayer = value; }
 		}
 
 		public override void Run(){
-			this.match.EndStory ();
+			this.firstPlayer = this.match.CurrentPlayer;
+			this.requestParticipation ();
+		//	this.match.EndStory ();
+		}
+
+		public void requestParticipation(){
+			this.match.Log ("Requesting Participants");
+			this.match.State = MatchState.START_TOURNAMENT;
+
+			int i = 0;
+			for (; i < this.match.Players.Count; i++) {
+				if (this.match.Players [i] == this.firstPlayer) {
+					break;
+				}
+			}
+
+			this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
+			this.match.Wait ();
+		}
+
+		public List<Player> Participants {
+			get { return this.participants; }
+			set { this.participants = value; }
 		}
 	}
 
