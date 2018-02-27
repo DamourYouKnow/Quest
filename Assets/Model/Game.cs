@@ -308,31 +308,27 @@ namespace Quest.Core {
             this.cards.Remove(card);
         }
 
-		public void Transfer(CardArea target, Card card) {
-			if (target.GetType ().Equals (typeof(QuestArea))) {
-				QuestArea qatarget = target as QuestArea;
-				if (this.cards.Contains(card)) {
-					qatarget.cards.Add(card);
+		public virtual void Transfer(CardArea target, Card card) {
+			if (this.cards.Contains(card)) {
+				if (target.GetType ().Equals (typeof(QuestArea))) {
+					QuestArea qatarget = target as QuestArea;
+					qatarget.Add (card);
 					if (qatarget.cards.Contains (card)) {
-						this.cards.Remove(card);
+						this.cards.Remove (card);
 					}
-				}
-			}
-            if (this.cards.Contains(card)) {
-                target.cards.Add(card);
-				if (target.cards.Contains (card)) {
-					this.cards.Remove(card);
+				} else {
+					target.cards.Add (card);
+					if (target.cards.Contains (card)) {
+						this.cards.Remove (card);
+					}
 				}
             }
         }
 
 		public void Transfer(CardArea target, List<Card> cards) {
 			cards = new List<Card>(cards); // Stop bad things from happening.
-			if (target.GetType ().Equals (typeof(QuestArea))) {
-				QuestArea qatarget = target as QuestArea;
-				foreach (Card card in cards) {
-					this.Transfer(qatarget, card);
-				}
+			foreach (Card card in cards) {
+				this.Transfer(target, card);
 			}
             foreach (Card card in cards) {
                 this.Transfer(target, card);
