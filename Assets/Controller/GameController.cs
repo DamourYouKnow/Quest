@@ -211,7 +211,7 @@ namespace Quest.Core {
 				card.GetComponent<GameCard>().Card = p.Hand.Cards[i];
 				card.transform.SetParent (this.GameHandArea.transform);
 				card.transform.localScale = new Vector3 (1, 1, 1);
-				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentPlayer.Hand.Cards [i].ImageFilename);
+				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + p.Hand.Cards [i].ImageFilename);
 			}
 		}
 
