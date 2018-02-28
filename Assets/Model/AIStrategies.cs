@@ -124,18 +124,14 @@ namespace Quest.Core.Players {
             return cardsToPlay;
         }
 
-        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
-			
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {	
 			List<AdventureCard>[] stages = CardsToSponsorQuest(hand, questCard.StageCount);
 			return validateCardsToSponsorQuest(stages);
         }
 
-        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
-			
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {	
 			return CardsToSponsorQuest(hand, questCard.StageCount);
         }
-		
-		
 		
 		private List<AdventureCard>[] CardsToSponsorQuest(Hand hand, int size) {
 			List<AdventureCard>[] stages = new List<AdventureCard>[size];
@@ -298,7 +294,7 @@ namespace Quest.Core.Players {
             int lastBattlePoints = 0;
 
             foreach (List<AdventureCard> stage in stages) {
-				BattleArea compareArea = new BattleArea();
+				PlayerArea compareArea = new PlayerArea();
                 List<BattleCard> nonTests = new List<BattleCard>();
 				bool StageIsTest = false;
 				//filter test cards
@@ -330,7 +326,7 @@ namespace Quest.Core.Players {
             int lastBattlePoints = 0;
 
             foreach (List<BattleCard> questChunk in questChunks) {
-                BattleArea compareArea = new BattleArea();
+                PlayerArea compareArea = new PlayerArea();
                 foreach (BattleCard card in questChunk) {
                     compareArea.Add(card);
                 }
