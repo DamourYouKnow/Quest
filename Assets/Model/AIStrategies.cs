@@ -294,7 +294,7 @@ namespace Quest.Core.Players {
             int lastBattlePoints = 0;
 
             foreach (List<AdventureCard> stage in stages) {
-				PlayerArea compareArea = new PlayerArea();
+				BattleArea compareArea = new BattleArea();
                 List<BattleCard> nonTests = new List<BattleCard>();
 				bool StageIsTest = false;
 				//filter test cards
@@ -326,7 +326,7 @@ namespace Quest.Core.Players {
             int lastBattlePoints = 0;
 
             foreach (List<BattleCard> questChunk in questChunks) {
-                PlayerArea compareArea = new PlayerArea();
+                BattleArea compareArea = new BattleArea();
                 foreach (BattleCard card in questChunk) {
                     compareArea.Add(card);
                 }
