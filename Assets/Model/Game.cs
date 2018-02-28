@@ -301,7 +301,7 @@ namespace Quest.Core {
             }
         }
 
-        public void Remove(Card card) {
+		public virtual void Remove(Card card) {
             if (!this.cards.Contains(card)) {
                 throw new Exception("Card not in area.");
             }
@@ -314,12 +314,12 @@ namespace Quest.Core {
 					QuestArea qatarget = target as QuestArea;
 					qatarget.Add (card);
 					if (qatarget.cards.Contains (card)) {
-						this.cards.Remove (card);
+						this.Remove (card);
 					}
 				} else {
 					target.cards.Add (card);
 					if (target.cards.Contains (card)) {
-						this.cards.Remove (card);
+						this.Remove (card);
 					}
 				}
             }
@@ -376,8 +376,6 @@ namespace Quest.Core {
         }
 
 		public override void Add(Card card){
-			Logger log = new Logger ("QuestArea");
-			log.Log ((card.GetType ().BaseType.Equals (typeof(FoeCard)) || card.GetType ().BaseType.Equals (typeof(TestCard))).ToString());
 			if (card.GetType().BaseType.Equals(typeof(FoeCard)) || card.GetType().BaseType.Equals(typeof(TestCard))) {
 				if (this.mainCard == null) {
 					this.mainCard = card;
@@ -395,9 +393,18 @@ namespace Quest.Core {
 						break;
 					}
 				}
-				if (canAdd && this.mainCard!=null && !this.mainCard.GetType().IsSubclassOf(typeof(TestCard))) {
+				if (canAdd && !card.GetType().IsSubclassOf(typeof(AllyCard)) && this.mainCard!=null && !this.mainCard.GetType().IsSubclassOf(typeof(TestCard))) {
 					this.cards.Add(card);
 				}
+			}
+		}
+		public override void Remove(Card card) {
+			if (!this.cards.Contains(card)) {
+				throw new Exception("Card not in area.");
+			}
+			this.cards.Remove(card);
+			if (this.mainCard == card) {
+				this.mainCard = null;
 			}
 		}
 		public override int BattlePoints(){

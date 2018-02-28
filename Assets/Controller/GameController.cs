@@ -134,7 +134,9 @@ namespace Quest.Core {
 							this.GameOtherArea.AddComponent<QuestGameCardArea> ().QuestCards = qa;
 						}
 						else {
-							this.ClearQuestGameArea (this.GameOtherArea.GetComponent<QuestGameCardArea> ());
+							QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
+							qgca.QuestCards = qa;
+							this.ClearQuestGameArea (qgca);
 						}
 						ConfirmSponsorPrompt ();
 					}
@@ -276,13 +278,13 @@ namespace Quest.Core {
 		public void RequestSponsorPrompt(){
 			Debug.Log ("requesting sponsor");
 			bool canSponsor = false;
+			int sponsori = 0;
 			foreach(Card ccard in this.gm.Players[this.gm.PromptingPlayer].Hand.Cards){
-				canSponsor = ccard.GetType ().IsSubclassOf (typeof(TestCard)) || ccard.GetType ().IsSubclassOf (typeof(FoeCard));
-				this.gm.Log ("canSponsor" + canSponsor.ToString ());
-				if (canSponsor) {
-					break;
+				if (ccard.GetType ().IsSubclassOf (typeof(TestCard)) || ccard.GetType ().IsSubclassOf (typeof(FoeCard))) {
+					sponsori += 1;
 				}
 			}
+			canSponsor = (sponsori + 1) >= (this.gm.CurrentStory as QuestCard).StageCount;
 			if (canSponsor) {
 				this.HideHand ();
 				GameObject promptObj = new GameObject ("SponsorQuestPrompt");

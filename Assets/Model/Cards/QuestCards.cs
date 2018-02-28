@@ -341,7 +341,7 @@ namespace Quest.Core.Cards{
 		public SlayTheDragon(QuestMatch match) : base(match) {
 			this.name = "Slay The Dragon";
 			this.imageFilename = "quest_slay_the_dragon";
-			this.stages = new List<QuestArea> (3);
+			this.numStages = 3;
 			this.questFoes.Add (typeof(Dragon));
 		}
 
