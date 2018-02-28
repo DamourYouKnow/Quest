@@ -169,9 +169,11 @@ namespace Quest.Core {
 			}
 			if (this.gm.State == MatchState.REQUEST_STAGE) {
 				Debug.Log ("requested stage");
-				this.gm.Continue ();
-				this.waiting = false;
-				this.gm.CurrentStory.Run ();
+				if (this.GameOtherArea.GetComponent<QuestGameCardArea> ().QuestCards.MainCard != null) {
+					this.gm.Continue ();
+					this.waiting = false;
+					this.gm.CurrentStory.Run ();
+				}
 			}
 			if (this.gm.State == MatchState.RUN_STAGE) {
 				QuestCard qc = this.gm.CurrentStory as QuestCard;
@@ -265,13 +267,26 @@ namespace Quest.Core {
 		}
 		public void RequestSponsorPrompt(){
 			Debug.Log ("requesting sponsor");
-			this.HideHand ();
-			GameObject promptObj = new GameObject("SponsorQuestPrompt");
-			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
-			prompt.Quest = this.gm.CurrentStory;
-			prompt.Message = "Would " + this.gm.Players[this.gm.PromptingPlayer].Username +" like to sponsor "+ this.gm.CurrentStory.Name +"?";
-			prompt.OnYesClick = this.SponsorYes;
-			prompt.OnNoClick = this.SponsorNo;
+			bool canSponsor = false;
+			foreach(Card ccard in this.gm.Players[this.gm.PromptingPlayer].Hand.Cards){
+				canSponsor = ccard.GetType ().IsSubclassOf (typeof(TestCard)) || ccard.GetType ().IsSubclassOf (typeof(FoeCard));
+				this.gm.Log ("canSponsor" + canSponsor.ToString ());
+				if (canSponsor) {
+					break;
+				}
+			}
+			if (canSponsor) {
+				this.HideHand ();
+				GameObject promptObj = new GameObject ("SponsorQuestPrompt");
+				SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt> ();
+				prompt.Quest = this.gm.CurrentStory;
+				prompt.Message = "Would " + this.gm.Players [this.gm.PromptingPlayer].Username + " like to sponsor " + this.gm.CurrentStory.Name + "?";
+				prompt.OnYesClick = this.SponsorYes;
+				prompt.OnNoClick = this.SponsorNo;
+			}
+			else {
+				this.SponsorNo();
+			}
 		}
 
 		public void SponsorYes(){
