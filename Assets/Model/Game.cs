@@ -395,7 +395,7 @@ namespace Quest.Core {
 						break;
 					}
 				}
-				if (canAdd && this.mainCard!=null) {
+				if (canAdd && this.mainCard!=null && !this.mainCard.GetType().IsSubclassOf(typeof(TestCard))) {
 					this.cards.Add(card);
 				}
 			}
