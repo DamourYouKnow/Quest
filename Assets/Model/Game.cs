@@ -402,7 +402,7 @@ namespace Quest.Core {
 		}
 		public override int BattlePoints(){
 			int total = 0;
-			if (this.mainCard.GetType ().Equals (typeof(FoeCard))) {
+			if (this.mainCard.GetType ().IsSubclassOf (typeof(FoeCard))) {
 				foreach (BattleCard card in this.BattleCards) {
 					if (!card.GetType ().BaseType.Equals (typeof(FoeCard)) && !card.GetType ().BaseType.Equals (typeof(TestCard))) {
 						total += card.BattlePoints;
