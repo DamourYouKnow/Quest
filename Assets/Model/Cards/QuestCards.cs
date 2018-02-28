@@ -152,7 +152,7 @@ namespace Quest.Core.Cards{
 						p.Draw (this.match.AdventureDeck, 1);
 					}
 				}
-				this.currentStage = 0;
+				this.currentStage = 1;
 				this.RunStage ();
 			}
 			/*

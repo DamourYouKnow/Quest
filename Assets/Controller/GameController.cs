@@ -143,9 +143,11 @@ namespace Quest.Core {
 					if (this.gm.State == MatchState.RUN_STAGE) {
 						this.waiting = true;
 						QuestCard qc = this.gm.CurrentStory as QuestCard;
-						this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
-						this.GameOtherArea.GetComponent<GameCardArea> ().Cards = qc.Stages [qc.CurrentStage];
-						this.PopulateGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
+						QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
+						this.ClearQuestGameArea (qgca);
+						qgca.QuestCards = qc.Stages [qc.CurrentStage-1];
+						this.PopulateQuestGameArea (qgca);
+						GameObject.Destroy(this.GameOtherArea.GetComponent<DropArea> ());
 						this.PlayerQuestTurnPrompt ();
 					}
 				}
@@ -164,19 +166,19 @@ namespace Quest.Core {
 		}
 
 		public void ConfirmationButton(){
-			if (this.gm.State == MatchState.START_TURN) {
+			if (this.gm.State == MatchState.START_TURN && this.waiting) {
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.NextStory();
 			}
-			if (this.gm.State == MatchState.END_STORY) {
+			if (this.gm.State == MatchState.END_STORY && this.waiting) {
 				this.gm.CurrentPlayerNum = (this.gm.CurrentPlayerNum + 1) % this.gm.Players.Count;
 				this.gm.PromptingPlayer = this.gm.CurrentPlayerNum;
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.NextTurn ();
 			}
-			if (this.gm.State == MatchState.REQUEST_STAGE) {
+			if (this.gm.State == MatchState.REQUEST_STAGE && this.waiting) {
 				Debug.Log ("requested stage");
 				if (this.GameOtherArea.GetComponent<QuestGameCardArea> ().QuestCards.MainCard != null) {
 					this.gm.Continue ();
@@ -184,7 +186,7 @@ namespace Quest.Core {
 					this.gm.CurrentStory.Run ();
 				}
 			}
-			if (this.gm.State == MatchState.RUN_STAGE) {
+			if (this.gm.State == MatchState.RUN_STAGE && this.waiting) {
 				QuestCard qc = this.gm.CurrentStory as QuestCard;
 				this.gm.Continue ();
 				this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % this.gm.Players.Count;
@@ -234,6 +236,15 @@ namespace Quest.Core {
 				card.transform.SetParent (gca.transform);
 				card.transform.localScale = new Vector3 (1, 1, 1);
 				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + gca.Cards.Cards[i].ImageFilename);
+			}
+		}
+		public void PopulateQuestGameArea(QuestGameCardArea qgca){
+			for (int i = 0; i < qgca.QuestCards.Cards.Count; i++) {
+				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+				card.GetComponent<GameCard>().Card = qgca.QuestCards.Cards[i];
+				card.transform.SetParent (qgca.transform);
+				card.transform.localScale = new Vector3 (1, 1, 1);
+				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + qgca.QuestCards.Cards[i].ImageFilename);
 			}
 		}
 		public void HideHand(){
