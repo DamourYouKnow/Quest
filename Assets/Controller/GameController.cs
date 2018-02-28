@@ -21,6 +21,7 @@ namespace Quest.Core {
 		GameObject GameOtherArea;
 		GameObject GameBattleArea;
 		GameObject GameHandArea;
+		List<OpponentState> Opponents;
 
 		//Specifies if a scene has been setup yet
 		//Necessary because scenes are not loaded when Load is run, but rather at next update cycle
@@ -40,6 +41,7 @@ namespace Quest.Core {
 			this.sceneSet = gc.sceneSet;
 			this.waiting = gc.waiting;
 			this.numPlayers = gc.numPlayers;
+			this.Opponents = gc.Opponents;
 		}
 		//Awake is called before Start function, guaranteeing we'll have it setup for other scripts
 		void Awake(){
@@ -56,6 +58,7 @@ namespace Quest.Core {
 				sceneSet = false;
 				waiting = false;
 				numPlayers = 0;
+				this.Opponents = new List<OpponentState> ();
 			}
 			DontDestroyOnLoad (this);
 			this.tag = "GameController";
@@ -75,6 +78,9 @@ namespace Quest.Core {
 		// Update is called once per frame
 		void Update () {
 			if (sceneSet) {
+				foreach (OpponentState opp in Opponents) {
+					opp.update ();
+				}
 				if (this.gm.Waiting && !this.waiting) {
 					if (this.gm.State == MatchState.START_GAME) {
 						this.gm.RunGame();
@@ -199,6 +205,7 @@ namespace Quest.Core {
 			GameObject opponents = GameObject.Find ("Opponents");
 			for (int i = 0; i < this.gm.Players.Count; i++) {
 				GameObject opponent = Instantiate (Resources.Load("Opponent", typeof(GameObject))) as GameObject;
+				this.Opponents.Add (new OpponentState (this, opponent, i));
 				opponent.transform.SetParent (opponents.transform);
 				opponent.transform.localScale = new Vector3 (1, 1, 1);
 			}
@@ -480,6 +487,61 @@ namespace Quest.Core {
 				}
 				this.numPlayers += 1;
 			}
+		}
+	}
+	public class OpponentState{
+		GameController gc;
+		GameObject opponent;
+		int playerNum;
+		Image rankImage;
+		Text playerName;
+		Text shieldText;
+		Text shieldValue;
+		Text cardsText;
+		Text cardsValue;
+		Text inPlayText;
+		Text inPlayValue;
+		public OpponentState(GameController gc, GameObject opponent, int playerNum){
+			this.gc = gc;
+			this.opponent = opponent;
+			this.playerNum = playerNum;
+			List<GameObject> opponentGOs = new List<GameObject>(GameObject.FindGameObjectsWithTag ("Opponent"));
+			foreach (GameObject go in opponentGOs) {
+				if (go.transform.IsChildOf (opponent.transform)) {
+					if (go.name == "OpponentRankImage") {
+						this.rankImage = go.GetComponent<Image>();
+					}
+					if (go.name == "OpponentPlayerName") {
+						this.playerName = go.GetComponent<Text>();
+					}
+					if (go.name == "OpponentShieldText") {
+						this.shieldText = go.GetComponent<Text>();
+					}
+					if (go.name == "OpponentShieldValue") {
+						this.shieldValue = go.GetComponent<Text>();
+					}
+					if (go.name == "OpponentCardsText") {
+						this.cardsText = go.GetComponent<Text>();
+					}
+					if (go.name == "OpponentCardsValue") {
+						this.cardsValue = go.GetComponent<Text>();
+					}
+					if (go.name == "OpponentInPlayText") {
+						this.inPlayText = go.GetComponent<Text>();
+					}
+					if (go.name == "OpponentInPlayValue") {
+						this.inPlayValue = go.GetComponent<Text>();
+					}
+				}
+			}
+		}
+
+		public void update(){
+			this.rankImage.sprite = Resources.Load<Sprite> ("Cards/" + this.gc.GM.Players [this.playerNum].RankCard.ImageFilename);
+			this.playerName.text = this.gc.GM.Players [this.playerNum].Username;
+			this.shieldValue.text = this.gc.GM.Players [this.playerNum].Rank.Shields.ToString();
+			this.cardsValue.text = this.gc.GM.Players [this.playerNum].Hand.Cards.Count.ToString();
+			this.inPlayValue.text = this.gc.GM.Players [this.playerNum].BattleArea.Cards.Count.ToString();
 		}
 	}
 }
