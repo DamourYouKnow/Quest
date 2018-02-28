@@ -169,6 +169,7 @@ namespace Quest.Core {
 			}
 			if (this.gm.State == MatchState.END_STORY) {
 				this.gm.CurrentPlayerNum = (this.gm.CurrentPlayerNum + 1) % this.gm.Players.Count;
+				this.gm.PromptingPlayer = this.gm.CurrentPlayerNum;
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.NextTurn ();
