@@ -119,10 +119,10 @@ namespace Quest.Core {
 						int i = 0;
 						for (; i < this.gm.Players.Count; i++) {
 							if (this.gm.Players [i] == qc.Sponsor) {
+								this.gm.PromptingPlayer = i;
 								break;
 							}
 						}
-						this.gm.PromptingPlayer = i;
 						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + (qc.Stages.Count + 1) + " Area";
 						this.ConfText.GetComponent<Text>().text = "Confirm Stage";
 						QuestArea qa = new QuestArea ();
@@ -144,10 +144,14 @@ namespace Quest.Core {
 						this.waiting = true;
 						QuestCard qc = this.gm.CurrentStory as QuestCard;
 						QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
+						GameCardArea gba = this.GameBattleArea.GetComponent<GameCardArea> ();
 						this.ClearQuestGameArea (qgca);
+						this.ClearGameArea (gba);
 						qgca.QuestCards = qc.Stages [qc.CurrentStage-1];
 						this.PopulateQuestGameArea (qgca);
 						GameObject.Destroy(this.GameOtherArea.GetComponent<DropArea> ());
+						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + qc.CurrentStage + " Area";
+						gba.Cards = this.gm.Players [this.gm.PromptingPlayer].BattleArea;
 						this.PlayerQuestTurnPrompt ();
 					}
 				}
@@ -188,10 +192,10 @@ namespace Quest.Core {
 			}
 			if (this.gm.State == MatchState.RUN_STAGE && this.waiting) {
 				QuestCard qc = this.gm.CurrentStory as QuestCard;
-				this.gm.Continue ();
 				this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % this.gm.Players.Count;
 				this.waiting = false;
 				if (this.gm.Players [this.gm.PromptingPlayer] == qc.Sponsor) {
+					this.gm.Continue ();
 					qc.ResolveStage ();
 				}
 			}
@@ -403,7 +407,7 @@ namespace Quest.Core {
 				}
 			}
 			this.gm.Log("Participate Yes Clicked");
-			qc.Participants.Add (this.gm.Players [this.gm.PromptingPlayer]);
+			qc.AddParticipant (this.gm.Players [this.gm.PromptingPlayer]);
 			this.gm.PromptingPlayer = (this.gm.PromptingPlayer+1)%this.gm.Players.Count;
 			if (this.gm.PromptingPlayer == i) {
 				this.gm.Continue ();
@@ -436,6 +440,7 @@ namespace Quest.Core {
 		}
 
 		public void PlayerQuestTurnPrompt(){
+			this.HideHand ();
 			GameObject promptObj = new GameObject("SponsorQuestPrompt");
 			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
 			prompt.Quest = this.gm.CurrentStory;
@@ -446,6 +451,7 @@ namespace Quest.Core {
 
 		public void PlayerQuestTurnReady(){
 			this.ShowHand (this.gm.Players[this.gm.PromptingPlayer]);
+			this.PopulateGameArea (this.GameBattleArea.GetComponent<GameCardArea>());
 			this.ConfText.GetComponent<Text>().text = "Confirm Cards";
 		}
 		public void DiscardCardsPrompt(){

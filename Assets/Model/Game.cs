@@ -19,6 +19,8 @@ namespace Quest.Core {
 		REQUEST_PARTICIPANTS,
 		REQUEST_STAGE,
 		RUN_STAGE,
+		RESOLVE_STAGE,
+		RESOLVE_QUEST,
 		END_STORY,
 		START_TOURNAMENT
 	};
@@ -317,7 +319,7 @@ namespace Quest.Core {
 						this.Remove (card);
 					}
 				} else {
-					target.cards.Add (card);
+					target.Add (card);
 					if (target.cards.Contains (card)) {
 						this.Remove (card);
 					}
@@ -350,6 +352,18 @@ namespace Quest.Core {
 				total += card.BattlePoints;
 			}
 			return total;
+		}
+		public override void Add(Card card){
+			bool canAdd = true;
+			foreach(Card ccard in this.cards){
+				canAdd = ccard.Name != card.Name;
+				if (!canAdd) {
+					break;
+				}
+			}
+			if (canAdd && !card.GetType().IsSubclassOf(typeof(TestCard)) && !card.GetType().IsSubclassOf(typeof(FoeCard))) {
+				this.cards.Add(card);
+			}
 		}
     }
 

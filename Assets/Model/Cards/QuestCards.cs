@@ -146,7 +146,7 @@ namespace Quest.Core.Cards{
 						break;
 					}
 				}
-				this.match.PromptingPlayer = i + 1;
+				this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
 				foreach (Player p in this.match.Players){
 					if (p != this.sponsor){
 						p.Draw (this.match.AdventureDeck, 1);
@@ -210,7 +210,7 @@ namespace Quest.Core.Cards{
 
 			//If no more stages or no more players, resolve quest.
 			if (this.participants.Count == 0
-				|| this.currentStage > this.numStages) {
+			    || this.currentStage > this.numStages) {
 				foreach (var p in this.participants) {
 					p.Rank.AddShields (this.numStages);
 				}
@@ -222,6 +222,10 @@ namespace Quest.Core.Cards{
 				numDraw += this.numStages;
 				this.match.Log (numDraw.ToString ());
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
+			}
+			else {
+				this.match.State = MatchState.RESOLVE_STAGE;
+				this.match.Wait ();
 			}
 			return winners;
 		}
