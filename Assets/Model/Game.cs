@@ -381,13 +381,38 @@ namespace Quest.Core {
 			if (card.GetType().BaseType.Equals(typeof(FoeCard)) || card.GetType().BaseType.Equals(typeof(TestCard))) {
 				if (this.mainCard == null) {
 					this.mainCard = card;
+					this.cards.Add (card);
 				}
 				else {
 					return;
 				}
 			}
 			else {
-				this.cards.Add(card);
+				bool canAdd = true;
+				foreach(Card ccard in this.cards){
+					canAdd = ccard.Name != card.Name;
+					if (!canAdd) {
+						break;
+					}
+				}
+				if (canAdd && this.mainCard!=null) {
+					this.cards.Add(card);
+				}
+			}
+		}
+		public override int BattlePoints(){
+			int total = 0;
+			if (this.mainCard.GetType ().Equals (typeof(FoeCard))) {
+				foreach (BattleCard card in this.BattleCards) {
+					if (!card.GetType ().BaseType.Equals (typeof(FoeCard)) && !card.GetType ().BaseType.Equals (typeof(TestCard))) {
+						total += card.BattlePoints;
+					}
+				}
+				total += (this.mainCard as FoeCard).BattlePoints;
+				return total;
+			}
+			else {
+				return 0;
 			}
 		}
 	}
