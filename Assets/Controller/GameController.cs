@@ -306,19 +306,13 @@ namespace Quest.Core {
 		}
 
 		public void ParticipateTournament(){
-			Debug.Log ("participate in touny");
 			TournamentCard tc = this.gm.CurrentStory as TournamentCard;
-			int i = 0;
-			for (; i < this.gm.Players.Count; i++) {
-				if (this.gm.Players [i] == tc.FirstPlayer) {
-					break;
-				}
-			}
 			this.gm.Log ("Participate Yes Clicked");
-			Debug.Log (tc);
 			tc.Participants.Add(this.gm.Players[this.gm.PromptingPlayer]);
+			Debug.Log (tc.Participants.Count);
 			this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % this.gm.Players.Count;
-			if (this.gm.PromptingPlayer == i) {
+			if (this.gm.PromptingPlayer == tc.FirstPlayerNum) {
+				tc.AllAsked = 1;
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.CurrentStory.Run ();
@@ -329,15 +323,9 @@ namespace Quest.Core {
 		}
 		public void NoParticipateTournament(){
 			TournamentCard tc = this.gm.CurrentStory as TournamentCard;
-			int i = 0;
-			for (; i < this.gm.Players.Count; i++) {
-				if (this.gm.Players [i] == tc.FirstPlayer) {
-					break;
-				}
-			}
 			this.gm.Log("Participate No Clicked");
 			this.gm.PromptingPlayer = (this.gm.PromptingPlayer+1)%this.gm.Players.Count;
-			if (this.gm.PromptingPlayer == i){
+			if (this.gm.PromptingPlayer == tc.FirstPlayerNum){
 				this.gm.Continue();
 				this.waiting = false;
 				this.gm.CurrentStory.Run ();
@@ -348,7 +336,6 @@ namespace Quest.Core {
 		}
 
 		public void RequestParticipantsPrompt(){
-			Debug.Log ("wut");
 			GameObject promptObj = new GameObject("SponsorQuestPrompt");
 			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
 			prompt.Quest = this.gm.CurrentStory;
