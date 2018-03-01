@@ -109,6 +109,25 @@ namespace Quest.Core {
 					}
 					if (this.gm.State == MatchState.END_STORY) {
 						this.waiting = true;
+						QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
+						if (qgca != null) {
+							this.ClearQuestGameArea (qgca);
+							GameObject.Destroy (qgca);
+						}
+						if (this.GameOtherArea.GetComponent<GameCardArea> () == null) {
+							this.GameOtherArea.AddComponent<GameCardArea> ();
+						}
+						if (this.GameOtherArea.GetComponent<DropArea> () == null) {
+							this.GameOtherArea.AddComponent<DropArea> ();
+						}
+						if (this.GameBattleArea.GetComponent<GameCardArea> () == null) {
+							this.GameBattleArea.AddComponent<GameCardArea> ();
+						}
+						if (this.GameBattleArea.GetComponent<DropArea> () == null) {
+							this.GameBattleArea.AddComponent<DropArea> ();
+						}
+						this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea>());
+						this.ClearGameArea (this.GameBattleArea.GetComponent<GameCardArea> ());
 						this.ConfText.GetComponent<Text>().text = "End Turn";
 					}
 					if (this.gm.State == MatchState.REQUEST_PARTICIPANTS) {
