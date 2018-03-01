@@ -299,7 +299,7 @@ namespace Quest.Core {
 					sponsori += 1;
 				}
 			}
-			canSponsor = (sponsori + 1) >= (this.gm.CurrentStory as QuestCard).StageCount;
+			canSponsor = sponsori >= (this.gm.CurrentStory as QuestCard).StageCount;
 			if (canSponsor) {
 				this.HideHand ();
 				GameObject promptObj = new GameObject ("SponsorQuestPrompt");

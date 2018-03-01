@@ -222,9 +222,10 @@ namespace Quest.Core.Cards{
 				numDraw += this.numStages;
 				this.match.Log (numDraw.ToString ());
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
+				this.match.EndStory();
 			}
 			else {
-				this.match.State = MatchState.RESOLVE_STAGE;
+				this.match.State = MatchState.RUN_STAGE;
 				this.match.Wait ();
 			}
 			return winners;
