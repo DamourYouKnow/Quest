@@ -30,8 +30,18 @@ namespace Quest.Core.Cards{
 			get { return this.allAsked; }
 			set { this.allAsked = value; }
 		}
+			
 
-		public override void Run(){
+        public List<Player> Participants {
+            get { return this.participants; }
+            set { this.participants = value; }
+        }
+
+        public int Shields {
+			get { return this.participants.Count + this.bonusSheilds; }
+        }
+
+        public override void Run() {
 			this.firstPlayer = this.match.CurrentPlayer;
 			for (int i = 0; i < this.match.Players.Count; i++) {
 				if (this.match.Players [i] == this.firstPlayer) {
@@ -59,11 +69,6 @@ namespace Quest.Core.Cards{
 			this.match.State = MatchState.START_TOURNAMENT;
 
 			this.match.Wait ();
-		}
-
-		public List<Player> Participants {
-			get { return this.participants; }
-			set { this.participants = value; }
 		}
 	}
 

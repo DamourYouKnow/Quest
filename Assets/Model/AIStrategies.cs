@@ -64,6 +64,20 @@ namespace Quest.Core.Players {
         }
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {
+            foreach (Player player in questCard.Match.Players) {
+                if (player != hand.Player && promotableThroughQuest(player, questCard)) return false;
+            }
+
+            // TODO: Change these functions.
+            List<AdventureCard>[] stages = cardsToSponsorQuest(hand, questCard.StageCount);
+            return validateCardsToSponsorQuest(stages);
+        }
+
+        private List<AdventureCard>[] cardsToSponsorQuest(Hand hand, int stageCount) {
+            throw new NotImplementedException();
+        }
+
+        private bool validateCardsToSponsorQuest(List<AdventureCard>[] stages) {
             throw new NotImplementedException();
         }
     }
@@ -193,87 +207,13 @@ namespace Quest.Core.Players {
                 if (player != hand.Player && promotableThroughQuest(player, questCard)) return false;
             }
 
-			List<AdventureCard>[] stages = CardsToSponsorQuest(hand, questCard.StageCount);
+			List<AdventureCard>[] stages = cardsToSponsorQuest(hand, questCard.StageCount);
 			return validateCardsToSponsorQuest(stages);
         }
 
         public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {	
-			return CardsToSponsorQuest(hand, questCard.StageCount);
+			return cardsToSponsorQuest(hand, questCard.StageCount);
         }
-		
-		private List<AdventureCard>[] CardsToSponsorQuest(Hand hand, int size) {
-			List<AdventureCard>[] stages = new List<AdventureCard>[size];
-            List<TestCard> tests = hand.GetCards<TestCard>();
-            List<FoeCard> foes = new List<FoeCard>(hand.GetCards<FoeCard>());
-            List<WeaponCard> weapons = new List<WeaponCard>(hand.GetCards<WeaponCard>());
-
-            foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP.
-            weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP.
-
-            int lastStageBP = 0;
-            for (int s = 0; s < stages.Length; s++) {
-                List<AdventureCard> nextStage = new List<AdventureCard>();
-                stages[s] = nextStage;
-
-                if (s + 1 == size - 1 && tests.Count > 0) {
-                    nextStage.Add(tests[0]);
-                }
-				//if last stage
-                else if (s + 1 == size) {
-                    int currentStageBP = 0;
-					if (foes.Count > 0) {
-                            nextStage.Add(foes[0]);
-                            currentStageBP += foes[0].BattlePoints;
-                            foes.RemoveAt(0);
-                    }
-                    while ((currentStageBP < 40 || currentStageBP <= lastStageBP) && weapons.Count > 0) {
-                        if (weapons.Count > 0) {
-							int index = 0;
-							foreach (AdventureCard card in stages[s]) {
-								if (card.ToString() == weapons[index].ToString()) {
-									index += 1;
-								}
-								
-								if (index > weapons.Count - 1) {
-										return stages;
-								}
-							}
-                            nextStage.Add(weapons[index]);
-                            currentStageBP += weapons[index].BattlePoints;
-                            weapons.RemoveAt(index);
-                        }
-                    }
-                    lastStageBP = currentStageBP;
-                }
-				//if not last stage
-                else {
-                    int currentStageBP = 0;
-					if (foes.Count > 0) {
-						nextStage.Add(foes[0]);
-						currentStageBP += foes[0].BattlePoints;
-						foes.RemoveAt(0);
-					}
-                    while (currentStageBP <= lastStageBP && foes.Count > 0) {
-						int index = 0;
-						foreach (AdventureCard card in stages[s]) {
-                            if (card.ToString() == weapons[index].ToString()) {
-                                index += 1;
-							}
-							
-							if (index > weapons.Count - 1) {
-                                    return stages;
-                                }
-						}
-                        nextStage.Add(weapons[index]);
-						currentStageBP += weapons[index].BattlePoints;
-						weapons.RemoveAt(index);
-                    }
-                    lastStageBP = currentStageBP;
-                }
-            }
-
-            return stages;
-		}
 		
         // assuming battleCards is sorted, starting from weakest
         private List<BattleCard>[] bestCardsToPlayInQuest(List<BattleCard> battleCards, int size) {
@@ -357,8 +297,82 @@ namespace Quest.Core.Players {
             }
             return cardsToPlay;
         }
-		
-		private bool validateCardsToSponsorQuest(List<AdventureCard>[] stages) {
+
+        protected List<AdventureCard>[] cardsToSponsorQuest(Hand hand, int size) {
+            List<AdventureCard>[] stages = new List<AdventureCard>[size];
+            List<TestCard> tests = hand.GetCards<TestCard>();
+            List<FoeCard> foes = new List<FoeCard>(hand.GetCards<FoeCard>());
+            List<WeaponCard> weapons = new List<WeaponCard>(hand.GetCards<WeaponCard>());
+
+            foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP.
+            weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP.
+
+            int lastStageBP = 0;
+            for (int s = 0; s < stages.Length; s++) {
+                List<AdventureCard> nextStage = new List<AdventureCard>();
+                stages[s] = nextStage;
+
+                if (s + 1 == size - 1 && tests.Count > 0) {
+                    nextStage.Add(tests[0]);
+                }
+                //if last stage
+                else if (s + 1 == size) {
+                    int currentStageBP = 0;
+                    if (foes.Count > 0) {
+                        nextStage.Add(foes[0]);
+                        currentStageBP += foes[0].BattlePoints;
+                        foes.RemoveAt(0);
+                    }
+                    while ((currentStageBP < 40 || currentStageBP <= lastStageBP) && weapons.Count > 0) {
+                        if (weapons.Count > 0) {
+                            int index = 0;
+                            foreach (AdventureCard card in stages[s]) {
+                                if (card.ToString() == weapons[index].ToString()) {
+                                    index += 1;
+                                }
+
+                                if (index > weapons.Count - 1) {
+                                    return stages;
+                                }
+                            }
+                            nextStage.Add(weapons[index]);
+                            currentStageBP += weapons[index].BattlePoints;
+                            weapons.RemoveAt(index);
+                        }
+                    }
+                    lastStageBP = currentStageBP;
+                }
+                //if not last stage
+                else {
+                    int currentStageBP = 0;
+                    if (foes.Count > 0) {
+                        nextStage.Add(foes[0]);
+                        currentStageBP += foes[0].BattlePoints;
+                        foes.RemoveAt(0);
+                    }
+                    while (currentStageBP <= lastStageBP && foes.Count > 0) {
+                        int index = 0;
+                        foreach (AdventureCard card in stages[s]) {
+                            if (card.ToString() == weapons[index].ToString()) {
+                                index += 1;
+                            }
+
+                            if (index > weapons.Count - 1) {
+                                return stages;
+                            }
+                        }
+                        nextStage.Add(weapons[index]);
+                        currentStageBP += weapons[index].BattlePoints;
+                        weapons.RemoveAt(index);
+                    }
+                    lastStageBP = currentStageBP;
+                }
+            }
+
+            return stages;
+        }
+
+        private bool validateCardsToSponsorQuest(List<AdventureCard>[] stages) {
             int lastBattlePoints = 0;
 
             foreach (List<AdventureCard> stage in stages) {
