@@ -8,7 +8,6 @@ using Quest.Core;
 using Quest.Core.Players;
 using Quest.Core.Cards;
 using Utils;
-using System.Collections.Generic;
 
 namespace Quest.Core {
 	public class GameController : MonoBehaviour {

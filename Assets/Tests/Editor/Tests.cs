@@ -45,7 +45,7 @@ namespace NUnitTesting {
             // Transfer cards from player hand to battle area.
             KingArthur testCard = new KingArthur(ScenarioCreator.EmptyGame());
             Hand playerHand = new Hand(null);
-            BattleArea battleArea = new BattleArea();
+            PlayerArea battleArea = new PlayerArea();
             playerHand.Add(testCard);
             playerHand.Transfer(battleArea, testCard);
 
