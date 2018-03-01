@@ -7,9 +7,16 @@ using UnityEngine.UI;
 using Quest.Core;
 using Quest.Core.Players;
 using Quest.Core.Cards;
+using Quest.Core.Scenarios;
 using Utils;
 
 namespace Quest.Core {
+    public enum Scenario {
+        LocalGame,
+        Scenario1,
+        Scenario2
+    }
+
 	public class GameController : MonoBehaviour {
 		QuestMatch gm;
 		Logger logger;
@@ -25,6 +32,7 @@ namespace Quest.Core {
 		//Specifies if a scene has been setup yet
 		//Necessary because scenes are not loaded when Load is run, but rather at next update cycle
 		bool sceneSet;
+        private Scenario scenario;
 
 		public Logger Logger {
 			get { return this.logger; }
@@ -52,8 +60,17 @@ namespace Quest.Core {
 				Destroy (gc);
 			}
 			else {
-				logger = new Logger ();
-				gm = new QuestMatch(logger);
+                if (this.scenario == Scenario.LocalGame) {
+                    logger = new Logger();
+                    gm = new QuestMatch(logger);
+                }
+                if (this.scenario == Scenario.Scenario1) {
+                    gm = ScenarioCreator.Scenario1();
+                }
+                if (this.scenario == Scenario.Scenario2) {
+                    gm = ScenarioCreator.Scenario2();
+                }
+
 				sceneSet = false;
 				waiting = false;
 				numPlayers = 0;
@@ -224,9 +241,24 @@ namespace Quest.Core {
 		public void LoadScene(string sceneName){
 			SceneManager.LoadScene(sceneName);
 			sceneSet = false;
-
 		}
-		private void SetupMatchScene (){
+
+        public void LoadLocalGameScene(string sceneName) {
+            this.scenario = Scenario.LocalGame;
+            this.LoadScene(sceneName);
+        }
+
+        public void LoadScenario1GameScene(string sceneName) {
+            this.scenario = Scenario.Scenario1;
+            this.LoadScene(sceneName);
+        }
+
+        public void LoadScenario2GameScene(string sceneName) {
+            this.scenario = Scenario.Scenario2;
+            this.LoadScene(sceneName);
+        }
+
+        private void SetupMatchScene (){
 			GameObject opponents = GameObject.Find ("Opponents");
 			for (int i = 0; i < this.gm.Players.Count; i++) {
 				GameObject opponent = Instantiate (Resources.Load("Opponent", typeof(GameObject))) as GameObject;

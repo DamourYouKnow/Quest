@@ -4,6 +4,70 @@ using System.Collections.Generic;
 using Quest.Core.Cards;
 
 namespace Quest.Core.Players {
+    public class Strategy1 : PlayerBehaviour {
+        public override List<Card> DiscardAfterWinningTest(QuestCard questCard, Hand hand, int discardCount) {
+            throw new NotImplementedException();
+        }
+
+        public override List<Card> DiscardExcessCards(Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInTournament(TournamentCard tournamentCard) {
+            foreach (Player player in tournamentCard.Match.Players) {
+                if (promotableThroughTournament(player, tournamentCard)) return true;
+            }
+            return false;
+        }
+
+        public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override List<BattleCard> PlayCardsInTournament(TournamentCard tournamentCard, Player player) {
+            bool strongestHand = false;
+            foreach (Player participant in tournamentCard.Participants) {
+                if (promotableThroughTournament(participant, tournamentCard)) strongestHand = true;
+            }
+
+            Hand hand = player.Hand;
+            List<BattleCard> playing = new List<BattleCard>();
+            if (strongestHand) {
+                playing.AddRange(hand.GetDistinctCards<WeaponCard>().Cast<BattleCard>().ToList());
+                playing.AddRange(hand.GetDistinctCards<Amour>().Cast<BattleCard>().ToList());
+                playing.AddRange(hand.GetCards<AllyCard>().Cast<BattleCard>().ToList());
+            } else {
+                HashSet<Type> foundWeaponTypes = new HashSet<Type>();
+                foreach (WeaponCard weapon in hand.GetCards<WeaponCard>()) {
+                    Type t = weapon.GetType();
+                    if (foundWeaponTypes.Contains(t)) {
+                        playing.Add(weapon);
+                    } else {
+                        foundWeaponTypes.Add(t);
+                    }
+                }
+            }
+
+            return playing;
+        }
+
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+    }
+
     public class Strategy2 : PlayerBehaviour {
         private const int tournamentTargetBattlePoints = 50;
 
@@ -125,6 +189,10 @@ namespace Quest.Core.Players {
         }
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {	
+            foreach (Player player in questCard.Match.Players) {
+                if (player != hand.Player && promotableThroughQuest(player, questCard)) return false;
+            }
+
 			List<AdventureCard>[] stages = CardsToSponsorQuest(hand, questCard.StageCount);
 			return validateCardsToSponsorQuest(stages);
         }
