@@ -205,9 +205,11 @@ namespace Quest.Core {
             return maxPlayer;
         }
 
-        public void Setup() {
-            this.storyDeck.Shuffle();
-            this.adventureDeck.Shuffle();
+        public void Setup(bool shuffleDecks = true) {
+            if (shuffleDecks) {
+                this.storyDeck.Shuffle();
+                this.adventureDeck.Shuffle();
+            }
 
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {

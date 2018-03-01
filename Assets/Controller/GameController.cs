@@ -60,18 +60,10 @@ namespace Quest.Core {
 				Destroy (gc);
 			}
 			else {
-                if (this.scenario == Scenario.LocalGame) {
-                    logger = new Logger();
-                    gm = new QuestMatch(logger);
-                }
-                if (this.scenario == Scenario.Scenario1) {
-                    gm = ScenarioCreator.Scenario1();
-                }
-                if (this.scenario == Scenario.Scenario2) {
-                    gm = ScenarioCreator.Scenario2();
-                }
-
-				sceneSet = false;
+                logger = new Logger();
+                gm = new QuestMatch(logger);
+     
+  				sceneSet = false;
 				waiting = false;
 				numPlayers = 0;
 				this.Opponents = new List<OpponentState> ();
@@ -250,11 +242,13 @@ namespace Quest.Core {
 
         public void LoadScenario1GameScene(string sceneName) {
             this.scenario = Scenario.Scenario1;
+            gm = ScenarioCreator.Scenario1();
             this.LoadScene(sceneName);
         }
 
         public void LoadScenario2GameScene(string sceneName) {
             this.scenario = Scenario.Scenario2;
+            gm = ScenarioCreator.Scenario2();
             this.LoadScene(sceneName);
         }
 
@@ -266,7 +260,8 @@ namespace Quest.Core {
 				opponent.transform.SetParent (opponents.transform);
 				opponent.transform.localScale = new Vector3 (1, 1, 1);
 			}
-			this.gm.Setup ();
+
+			this.gm.Setup (this.scenario == Scenario.LocalGame);
 		}
 
 		public void ShowHand(Player p){
