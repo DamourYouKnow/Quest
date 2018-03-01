@@ -5,7 +5,7 @@ using Quest.Core.Players;
 
 namespace Quest.Core.Cards{
 	public abstract class TournamentCard : StoryCard {
-		protected int bonusShields;
+		protected int bonusSheilds;
 		protected List<Player> participants;
 		protected Player firstPlayer;
 		protected int firstPlayerNum;
@@ -21,7 +21,6 @@ namespace Quest.Core.Cards{
 			set { this.firstPlayer = value; }
 		}
 
-<<<<<<< HEAD
 		public int FirstPlayerNum {
 			get { return this.firstPlayerNum; }
 			set { this.firstPlayerNum = value; }
@@ -33,18 +32,6 @@ namespace Quest.Core.Cards{
 		}
 
 		public override void Run(){
-=======
-        public List<Player> Participants {
-            get { return this.participants; }
-            set { this.participants = value; }
-        }
-
-        public int Shields {
-            get { return this.participants.Count + this.bonusShields; }
-        }
-
-        public override void Run(){
->>>>>>> 67244307a7f1ea2fc57cc47dfc259dbe4eb35e6c
 			this.firstPlayer = this.match.CurrentPlayer;
 			for (int i = 0; i < this.match.Players.Count; i++) {
 				if (this.match.Players [i] == this.firstPlayer) {
@@ -73,13 +60,18 @@ namespace Quest.Core.Cards{
 
 			this.match.Wait ();
 		}
+
+		public List<Player> Participants {
+			get { return this.participants; }
+			set { this.participants = value; }
+		}
 	}
 
 	public class TournamentAtCamelot : TournamentCard {
 		public TournamentAtCamelot(QuestMatch match) : base(match) {
 			this.name = "Tournament At Camelot";
 			this.imageFilename = "tournament_at_camelot";
-			this.bonusShields = 3;
+			this.bonusSheilds = 3;
 		}
 
 	}
@@ -88,7 +80,7 @@ namespace Quest.Core.Cards{
 		public TournamentAtOrkney(QuestMatch match) : base(match) {
 			this.name = "Tournament At Orkney";
 			this.imageFilename = "tournament_at_orkney";
-			this.bonusShields = 2;
+			this.bonusSheilds = 2;
 		}
 	}
 
@@ -96,7 +88,7 @@ namespace Quest.Core.Cards{
 		public TournamentAtTintagle(QuestMatch match) : base(match) {
 			this.name = "Tournament At Tintagel";
 			this.imageFilename = "tournament_at_tintagel";
-			this.bonusShields = 1;
+			this.bonusSheilds = 1;
 		}
 	}
 
@@ -104,7 +96,7 @@ namespace Quest.Core.Cards{
 		public TournamentAtYork(QuestMatch match) : base(match) {
 			this.name = "Tournament At York";
 			this.imageFilename = "tournament_at_York";
-			this.bonusShields = 0;
+			this.bonusSheilds = 0;
 		}
 	}
 }
