@@ -159,7 +159,7 @@ namespace Quest.Core {
 						this.PopulateQuestGameArea (qgca);
 						GameObject.Destroy(this.GameOtherArea.GetComponent<DropArea> ());
 						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + qc.CurrentStage + " Area";
-						gba.Cards = this.gm.Players [this.gm.PromptingPlayer].BattleArea;
+						gba.Cards = (this.gm.CurrentStory as QuestCard).Participants [this.gm.PromptingPlayer].BattleArea;
 						this.PlayerQuestTurnPrompt ();
 					}
 
@@ -217,9 +217,9 @@ namespace Quest.Core {
 			}
 			if (this.gm.State == MatchState.RUN_STAGE && this.waiting) {
 				QuestCard qc = this.gm.CurrentStory as QuestCard;
-				this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % this.gm.Players.Count;
+				this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % qc.Participants.Count;
 				this.waiting = false;
-				if (this.gm.Players [this.gm.PromptingPlayer] == qc.Sponsor) {
+				if (this.gm.PromptingPlayer == 0) {
 					this.gm.Continue ();
 					qc.ResolveStage ();
 				}
@@ -474,13 +474,13 @@ namespace Quest.Core {
 			GameObject promptObj = new GameObject("SponsorQuestPrompt");
 			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
 			prompt.Quest = this.gm.CurrentStory;
-			prompt.Message = this.gm.Players[this.gm.PromptingPlayer].Username +" ready?";
+			prompt.Message = (this.gm.CurrentStory as QuestCard).Participants[this.gm.PromptingPlayer].Username +" ready?";
 			prompt.OnYesClick = this.PlayerQuestTurnReady;
 			prompt.OnNoClick = this.PlayerQuestTurnReady;
 		}
 
 		public void PlayerQuestTurnReady(){
-			this.ShowHand (this.gm.Players[this.gm.PromptingPlayer]);
+			this.ShowHand ((this.gm.CurrentStory as QuestCard).Participants[this.gm.PromptingPlayer]);
 			this.PopulateGameArea (this.GameBattleArea.GetComponent<GameCardArea>());
 			this.ConfText.GetComponent<Text>().text = "Confirm Cards";
 		}

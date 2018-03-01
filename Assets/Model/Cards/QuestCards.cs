@@ -43,6 +43,18 @@ namespace Quest.Core.Cards{
 			get { return this.sponsor; }
 			set { this.sponsor = value; }
 		}
+		public int SponsorNum{
+			get{
+				if (this.sponsor != null) {
+					for (int i = 0; i < match.Players.Count; i++) {
+						if (match.Players [i] == this.sponsor) {
+							return i;
+						}
+					}
+				}
+				return -1;
+			}
+		}
 
 		public List<Type> QuestFoes {
 			get { return this.questFoes; }
@@ -140,17 +152,9 @@ namespace Quest.Core.Cards{
 				requestStage ();
 			}
 			else {
-				int i = 0;
-				for (; i < this.match.Players.Count; i++) {
-					if (this.match.Players [i] == this.Sponsor) {
-						break;
-					}
-				}
-				this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
-				foreach (Player p in this.match.Players){
-					if (p != this.sponsor){
-						p.Draw (this.match.AdventureDeck, 1);
-					}
+				this.match.PromptingPlayer = 0;
+				foreach (Player p in (this.match.CurrentStory as QuestCard).participants){
+					p.Draw (this.match.AdventureDeck, 1);
 				}
 				this.currentStage = 1;
 				this.RunStage ();
