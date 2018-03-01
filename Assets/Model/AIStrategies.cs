@@ -124,18 +124,14 @@ namespace Quest.Core.Players {
             return cardsToPlay;
         }
 
-        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
-			
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {	
 			List<AdventureCard>[] stages = CardsToSponsorQuest(hand, questCard.StageCount);
 			return validateCardsToSponsorQuest(stages);
         }
 
-        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
-			
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {	
 			return CardsToSponsorQuest(hand, questCard.StageCount);
         }
-		
-		
 		
 		private List<AdventureCard>[] CardsToSponsorQuest(Hand hand, int size) {
 			List<AdventureCard>[] stages = new List<AdventureCard>[size];

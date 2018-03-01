@@ -10,85 +10,87 @@ namespace Quest.Core {
         public const int MaxHandSize = 12;
     }
 
-	public enum MatchState {
-		INIT,
-		START_GAME,
-		START_TURN,
-		RUN_STORY,
-		REQUEST_SPONSOR,
-		REQUEST_PARTICIPANTS,
-		REQUEST_STAGE,
-		RUN_STAGE,
-		END_STORY,
-		START_TOURNAMENT
-	};
-    public class QuestMatch : Subject{
+    public enum MatchState {
+        INIT,
+        START_GAME,
+        START_TURN,
+        RUN_STORY,
+        REQUEST_SPONSOR,
+        REQUEST_PARTICIPANTS,
+        REQUEST_STAGE,
+        RUN_STAGE,
+        RESOLVE_STAGE,
+        RESOLVE_QUEST,
+        END_STORY,
+        START_TOURNAMENT
+    };
+    public class QuestMatch : Subject {
         private List<Player> players;
         private int currentPlayer;
-		private int promptingPlayer;
+        private int promptingPlayer;
         private StoryDeck storyDeck;
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
         private StoryCard currentStory;
         private Logger logger;
         private bool waiting;
-		private MatchState state;
+        private MatchState state;
 
-        public QuestMatch(Logger logger=null) {
+        public QuestMatch(Logger logger = null) {
             this.players = new List<Player>();
             this.currentPlayer = 0;
             this.storyDeck = new StoryDeck(this);
             this.adventureDeck = new AdventureDeck(this);
             this.discardPile = new DiscardPile(this);
-			this.currentStory = null;
+            this.currentStory = null;
             this.logger = logger;
             this.Log("Creating new Quest match");
             this.waiting = false;
-			this.state = MatchState.INIT;
+            this.state = MatchState.INIT;
         }
 
-		public bool Waiting {
-			get { return this.waiting; }
-		}
+        public bool Waiting {
+            get { return this.waiting; }
+        }
 
-		public int PromptingPlayer{
-			get{ return this.promptingPlayer; }
-			set{ this.promptingPlayer = value; }
-		}
+        public int PromptingPlayer {
+            get { return this.promptingPlayer; }
+            set { this.promptingPlayer = value; }
+        }
 
-		public MatchState State {
-			get { return this.state; }
-			set { this.state = value; }
-		}
+        public MatchState State {
+            get { return this.state; }
+            set { this.state = value; }
+        }
 
         public List<Player> Players {
             get { return this.players; }
         }
 
-		public Deck StoryDeck {
-			get { return this.storyDeck; }
-		}
+        public Deck StoryDeck {
+            get { return this.storyDeck; }
+        }
 
         public Deck AdventureDeck {
             get { return this.adventureDeck; }
         }
 
-		public Deck DiscardPile {
-			get { return this.discardPile; }
-		}
+        public Deck DiscardPile {
+            get { return this.discardPile; }
+        }
 
-		public StoryCard CurrentStory {
-			get { return this.currentStory; }
-			set { this.currentStory = value; }
-		}
+        public StoryCard CurrentStory {
+            get { return this.currentStory; }
+            set { this.currentStory = value; }
+        }
 
-		public Player CurrentPlayer {
-			get { return this.players[this.currentPlayer]; }
-		}
-		public int CurrentPlayerNum {
-			get { return this.currentPlayer; }
-			set { this.currentPlayer = value; }
-		}
+        public Player CurrentPlayer {
+            get { return this.players[this.currentPlayer]; }
+        }
+        public int CurrentPlayerNum {
+            get { return this.currentPlayer; }
+            set { this.currentPlayer = value; }
+        }
 
         public List<Player> OtherPlayers {
             get {
@@ -102,8 +104,8 @@ namespace Quest.Core {
         /// Called by logic to wait for a response from the UI.
         /// </summary>
         public void Wait() {
-			this.waiting = true;
-			/*
+            this.waiting = true;
+            /*
             Thread waitThread = new Thread(new ThreadStart(Wait));
             waitThread.Start();
             waitThread.Join();
@@ -111,7 +113,7 @@ namespace Quest.Core {
         }
 
         private void waitTask() {
-			/*
+            /*
             while (this.waiting) {
                 Thread.Sleep(100);
             }
@@ -128,47 +130,47 @@ namespace Quest.Core {
         public void RunGame() {
             this.Log("Running game...");
 
-			if (!this.hasWinner ()) {
-				this.NextTurn ();
-			}
-			else {
-				List<Player> winner = this.getWinners();
-				this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
-			}
+            if (!this.hasWinner()) {
+                this.NextTurn();
+            }
+            else {
+                List<Player> winner = this.getWinners();
+                this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
+            }
         }
 
-		public void NextTurn() {
+        public void NextTurn() {
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
-			this.state = MatchState.START_TURN;
-			this.Wait ();
+            this.state = MatchState.START_TURN;
+            this.Wait();
         }
 
-		public void NextStory() {
+        public void NextStory() {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
             this.Log("Story " + story.ToString() + " drawn");
             this.currentStory = story;
-			this.state = MatchState.RUN_STORY;
-			this.Wait ();
+            this.state = MatchState.RUN_STORY;
+            this.Wait();
         }
-		public void RunStory() {
-			try {
-				CurrentStory.Run();
+        public void RunStory() {
+            try {
+                CurrentStory.Run();
 
-			}
-			catch (NotImplementedException) {
-				this.Log("Feature not implemented");
-			}
-			catch (Exception e) {
-				this.Log(e.Message);
-				this.Log(e.StackTrace);
-			} 
-		}
+            }
+            catch (NotImplementedException) {
+                this.Log("Feature not implemented");
+            }
+            catch (Exception e) {
+                this.Log(e.Message);
+                this.Log(e.StackTrace);
+            }
+        }
 
-		public void EndStory(){
-			this.state = MatchState.END_STORY;
-			this.Wait ();
-		}
+        public void EndStory() {
+            this.state = MatchState.END_STORY;
+            this.Wait();
+        }
         public void AddPlayer(Player player) {
             this.players.Add(player);
             this.Log("Added player " + player.Username + " to Quest match");
@@ -182,16 +184,16 @@ namespace Quest.Core {
             }
             return null;
         }
-		
-		public Player PlayerWithCardOnBoard(Card card){
-			foreach (Player player in this.players) {
+
+        public Player PlayerWithCardOnBoard(Card card) {
+            foreach (Player player in this.players) {
                 if (player.CardInPlay(card)) {
                     return player;
                 }
             }
             return null;
-		}
-		
+        }
+
         public Player PlayerWithMostBattlePoints() {
             Player maxPlayer = this.players[0];
             foreach (Player player in this.players) {
@@ -202,16 +204,18 @@ namespace Quest.Core {
             return maxPlayer;
         }
 
-		public void Setup() {
+        public void Setup() {
             this.storyDeck.Shuffle();
             this.adventureDeck.Shuffle();
 
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
-				player.Draw(this.adventureDeck, Constants.MaxHandSize);
+                while (player.Hand.Count < Constants.MaxHandSize) {
+                    player.Draw(this.adventureDeck);
+                }
             }
-			this.state = MatchState.START_TURN;
-			this.Wait ();
+            this.state = MatchState.START_TURN;
+            this.Wait();
             this.Log("Setup Quest match complete.");
         }
 
@@ -265,7 +269,7 @@ namespace Quest.Core {
             foreach (Card card in this.cards) {
                 if (card is T) {
                     retList.Add((T)(object)card);
-                } 
+                }
             }
             return retList;
         }
@@ -291,9 +295,9 @@ namespace Quest.Core {
             return false;
         }
 
-		public virtual void Add(Card card) {
-			this.cards.Add(card);
-		}
+        public virtual void Add(Card card) {
+            this.cards.Add(card);
+        }
 
         public virtual void Add(List<Card> cards) {
             foreach (Card card in cards) {
@@ -301,35 +305,32 @@ namespace Quest.Core {
             }
         }
 
-        public void Remove(Card card) {
+        public virtual void Remove(Card card) {
             if (!this.cards.Contains(card)) {
                 throw new Exception("Card not in area.");
             }
             this.cards.Remove(card);
         }
 
-		public virtual void Transfer(CardArea target, Card card) {
-			if (this.cards.Contains(card)) {
-				if (target.GetType ().Equals (typeof(QuestArea))) {
-					QuestArea qatarget = target as QuestArea;
-					qatarget.Add (card);
-					if (qatarget.cards.Contains (card)) {
-						this.cards.Remove (card);
-					}
-				} else {
-					target.cards.Add (card);
-					if (target.cards.Contains (card)) {
-						this.cards.Remove (card);
-					}
-				}
+        public virtual void Transfer(CardArea target, Card card) {
+            if (this.cards.Contains(card)) {
+                if (target.GetType().Equals(typeof(QuestArea))) {
+                    QuestArea qatarget = target as QuestArea;
+                    qatarget.Add(card);
+                    if (qatarget.cards.Contains(card)) {
+                        this.Remove(card);
+                    }
+                } else {
+                    target.Add(card);
+                    if (target.cards.Contains(card)) {
+                        this.Remove(card);
+                    }
+                }
             }
         }
 
-		public void Transfer(CardArea target, List<Card> cards) {
-			cards = new List<Card>(cards); // Stop bad things from happening.
-			foreach (Card card in cards) {
-				this.Transfer(target, card);
-			}
+        public void Transfer(CardArea target, List<Card> cards) {
+            cards = new List<Card>(cards); // Stop bad things from happening.
             foreach (Card card in cards) {
                 this.Transfer(target, card);
             }
@@ -340,16 +341,31 @@ namespace Quest.Core {
         }
     }
 
+    public class BattleArea : CardArea {
+        public virtual int BattlePoints() {
+            int total = 0;
+            foreach (BattleCard card in this.BattleCards) {
+                total += card.BattlePoints;
+            }
+            return total;
+        }
+    }
+
     /// <summary>
     /// Battle area on a game board.
     /// </summary>
-    public class BattleArea : CardArea {
-		public virtual int BattlePoints(){
-			int total = 0;
-			foreach (BattleCard card in this.BattleCards) {
-				total += card.BattlePoints;
+    public class PlayerArea : BattleArea {
+		public override void Add(Card card){
+			bool canAdd = true;
+			foreach(Card ccard in this.cards){
+				canAdd = ccard.Name != card.Name;
+				if (!canAdd) {
+					break;
+				}
 			}
-			return total;
+			if (canAdd && !card.GetType().IsSubclassOf(typeof(TestCard)) && !card.GetType().IsSubclassOf(typeof(FoeCard))) {
+				this.cards.Add(card);
+			}
 		}
     }
 
@@ -376,18 +392,50 @@ namespace Quest.Core {
         }
 
 		public override void Add(Card card){
-			Logger log = new Logger ("QuestArea");
-			log.Log ((card.GetType ().BaseType.Equals (typeof(FoeCard)) || card.GetType ().BaseType.Equals (typeof(TestCard))).ToString());
 			if (card.GetType().BaseType.Equals(typeof(FoeCard)) || card.GetType().BaseType.Equals(typeof(TestCard))) {
 				if (this.mainCard == null) {
 					this.mainCard = card;
+					this.cards.Add (card);
 				}
 				else {
 					return;
 				}
 			}
 			else {
-				this.cards.Add(card);
+				bool canAdd = true;
+				foreach(Card ccard in this.cards){
+					canAdd = ccard.Name != card.Name;
+					if (!canAdd) {
+						break;
+					}
+				}
+				if (canAdd && !card.GetType().IsSubclassOf(typeof(AllyCard)) && this.mainCard!=null && !this.mainCard.GetType().IsSubclassOf(typeof(TestCard))) {
+					this.cards.Add(card);
+				}
+			}
+		}
+		public override void Remove(Card card) {
+			if (!this.cards.Contains(card)) {
+				throw new Exception("Card not in area.");
+			}
+			this.cards.Remove(card);
+			if (this.mainCard == card) {
+				this.mainCard = null;
+			}
+		}
+		public override int BattlePoints(){
+			int total = 0;
+			if (this.mainCard.GetType ().IsSubclassOf (typeof(FoeCard))) {
+				foreach (BattleCard card in this.BattleCards) {
+					if (!card.GetType ().BaseType.Equals (typeof(FoeCard)) && !card.GetType ().BaseType.Equals (typeof(TestCard))) {
+						total += card.BattlePoints;
+					}
+				}
+				total += (this.mainCard as FoeCard).BattlePoints;
+				return total;
+			}
+			else {
+				return 0;
 			}
 		}
 	}

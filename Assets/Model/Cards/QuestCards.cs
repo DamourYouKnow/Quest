@@ -146,13 +146,13 @@ namespace Quest.Core.Cards{
 						break;
 					}
 				}
-				this.match.PromptingPlayer = i + 1;
+				this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
 				foreach (Player p in this.match.Players){
 					if (p != this.sponsor){
 						p.Draw (this.match.AdventureDeck, 1);
 					}
 				}
-				this.currentStage = 0;
+				this.currentStage = 1;
 				this.RunStage ();
 			}
 			/*
@@ -210,7 +210,7 @@ namespace Quest.Core.Cards{
 
 			//If no more stages or no more players, resolve quest.
 			if (this.participants.Count == 0
-				|| this.currentStage > this.numStages) {
+			    || this.currentStage > this.numStages) {
 				foreach (var p in this.participants) {
 					p.Rank.AddShields (this.numStages);
 				}
@@ -222,6 +222,10 @@ namespace Quest.Core.Cards{
 				numDraw += this.numStages;
 				this.match.Log (numDraw.ToString ());
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
+			}
+			else {
+				this.match.State = MatchState.RESOLVE_STAGE;
+				this.match.Wait ();
 			}
 			return winners;
 		}
@@ -341,7 +345,7 @@ namespace Quest.Core.Cards{
 		public SlayTheDragon(QuestMatch match) : base(match) {
 			this.name = "Slay The Dragon";
 			this.imageFilename = "quest_slay_the_dragon";
-			this.stages = new List<QuestArea> (3);
+			this.numStages = 3;
 			this.questFoes.Add (typeof(Dragon));
 		}
 

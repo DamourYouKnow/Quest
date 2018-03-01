@@ -139,14 +139,14 @@ namespace Quest.Core.Players {
         private PlayerBehaviour behaviour;
         private PlayerRank rank;
         private Hand hand;
-		private BattleArea battleArea;
+		private PlayerArea battleArea;
 
         public Player(string username, QuestMatch match=null) {
             this.match = match;
             this.username = username;
             this.rank = new PlayerRank(this);
             this.hand = new Hand(this);
-			this.battleArea = new BattleArea();
+			this.battleArea = new PlayerArea();
         }
 
 		public string Username {
@@ -174,7 +174,7 @@ namespace Quest.Core.Players {
             get { return this.rank.RankCard; }
         }
 
-        public BattleArea BattleArea{
+        public PlayerArea BattleArea{
             get { return battleArea; }
         }
 
