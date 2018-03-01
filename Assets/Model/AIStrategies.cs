@@ -32,8 +32,31 @@ namespace Quest.Core.Players {
             throw new NotImplementedException();
         }
 
-        public override List<BattleCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player) {
-            throw new NotImplementedException();
+        public override List<BattleCard> PlayCardsInTournament(TournamentCard tournamentCard, Player player) {
+            bool strongestHand = false;
+            foreach (Player participant in tournamentCard.Participants) {
+                if (promotableThroughTournament(participant, tournamentCard)) strongestHand = true;
+            }
+
+            Hand hand = player.Hand;
+            List<BattleCard> playing = new List<BattleCard>();
+            if (strongestHand) {
+                playing.AddRange(hand.GetDistinctCards<WeaponCard>().Cast<BattleCard>().ToList());
+                playing.AddRange(hand.GetDistinctCards<Amour>().Cast<BattleCard>().ToList());
+                playing.AddRange(hand.GetCards<AllyCard>().Cast<BattleCard>().ToList());
+            } else {
+                HashSet<Type> foundWeaponTypes = new HashSet<Type>();
+                foreach (WeaponCard weapon in hand.GetCards<WeaponCard>()) {
+                    Type t = weapon.GetType();
+                    if (foundWeaponTypes.Contains(t)) {
+                        playing.Add(weapon);
+                    } else {
+                        foundWeaponTypes.Add(t);
+                    }
+                }
+            }
+
+            return playing;
         }
 
         public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
