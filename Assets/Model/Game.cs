@@ -210,7 +210,9 @@ namespace Quest.Core {
 
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
-                player.Draw(this.adventureDeck, Constants.MaxHandSize);
+                while (player.Hand.Count < Constants.MaxHandSize) {
+                    player.Draw(this.adventureDeck);
+                }
             }
             this.state = MatchState.START_TURN;
             this.Wait();
