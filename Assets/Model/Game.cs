@@ -22,7 +22,8 @@ namespace Quest.Core {
         RESOLVE_STAGE,
         RESOLVE_QUEST,
         END_STORY,
-        START_TOURNAMENT
+        START_TOURNAMENT,
+		PLAY_TOURNAMENT
     };
     public class QuestMatch : Subject {
         private List<Player> players;
@@ -204,13 +205,17 @@ namespace Quest.Core {
             return maxPlayer;
         }
 
-        public void Setup() {
-            this.storyDeck.Shuffle();
-            this.adventureDeck.Shuffle();
+        public void Setup(bool shuffleDecks = true) {
+            if (shuffleDecks) {
+                this.storyDeck.Shuffle();
+                this.adventureDeck.Shuffle();
+            }
 
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
-                player.Draw(this.adventureDeck, Constants.MaxHandSize);
+                while (player.Hand.Count < Constants.MaxHandSize) {
+                    player.Draw(this.adventureDeck);
+                }
             }
             this.state = MatchState.START_TURN;
             this.Wait();

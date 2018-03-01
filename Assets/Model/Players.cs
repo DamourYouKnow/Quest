@@ -45,6 +45,16 @@ namespace Quest.Core.Players {
         }
 
         public void AddShields(int count) {
+            this.player.Match.Log("Adding " + count + " shields to " + this.player.ToString());
+ 
+            while (count > 0) {
+                this.addShield();
+                count--;
+            }
+        }
+
+        private void addShield() {
+            int count = 1;
             this.shields += count;
             this.player.Match.Log("Adding " + count + " shields to " + this.player.ToString());
             if (this.currentRank == this.ranks.Count - 1) {

@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Quest.Core.Players;
 
-
 namespace Quest.Core.Cards{
 	public abstract class TournamentCard : StoryCard {
 		protected int bonusSheilds;
 		protected List<Player> participants;
 		protected Player firstPlayer;
+		protected int firstPlayerNum;
+		protected int allAsked;
 
 		public TournamentCard(QuestMatch match) : base(match) {
+			this.participants = new List<Player>();
+			this.allAsked = 0;
 		}
 
 		public Player FirstPlayer {
@@ -18,30 +21,54 @@ namespace Quest.Core.Cards{
 			set { this.firstPlayer = value; }
 		}
 
-		public override void Run(){
+		public int FirstPlayerNum {
+			get { return this.firstPlayerNum; }
+			set { this.firstPlayerNum = value; }
+		}
+
+		public int AllAsked {
+			get { return this.allAsked; }
+			set { this.allAsked = value; }
+		}
+			
+
+        public List<Player> Participants {
+            get { return this.participants; }
+            set { this.participants = value; }
+        }
+
+        public int Shields {
+			get { return this.participants.Count + this.bonusSheilds; }
+        }
+
+        public override void Run() {
 			this.firstPlayer = this.match.CurrentPlayer;
-			this.requestParticipation ();
+			for (int i = 0; i < this.match.Players.Count; i++) {
+				if (this.match.Players [i] == this.firstPlayer) {
+					this.firstPlayerNum = i;
+					break;
+				}
+			}
+			if (AllAsked == 0) {
+				this.requestParticipation ();
+			} else {
+				playTournament ();
+			}
 		//	this.match.EndStory ();
+		}
+
+		public void playTournament (){
+			this.match.Log ("playing tournament");
+			this.match.State = MatchState.PLAY_TOURNAMENT;
+
+			this.match.Wait ();
 		}
 
 		public void requestParticipation(){
 			this.match.Log ("Requesting Participants");
 			this.match.State = MatchState.START_TOURNAMENT;
 
-			int i = 0;
-			for (; i < this.match.Players.Count; i++) {
-				if (this.match.Players [i] == this.firstPlayer) {
-					break;
-				}
-			}
-
-			this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
 			this.match.Wait ();
-		}
-
-		public List<Player> Participants {
-			get { return this.participants; }
-			set { this.participants = value; }
 		}
 	}
 

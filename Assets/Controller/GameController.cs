@@ -7,9 +7,16 @@ using UnityEngine.UI;
 using Quest.Core;
 using Quest.Core.Players;
 using Quest.Core.Cards;
+using Quest.Core.Scenarios;
 using Utils;
 
 namespace Quest.Core {
+    public enum Scenario {
+        LocalGame,
+        Scenario1,
+        Scenario2
+    }
+
 	public class GameController : MonoBehaviour {
 		QuestMatch gm;
 		Logger logger;
@@ -25,6 +32,7 @@ namespace Quest.Core {
 		//Specifies if a scene has been setup yet
 		//Necessary because scenes are not loaded when Load is run, but rather at next update cycle
 		bool sceneSet;
+        private Scenario scenario;
 
 		public Logger Logger {
 			get { return this.logger; }
@@ -52,9 +60,10 @@ namespace Quest.Core {
 				Destroy (gc);
 			}
 			else {
-				logger = new Logger ();
-				gm = new QuestMatch(logger);
-				sceneSet = false;
+                logger = new Logger();
+                gm = new QuestMatch(logger);
+     
+  				sceneSet = false;
 				waiting = false;
 				numPlayers = 0;
 				this.Opponents = new List<OpponentState> ();
@@ -153,6 +162,23 @@ namespace Quest.Core {
 						gba.Cards = this.gm.Players [this.gm.PromptingPlayer].BattleArea;
 						this.PlayerQuestTurnPrompt ();
 					}
+
+					if (this.gm.State == MatchState.PLAY_TOURNAMENT) {
+						TournamentCard tc = this.gm.CurrentStory as TournamentCard;
+						this.waiting = true;
+						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Tournament Aria";
+						this.ConfText.GetComponent<Text>().text = "Confirm Cards For Tournament";
+						GameCardArea gca = this.GameOtherArea.GetComponent<GameCardArea> ();
+						if (gca != null) {
+							this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
+							GameObject.Destroy (this.GameOtherArea.GetComponent<GameCardArea> ());
+						}
+						else {
+							QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
+							this.ClearQuestGameArea (qgca);
+						}
+						ConfirmSponsorPrompt ();
+					}
 				}
 			}
 			else{
@@ -207,9 +233,26 @@ namespace Quest.Core {
 		public void LoadScene(string sceneName){
 			SceneManager.LoadScene(sceneName);
 			sceneSet = false;
-
 		}
-		private void SetupMatchScene (){
+
+        public void LoadLocalGameScene(string sceneName) {
+            this.scenario = Scenario.LocalGame;
+            this.LoadScene(sceneName);
+        }
+
+        public void LoadScenario1GameScene(string sceneName) {
+            this.scenario = Scenario.Scenario1;
+            gm = ScenarioCreator.Scenario1();
+            this.LoadScene(sceneName);
+        }
+
+        public void LoadScenario2GameScene(string sceneName) {
+            this.scenario = Scenario.Scenario2;
+            gm = ScenarioCreator.Scenario2();
+            this.LoadScene(sceneName);
+        }
+
+        private void SetupMatchScene (){
 			GameObject opponents = GameObject.Find ("Opponents");
 			for (int i = 0; i < this.gm.Players.Count; i++) {
 				GameObject opponent = Instantiate (Resources.Load("Opponent", typeof(GameObject))) as GameObject;
@@ -217,7 +260,8 @@ namespace Quest.Core {
 				opponent.transform.SetParent (opponents.transform);
 				opponent.transform.localScale = new Vector3 (1, 1, 1);
 			}
-			this.gm.Setup ();
+
+			this.gm.Setup (this.scenario == Scenario.LocalGame);
 		}
 
 		public void ShowHand(Player p){
@@ -345,19 +389,13 @@ namespace Quest.Core {
 		}
 
 		public void ParticipateTournament(){
-			Debug.Log ("participate in touny");
 			TournamentCard tc = this.gm.CurrentStory as TournamentCard;
-			int i = 0;
-			for (; i < this.gm.Players.Count; i++) {
-				if (this.gm.Players [i] == tc.FirstPlayer) {
-					break;
-				}
-			}
 			this.gm.Log ("Participate Yes Clicked");
-			Debug.Log (tc);
 			tc.Participants.Add(this.gm.Players[this.gm.PromptingPlayer]);
+			Debug.Log (tc.Participants.Count);
 			this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % this.gm.Players.Count;
-			if (this.gm.PromptingPlayer == i) {
+			if (this.gm.PromptingPlayer == tc.FirstPlayerNum) {
+				tc.AllAsked = 1;
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.CurrentStory.Run ();
@@ -368,15 +406,9 @@ namespace Quest.Core {
 		}
 		public void NoParticipateTournament(){
 			TournamentCard tc = this.gm.CurrentStory as TournamentCard;
-			int i = 0;
-			for (; i < this.gm.Players.Count; i++) {
-				if (this.gm.Players [i] == tc.FirstPlayer) {
-					break;
-				}
-			}
 			this.gm.Log("Participate No Clicked");
 			this.gm.PromptingPlayer = (this.gm.PromptingPlayer+1)%this.gm.Players.Count;
-			if (this.gm.PromptingPlayer == i){
+			if (this.gm.PromptingPlayer == tc.FirstPlayerNum){
 				this.gm.Continue();
 				this.waiting = false;
 				this.gm.CurrentStory.Run ();
@@ -387,7 +419,6 @@ namespace Quest.Core {
 		}
 
 		public void RequestParticipantsPrompt(){
-			Debug.Log ("wut");
 			GameObject promptObj = new GameObject("SponsorQuestPrompt");
 			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
 			prompt.Quest = this.gm.CurrentStory;
