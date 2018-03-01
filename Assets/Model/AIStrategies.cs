@@ -4,6 +4,47 @@ using System.Collections.Generic;
 using Quest.Core.Cards;
 
 namespace Quest.Core.Players {
+    public class Strategy1 : PlayerBehaviour {
+        public override List<Card> DiscardAfterWinningTest(QuestCard questCard, Hand hand, int discardCount) {
+            throw new NotImplementedException();
+        }
+
+        public override List<Card> DiscardExcessCards(Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInTournament(TournamentCard tournamentCard) {
+            foreach (Player player in tournamentCard.Match.Players) {
+                if (promotableThroughTournament(player, tournamentCard)) return true;
+            }
+            return false;
+        }
+
+        public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override List<BattleCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player) {
+            throw new NotImplementedException();
+        }
+
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+    }
+
     public class Strategy2 : PlayerBehaviour {
         private const int tournamentTargetBattlePoints = 50;
 
@@ -125,6 +166,10 @@ namespace Quest.Core.Players {
         }
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {	
+            foreach (Player player in questCard.Match.Players) {
+                if (player != hand.Player && promotableThroughQuest(player, questCard)) return false;
+            }
+
 			List<AdventureCard>[] stages = CardsToSponsorQuest(hand, questCard.StageCount);
 			return validateCardsToSponsorQuest(stages);
         }
