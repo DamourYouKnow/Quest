@@ -21,7 +21,6 @@ namespace Quest.Core.Cards{
 			set { this.firstPlayer = value; }
 		}
 
-<<<<<<< HEAD
 		public int FirstPlayerNum {
 			get { return this.firstPlayerNum; }
 			set { this.firstPlayerNum = value; }
@@ -32,8 +31,6 @@ namespace Quest.Core.Cards{
 			set { this.allAsked = value; }
 		}
 
-		public override void Run(){
-=======
         public List<Player> Participants {
             get { return this.participants; }
             set { this.participants = value; }
@@ -43,8 +40,7 @@ namespace Quest.Core.Cards{
             get { return this.participants.Count + this.bonusShields; }
         }
 
-        public override void Run(){
->>>>>>> 67244307a7f1ea2fc57cc47dfc259dbe4eb35e6c
+        public override void Run() {
 			this.firstPlayer = this.match.CurrentPlayer;
 			for (int i = 0; i < this.match.Players.Count; i++) {
 				if (this.match.Players [i] == this.firstPlayer) {
