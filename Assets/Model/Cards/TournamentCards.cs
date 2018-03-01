@@ -42,22 +42,22 @@ namespace Quest.Core.Cards{
 			if (AllAsked == 0) {
 				this.requestParticipation ();
 			} else {
+				playTournament ();
 			}
 		//	this.match.EndStory ();
+		}
+
+		public void playTournament (){
+			this.match.Log ("playing tournament");
+			this.match.State = MatchState.PLAY_TOURNAMENT;
+
+			this.match.Wait ();
 		}
 
 		public void requestParticipation(){
 			this.match.Log ("Requesting Participants");
 			this.match.State = MatchState.START_TOURNAMENT;
 
-			/*int i = 0;
-			for (; i < this.match.Players.Count; i++) {
-				if (this.match.Players [i] == this.firstPlayer) {
-					break;
-				}
-			}
-
-			this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;*/
 			this.match.Wait ();
 		}
 

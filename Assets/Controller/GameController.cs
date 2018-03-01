@@ -153,6 +153,23 @@ namespace Quest.Core {
 						gba.Cards = this.gm.Players [this.gm.PromptingPlayer].BattleArea;
 						this.PlayerQuestTurnPrompt ();
 					}
+
+					if (this.gm.State == MatchState.PLAY_TOURNAMENT) {
+						TournamentCard tc = this.gm.CurrentStory as TournamentCard;
+						this.waiting = true;
+						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Tournament Aria";
+						this.ConfText.GetComponent<Text>().text = "Confirm Cards For Tournament";
+						GameCardArea gca = this.GameOtherArea.GetComponent<GameCardArea> ();
+						if (gca != null) {
+							this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
+							GameObject.Destroy (this.GameOtherArea.GetComponent<GameCardArea> ());
+						}
+						else {
+							QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
+							this.ClearQuestGameArea (qgca);
+						}
+						ConfirmSponsorPrompt ();
+					}
 				}
 			}
 			else{
