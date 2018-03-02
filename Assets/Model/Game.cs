@@ -10,15 +10,6 @@ namespace Quest.Core {
         public const int MaxHandSize = 12;
     }
 
-<<<<<<< HEAD
-	public enum MatchState {
-		INIT,
-		START_GAME,
-		START_TURN
-	};
-
-    public class QuestMatch : Subject{
-=======
     public enum MatchState {
         INIT,
         START_GAME,
@@ -35,7 +26,6 @@ namespace Quest.Core {
 		PLAY_TOURNAMENT
     };
     public class QuestMatch : Subject {
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
         private List<Player> players;
         private int currentPlayer;
         private int promptingPlayer;
@@ -45,12 +35,7 @@ namespace Quest.Core {
         private StoryCard currentStory;
         private Logger logger;
         private bool waiting;
-<<<<<<< HEAD
-		private int scheck;
-		private MatchState state;
-=======
         private MatchState state;
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
 
         public QuestMatch(Logger logger = null) {
             this.players = new List<Player>();
@@ -62,19 +47,6 @@ namespace Quest.Core {
             this.logger = logger;
             this.Log("Creating new Quest match");
             this.waiting = false;
-<<<<<<< HEAD
-			this.scheck = 0;
-			this.state = MatchState.INIT;
-        }
-
-		public int getState(){
-			return this.scheck;
-		}
-
-		public void addObserver(Observer observer){
-			this.register(observer);
-		}
-=======
             this.state = MatchState.INIT;
         }
 
@@ -91,7 +63,6 @@ namespace Quest.Core {
             get { return this.state; }
             set { this.state = value; }
         }
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
 
         public List<Player> Players {
             get { return this.players; }
@@ -130,28 +101,24 @@ namespace Quest.Core {
             }
         }
 
-        /// <summary>
+          /// <summary>
         /// Called by logic to wait for a response from the UI.
         /// </summary>
         public void Wait() {
-<<<<<<< HEAD
-=======
             this.waiting = true;
             /*
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
             Thread waitThread = new Thread(new ThreadStart(Wait));
             waitThread.Start();
             waitThread.Join();
+            */
         }
 
         private void waitTask() {
-<<<<<<< HEAD
-=======
             /*
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
             while (this.waiting) {
                 Thread.Sleep(100);
             }
+            */
         }
 
         /// <summary>
@@ -163,30 +130,7 @@ namespace Quest.Core {
 
         public void RunGame() {
             this.Log("Running game...");
-            while (!this.hasWinner()) {
-                this.NextTurn();
-            }
 
-<<<<<<< HEAD
-
-		    List<Player> winner = this.getWinners();
-			this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
-        }
-
-        public void NextTurn() {
-            if (this.currentPlayer >= this.players.Count) {
-                this.currentPlayer = 0;
-            } 
-            Player nextPlayer = this.players[this.currentPlayer];
-            this.Log("Starting " + nextPlayer.ToString() + "'s turn");
-
-
-			this.state = MatchState.START_TURN;
-            //this.Wait ();
-            this.NextStory();
-            this.currentPlayer++;
-
-=======
             if (!this.hasWinner()) {
                 this.NextTurn();
             }
@@ -201,27 +145,21 @@ namespace Quest.Core {
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
             this.state = MatchState.START_TURN;
             this.Wait();
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
         }
 
         public void NextStory() {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
             this.Log("Story " + story.ToString() + " drawn");
             this.currentStory = story;
-<<<<<<< HEAD
-			this.scheck = 1;
-
-=======
             this.state = MatchState.RUN_STORY;
             this.Wait();
         }
         public void RunStory() {
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
             try {
                 CurrentStory.Run();
 
             }
-            catch (NotImplementedException e) {
+            catch (NotImplementedException) {
                 this.Log("Feature not implemented");
             }
             catch (Exception e) {
@@ -275,21 +213,12 @@ namespace Quest.Core {
 
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
-<<<<<<< HEAD
-				player.Draw(this.adventureDeck, Constants.MaxHandSize);
-				for (int i = 0; i < this.CurrentPlayer.Hand.Count; i++) {
-					this.logger.Log ("here" +player.Hand.Cards [i].Name);
-				}
-            }
-
-=======
                 while (player.Hand.Count < Constants.MaxHandSize) {
                     player.Draw(this.adventureDeck);
                 }
             }
             this.state = MatchState.START_TURN;
             this.Wait();
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
             this.Log("Setup Quest match complete.");
         }
 

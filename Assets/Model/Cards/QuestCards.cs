@@ -145,25 +145,6 @@ namespace Quest.Core.Cards{
 			this.match.Wait ();
 		}
 		public override void Run() {
-<<<<<<< HEAD
-            // Ask current player to sponsor.
-            Player currentPlayer = this.match.CurrentPlayer;
-            if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
-                this.match.Log("Quest not sponsored");
-                return;
-            } else {
-                this.sponsor = currentPlayer;
-            }
-
-            // Ask other players if they would like to participate.
-            List<Player> otherPlayers = this.match.OtherPlayers;
-            foreach (Player player in otherPlayers) {
-                if (player.Behaviour.ParticipateInQuest(this, player.Hand)) {
-                    this.AddParticipant(player);
-                }
-            }
-
-=======
 			if (this.sponsor == null) {
 				this.requestSponsor ();
 			}
@@ -179,7 +160,6 @@ namespace Quest.Core.Cards{
 				this.RunStage ();
 			}
 			/*
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
             // Player behaviour functions for individual stage setup.
             List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
             foreach (List<AdventureCard> stage in stages) {
@@ -238,11 +218,7 @@ namespace Quest.Core.Cards{
 
 			//If no more stages or no more players, resolve quest.
 			if (this.participants.Count == 0
-<<<<<<< HEAD
-				|| this.currentStage >= this.numStages) {
-=======
 			    || this.currentStage > this.numStages) {
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
 				foreach (var p in this.participants) {
 					p.Rank.AddShields (this.numStages);
 				}

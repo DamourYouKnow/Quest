@@ -20,10 +20,6 @@ namespace Quest.Core {
 	public class GameController : MonoBehaviour {
 		QuestMatch gm;
 		Logger logger;
-<<<<<<< HEAD
-		CardUI ui;
-
-=======
 		bool waiting;
 		int numPlayers;
 		GameObject ConfButton;
@@ -32,7 +28,6 @@ namespace Quest.Core {
 		GameObject GameBattleArea;
 		GameObject GameHandArea;
 		List<OpponentState> Opponents;
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
 
 		//Specifies if a scene has been setup yet
 		//Necessary because scenes are not loaded when Load is run, but rather at next update cycle
@@ -92,18 +87,6 @@ namespace Quest.Core {
 		// Update is called once per frame
 		void Update () {
 			if (sceneSet) {
-<<<<<<< HEAD
-				if (this.gm.getState () == 1) {
-					flipStoryDeck ();
-				}
-			}
-			else{
-				if(SceneManager.GetActiveScene().name == "Match"){
-					this.ui = new CardUI ();
-					SetupMatchScene ();
-					sceneSet = true;
-				}
-=======
 				foreach (OpponentState opp in Opponents) {
 					opp.update ();
 				}
@@ -260,7 +243,6 @@ namespace Quest.Core {
 					this.gm.Continue ();
 					qc.ResolveStage ();
 				}
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
 			}
 		}
 
@@ -272,21 +254,7 @@ namespace Quest.Core {
 			SceneManager.LoadScene(sceneName);
 			sceneSet = false;
 		}
-<<<<<<< HEAD
-		private void SetupMatchScene (){
-			this.ui.ShowOpponents (this.gm.Players.Count);
-			this.gm.Setup ();
-			this.ui.ShowHand (this.gm.CurrentPlayer.Hand.Count, this.gm);
-		}
-
-		public void flipStoryDeck(){
-			GameObject storyHolder = GameObject.Find ("StoryCard");
-			GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
-			card.transform.SetParent (storyHolder.transform);
-			card.transform.localScale = new Vector3 (1, 1, 1);
-			card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + this.gm.CurrentStory.ImageFilename);
-=======
-
+		
         public void LoadLocalGameScene(string sceneName) {
             this.scenario = Scenario.LocalGame;
             this.LoadScene(sceneName);
@@ -362,15 +330,12 @@ namespace Quest.Core {
 			foreach (Transform child in qgca.transform) {
 				GameObject.Destroy (child.gameObject);
 			}
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
 		}
 
 		public void StartGame(){
 			gm.RunGame ();
 		}
 
-<<<<<<< HEAD
-=======
 		public void StartTurnPrompt(){
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
@@ -549,7 +514,6 @@ namespace Quest.Core {
 			GameObject storyCardArea = GameObject.Find ("StoryCard");
 			*/
 		}
->>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
 
 		public void QuitGame(){
 			//When game is run in editor, the application cannot be quit as this would close editor
