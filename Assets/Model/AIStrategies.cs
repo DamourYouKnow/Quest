@@ -310,15 +310,35 @@ namespace Quest.Core.Players {
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {	
             foreach (Player player in questCard.Match.Players) {
-                if (player != hand.Player && promotableThroughQuest(player, questCard)) return false;
+                if (player != hand.Player && promotableThroughQuest(player, questCard)) {
+					hand.Player.Match.Log(hand.Player.Username+" does not sponsor the quest");
+					return false;
+				}
             }
 
 			List<AdventureCard>[] stages = cardsToSponsorQuest(hand, questCard.StageCount);
-			return validateCardsToSponsorQuest(stages);
+			bool sponsor = validateCardsToSponsorQuest(stages);
+			if(sponsor){
+				hand.Player.Match.Log(hand.Player.Username+" sponsors the quest");
+			}
+			else{
+				hand.Player.Match.Log(hand.Player.Username+" does not sponsor the quest");
+			}
+			//return validateCardsToSponsorQuest(stages);
+			return sponsor;
         }
 
         public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {	
-			return cardsToSponsorQuest(hand, questCard.StageCount);
+			List<AdventureCard>[] toSponsor = cardsToSponsorQuest(hand, questCard.StageCount);
+			
+			int i = 1;
+			foreach(List<AdventureCard> stage in toSponsor){
+				hand.Player.Match.Log(hand.Player.Username
+				+" sets up stage " + i + " with cards " + Utils.Stringify.CommaList<AdventureCard>(stage));
+				i += 1;
+			}
+			//return cardsToSponsorQuest(hand, questCard.StageCount);
+			return toSponsor;
         }
 		
         // assuming battleCards is sorted, starting from weakest
