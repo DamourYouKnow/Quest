@@ -151,7 +151,7 @@ namespace Quest.Core.Cards{
 			else {
 				this.match.PromptingPlayer = 0;
 				foreach (Player p in (this.match.CurrentStory as QuestCard).participants){
-					p.Draw (this.match.AdventureDeck, 1);
+					p.Draw (this.match.AdventureDeck);
 				}
 				this.currentStage = 1;
 				this.RunStage ();
@@ -229,8 +229,10 @@ namespace Quest.Core.Cards{
 				this.match.EndStory();
 			}
 			else {
-				this.match.State = MatchState.RUN_STAGE;
-				this.match.Wait ();
+				foreach (Player p in (this.match.CurrentStory as QuestCard).participants){
+					p.Draw (this.match.AdventureDeck);
+				}
+				this.RunStage ();
 			}
 		}
 	}

@@ -198,8 +198,8 @@ namespace NUnitTesting {
 			Assert.AreEqual (0, p4.Rank.Shields);
 
 			Assert.AreEqual (6, p1.Hand.Count);
-			Assert.AreEqual (0, p2.Hand.Count);
-			Assert.AreEqual (0, p3.Hand.Count);
+			Assert.AreEqual (1, p2.Hand.Count);
+			Assert.AreEqual (1, p3.Hand.Count);
 			Assert.AreEqual (0, p4.Hand.Count);
 		}
     }
