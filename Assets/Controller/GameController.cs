@@ -64,6 +64,7 @@ namespace Quest.Core {
 			this.battleAreaSave = gc.battleAreaSave;
 			this.numPlayers = gc.numPlayers;
 			this.Opponents = gc.Opponents;
+			this.scenario = gc.scenario;
 		}
 
 		//Awake is called before Start function, guaranteeing we'll have it setup for other scripts
@@ -380,7 +381,6 @@ namespace Quest.Core {
 				opponent.transform.SetParent (opponents.transform);
 				opponent.transform.localScale = new Vector3 (1, 1, 1);
 			}
-
 			this.gm.Setup (this.scenario == Scenario.LocalGame);
 		}
 
