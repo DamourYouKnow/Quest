@@ -531,7 +531,6 @@ namespace Quest.Core {
 			this.discardingPlayer = null;
 			this.gameCardAreaSave = null;
 			this.questGameCardAreaSave = null;
-			this.gm.Continue ();
 			this.waiting = false;
 			this.ShowHand (this.handAreaSave);
 			this.ShowBattleArea (this.battleAreaSave);
