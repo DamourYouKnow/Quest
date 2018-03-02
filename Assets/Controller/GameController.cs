@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using Quest.Core;
 using Quest.Core.Players;
 using Quest.Core.Cards;
@@ -139,7 +141,12 @@ namespace Quest.Core {
 					if (this.gm.State == MatchState.START_TURN) {
 						Debug.Log ("start turn");
 						this.waiting = true;
-						StartTurnPrompt ();
+						if (this.gm.CurrentPlayer.Behaviour is HumanPlayer) {
+							StartTurnPrompt ();
+						}
+						else {
+							this.gm.NextStory ();
+						}
 					}
 					if (this.gm.State == MatchState.REQUEST_SPONSOR) {
 						Debug.Log ("requesting sponsor");
@@ -186,13 +193,7 @@ namespace Quest.Core {
 					if (this.gm.State == MatchState.REQUEST_STAGE) {
 						QuestCard qc = this.gm.CurrentStory as QuestCard;
 						this.waiting = true;
-						int i = 0;
-						for (; i < this.gm.Players.Count; i++) {
-							if (this.gm.Players [i] == qc.Sponsor) {
-								this.gm.PromptingPlayer = i;
-								break;
-							}
-						}
+						this.gm.PromptingPlayer = qc.SponsorNum;
 						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + (qc.Stages.Count + 1) + " Area";
 						this.ConfText.GetComponent<Text>().text = "Confirm Stage";
 						QuestArea qa = new QuestArea ();
@@ -451,17 +452,29 @@ namespace Quest.Core {
 		public void StartGame(){
 			gm.RunGame ();
 		}
-
+		public void AIActingPrompt(string action, UnityAction onclick){
+			this.HideHand ();
+			this.HideBattleArea ();
+			GameObject promptObj = new GameObject("PlayerPrompt");
+			Prompt prompt = promptObj.AddComponent<Prompt>();
+			prompt.Message = action;
+			prompt.OnYesClick = onclick;
+			prompt.OnNoClick = onclick;
+		}
 		public void StartTurnPrompt(){
 			this.HideHand ();
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = this.gm.CurrentPlayer.Username +" ready?";
-			prompt.OnYesClick = () => { Debug.Log("Player Ready clicked");
-				this.ShowHand (this.gm.CurrentPlayer);
-				this.ConfText.GetComponent<Text>().text = "Draw Story";};
+			prompt.OnYesClick = this.StartTurnYes;
+			prompt.OnNoClick = this.StartTurnYes;
 			GameObject storyCardArea = GameObject.Find ("StoryCard");
 			storyCardArea.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + "story_card_back");
+		}
+		public void StartTurnYes(){
+			Debug.Log("Player Ready clicked");
+			this.ShowHand (this.gm.CurrentPlayer);
+			this.ConfText.GetComponent<Text>().text = "Draw Story";
 		}
 		public void EndDiscardPrompt(){
 			this.HideHand();
@@ -469,49 +482,69 @@ namespace Quest.Core {
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = "Return to current player?";
-			prompt.OnYesClick = () => { Debug.Log("Player Discard Ready clicked");
-				if (gameCardAreaSave != null) {
-					gameCardAreaSave.enabled = true;
-					this.PopulateGameArea (gameCardAreaSave);
-				}
-				if (questGameCardAreaSave != null) {
-					questGameCardAreaSave.enabled = true;
-					this.PopulateQuestGameArea (questGameCardAreaSave);
-				}
-				this.discardingPlayer = null;
-				this.gameCardAreaSave = null;
-				this.questGameCardAreaSave = null;
-				this.waiting = false;
-				this.ShowHand (this.handAreaSave);
-				this.ShowBattleArea (this.battleAreaSave);
-				this.handAreaSave = null;
-				this.battleAreaSave = null;};
+			prompt.OnYesClick = this.EndDiscardYes;
+			prompt.OnNoClick = this.EndDiscardYes;
+		}
+		public void EndDiscardYes(){
+			Debug.Log("Player Discard Ready clicked");
+			if (gameCardAreaSave != null) {
+				gameCardAreaSave.enabled = true;
+				this.PopulateGameArea (gameCardAreaSave);
+			}
+			if (questGameCardAreaSave != null) {
+				questGameCardAreaSave.enabled = true;
+				this.PopulateQuestGameArea (questGameCardAreaSave);
+			}
+			this.discardingPlayer = null;
+			this.gameCardAreaSave = null;
+			this.questGameCardAreaSave = null;
+			this.waiting = false;
+			this.ShowHand (this.handAreaSave);
+			this.ShowBattleArea (this.battleAreaSave);
+			this.handAreaSave = null;
+			this.battleAreaSave = null;
 		}
 		public void ConfirmSponsorPrompt(){
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = "Sponsor ready?";
-			prompt.OnYesClick = () => { Debug.Log("Sponsor Ready clicked");
-				this.ShowHand ((this.gm.CurrentStory as QuestCard).Sponsor);};
+			prompt.OnYesClick = this.ConfirmSponsorYes;
+			prompt.OnNoClick = this.ConfirmSponsorYes;
+		}
+		public void ConfirmSponsorYes(){
+			Debug.Log("Sponsor Ready clicked");
+			this.ShowHand ((this.gm.CurrentStory as QuestCard).Sponsor);
 		}
 		public void RequestSponsorPrompt(){
 			Debug.Log ("requesting sponsor");
 			bool canSponsor = false;
+			Player p = this.gm.Players [this.gm.PromptingPlayer];
 			int sponsori = 0;
-			foreach(Card ccard in this.gm.Players[this.gm.PromptingPlayer].Hand.Cards){
+			foreach(Card ccard in p.Hand.Cards){
 				if (ccard.GetType ().IsSubclassOf (typeof(TestCard)) || ccard.GetType ().IsSubclassOf (typeof(FoeCard))) {
 					sponsori += 1;
 				}
 			}
 			canSponsor = sponsori >= (this.gm.CurrentStory as QuestCard).StageCount;
 			if (canSponsor) {
-				this.HideHand ();
-				GameObject promptObj = new GameObject ("SponsorQuestPrompt");
-				SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt> ();
-				prompt.Quest = this.gm.CurrentStory;
-				prompt.Message = "Would " + this.gm.Players [this.gm.PromptingPlayer].Username + " like to sponsor " + this.gm.CurrentStory.Name + "?";
-				prompt.OnYesClick = this.SponsorYes;
-				prompt.OnNoClick = this.SponsorNo;
+				if (p.Behaviour is HumanPlayer) {
+					this.HideHand ();
+					GameObject promptObj = new GameObject ("SponsorQuestPrompt");
+					SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt> ();
+					prompt.Quest = this.gm.CurrentStory;
+					prompt.Message = "Would " + p.Username + " like to sponsor " + this.gm.CurrentStory.Name + "?";
+					prompt.OnYesClick = this.SponsorYes;
+					prompt.OnNoClick = this.SponsorNo;
+				}
+				else {
+					bool willSponsor = p.Behaviour.SponsorQuest (this.gm.CurrentStory as QuestCard, p.Hand);
+					if (willSponsor) {
+						this.AIActingPrompt (p.Username + " will sponsor " + this.gm.CurrentStory.Name + ".", this.SponsorYes);
+					}
+					else {
+						this.AIActingPrompt (p.Username + " will not sponsor " + this.gm.CurrentStory.Name + ".", this.SponsorNo);
+					}
+				}
 			}
 			else {
 				this.SponsorNo();
@@ -519,7 +552,6 @@ namespace Quest.Core {
 		}
 
 		public void SponsorYes(){
-			Debug.Log ("sponser yes func");
 			this.gm.Log("Sponsor Yes Clicked");
 			QuestCard qc = this.gm.CurrentStory as QuestCard;
 			qc.Sponsor = this.gm.Players[this.gm.PromptingPlayer];
@@ -580,12 +612,24 @@ namespace Quest.Core {
 		}
 
 		public void RequestParticipantsPrompt(){
-			GameObject promptObj = new GameObject("SponsorQuestPrompt");
-			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
-			prompt.Quest = this.gm.CurrentStory;
-			prompt.Message = "Would " + this.gm.Players[this.gm.PromptingPlayer].Username +" like to participate in "+ this.gm.CurrentStory.Name +"?";
-			prompt.OnYesClick = this.ParticipateYes;
-			prompt.OnNoClick = this.ParticipateNo;
+			Player p = this.gm.Players [this.gm.PromptingPlayer];
+			if (p.Behaviour is HumanPlayer) {
+				GameObject promptObj = new GameObject ("SponsorQuestPrompt");
+				SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt> ();
+				prompt.Quest = this.gm.CurrentStory;
+				prompt.Message = "Would " + p.Username + " like to participate in " + this.gm.CurrentStory.Name + "?";
+				prompt.OnYesClick = this.ParticipateYes;
+				prompt.OnNoClick = this.ParticipateNo;
+			}
+			else {
+				bool willParticipate = p.Behaviour.ParticipateInQuest (this.gm.CurrentStory as QuestCard, p.Hand);
+				if (willParticipate) {
+					this.AIActingPrompt (p.Username + " will participate in.", this.ParticipateYes);
+				}
+				else {
+					this.AIActingPrompt (p.Username + " will not participate.", this.ParticipateNo);
+				}
+			}
 		}
 			
 
@@ -680,7 +724,9 @@ namespace Quest.Core {
 
 		public void AddHumanPlayers(int num){
 			for (int i = 0; i < num; i++) {
-				this.gm.AddPlayer (new Player (this.numPlayers.ToString() +"Human", this.gm));
+				Player p = new Player (this.numPlayers.ToString () + "Human", this.gm);
+				p.Behaviour = new HumanPlayer ();
+				this.gm.AddPlayer (p);
 				GameObject list = GameObject.Find ("List_of_players");
 				if (list != null) {
 					Text t = list.GetComponent<Text> ();
@@ -692,7 +738,9 @@ namespace Quest.Core {
 
 		public void AddAIPlayers(int num){
 			for (int i = 0; i < num; i++) {
-				this.gm.AddPlayer (new Player (this.numPlayers.ToString() +"AI", this.gm));
+				Player p = new Player (this.numPlayers.ToString () + "AI", this.gm);
+				AIStrategyPrompt (p);
+				this.gm.AddPlayer (p);
 				GameObject list = GameObject.Find ("List_of_players");
 				if (list != null) {
 					Text t = list.GetComponent<Text> ();
@@ -700,6 +748,16 @@ namespace Quest.Core {
 				}
 				this.numPlayers += 1;
 			}
+		}
+
+		public void AIStrategyPrompt(Player p){
+			GameObject promptObj = new GameObject("PlayerPrompt");
+			Prompt prompt = promptObj.AddComponent<Prompt>();
+			prompt.Message = "Which strategy?";
+			prompt.YesButton.GetComponentInChildren<Text> ().text = "Strategy 1";
+			prompt.NoButton.GetComponentInChildren<Text> ().text = "Strategy 2";
+			prompt.OnYesClick = () => {p.Behaviour = new Strategy1();};
+			prompt.OnNoClick = () => {p.Behaviour = new Strategy2();};
 		}
 			
 	}

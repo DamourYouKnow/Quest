@@ -126,14 +126,7 @@ namespace Quest.Core.Cards{
 			this.match.Log ("Requesting Participants");
 			this.match.State = MatchState.REQUEST_PARTICIPANTS;
 
-			int i = 0;
-			for (; i < this.match.Players.Count; i++) {
-				if (this.match.Players [i] == this.Sponsor) {
-					break;
-				}
-			}
-
-			this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
+			this.match.PromptingPlayer = (this.SponsorNum + 1)%this.match.Players.Count;
 			this.match.Wait ();
 		}
 		public void requestStage(){
