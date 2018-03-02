@@ -90,7 +90,7 @@ namespace Quest.Core.Scenarios {
             player4.Hand.Add(new BattleAx(game));
             player4.Hand.Add(new Lance(game));
 
-            game.StoryDeck.Push(new ProsperityEvent(game));
+            game.StoryDeck.Push(new DefendTheQueensHonor(game));
             game.StoryDeck.Push(new BoarHunt(game));
 
 			player1.Behaviour = new HumanPlayer ();
