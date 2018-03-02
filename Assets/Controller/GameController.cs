@@ -172,20 +172,23 @@ namespace Quest.Core {
 					}
 
 					if (this.gm.State == MatchState.PLAY_TOURNAMENT) {
-						TournamentCard tc = this.gm.CurrentStory as TournamentCard;
 						this.waiting = true;
+						TournamentCard tc = this.gm.CurrentStory as TournamentCard;
 						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Tournament Aria";
-						this.ConfText.GetComponent<Text>().text = "Confirm Cards For Tournament";
+						this.ConfText.GetComponent<Text>().text = "Confirm Cards";
+						TournamentArea ta = new TournamentArea();
 						GameCardArea gca = this.GameOtherArea.GetComponent<GameCardArea> ();
 						if (gca != null) {
 							this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
 							GameObject.Destroy (this.GameOtherArea.GetComponent<GameCardArea> ());
+							this.GameOtherArea.AddComponent<TournamentCardArea> ().Cards = ta;
 						}
 						else {
-							QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
-							this.ClearQuestGameArea (qgca);
+							TournamentCardArea tgca = this.GameOtherArea.GetComponent<TournamentCardArea> ();
+							tgca.Cards = ta;
+							this.ClearTournamentGameArea (tgca);
 						}
-						ConfirmSponsorPrompt ();
+						//ConfirmSponsorPrompt ();
 					}
 				}
 			}
@@ -317,6 +320,12 @@ namespace Quest.Core {
 			}
 		}
 
+		public void ClearTournamentGameArea(TournamentCardArea tca){
+			foreach (Transform child in tca.transform){
+				GameObject.Destroy (child.gameObject);
+			}
+		}
+
 		public void StartGame(){
 			gm.RunGame ();
 		}
@@ -416,7 +425,7 @@ namespace Quest.Core {
 			if (this.gm.PromptingPlayer == tc.FirstPlayerNum){
 				this.gm.Continue();
 				this.waiting = false;
-				this.gm.CurrentStory.Run ();
+				this.gm.EndStory ();
 			}
 			else{
 				this.waiting = false;

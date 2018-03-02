@@ -441,6 +441,42 @@ namespace Quest.Core {
 		}
 	}
 
+	public class TournamentArea : BattleArea {
+
+		public TournamentArea(){
+		}
+			
+
+		public override void Add(Card card){
+			if (!card.GetType().BaseType.Equals(typeof(FoeCard)) || !card.GetType().BaseType.Equals(typeof(AllyCard))) {
+				this.cards.Add (card);
+			}
+			else {
+				bool canAdd = true;
+				foreach(Card ccard in this.cards){
+					canAdd = ccard.Name != card.Name;
+					if (!canAdd) {
+						break;
+					}
+				}
+			}
+		}
+
+		public override void Remove(Card card) {
+			if (!this.cards.Contains(card)) {
+				throw new Exception("Card not in area.");
+			}
+			this.cards.Remove(card);
+		}
+		public override int BattlePoints(){
+			int total = 0;
+			foreach (BattleCard card in this.BattleCards) {
+				total += card.BattlePoints;
+			}
+			return total;
+		}
+	}
+
     /// <summary>
     /// Card hand beloning to a player.
     /// </summary>
