@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Quest.Core.Cards;
+using Utils;
 
 namespace Quest.Core.Players {
     public class Strategy1 : PlayerBehaviour {
@@ -162,6 +163,18 @@ namespace Quest.Core.Players {
         }
 
         private List<AdventureCard>[] cardsToSponsorQuest(Hand hand, int stageCount) {
+			List<AdventureCard> yourCards = hand.AdventureCards;
+			List<AdventureCard>[] cardsToSponsor = new List<AdventureCard>[stageCount];
+			List<AdventureCard> foes = new List<AdventureCard>();
+			List<AdventureCard> weapons = new List<AdventureCard>();
+			List<AdventureCard> tests = new List<AdventureCard>();
+			
+			//filter cards into foes/weapons/tests
+			foreach(AdventureCard card in yourCards){
+				
+			}
+			//foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+			
             throw new NotImplementedException();
         }
 
@@ -180,6 +193,7 @@ namespace Quest.Core.Players {
                 discards.Add(hand.Cards[discarded]);
                 discarded++;
             }
+			
             return discards;
         }
 
@@ -197,7 +211,7 @@ namespace Quest.Core.Players {
                     }
                 }
             }
-
+			hand.Player.Match.Log(hand.Player.Username+" has discarded "+Utils.Stringify.CommaList<Card>(discards));
             return discards;
         }
 
@@ -216,6 +230,8 @@ namespace Quest.Core.Players {
             if (bidValue <= targetBid) {
                 bids.Clear();
             }
+			
+			hand.Player.Match.Log(hand.Player.Username+" bids "+Utils.Stringify.CommaList<AdventureCard>(bids));
             return bids;
         }
 		 public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
@@ -266,12 +282,14 @@ namespace Quest.Core.Players {
                     if (currentBattlePoints >= lastBattlePoints + 10) break;
                 }
             }
-
+			
+			hand.Player.Match.Log(hand.Player.Username+" plays "+Utils.Stringify.CommaList<BattleCard>(playing));
             return playing;
         }
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
-            return true;
+            tournamentCard.Match.Log(tournamentCard.Match.CurrentPlayer.Username+"joins the tournament");
+			return true;
         }
 
         public override List<BattleCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player) {
@@ -286,21 +304,41 @@ namespace Quest.Core.Players {
                 cardsToPlay.Add(card);
                 currentBattlePoints += card.BattlePoints;
             }
-
+			player.Match.Log(player.Username+" plays "+Utils.Stringify.CommaList<BattleCard>(cardsToPlay));
             return cardsToPlay;
         }
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {	
             foreach (Player player in questCard.Match.Players) {
-                if (player != hand.Player && promotableThroughQuest(player, questCard)) return false;
+                if (player != hand.Player && promotableThroughQuest(player, questCard)) {
+					hand.Player.Match.Log(hand.Player.Username+" does not sponsor the quest");
+					return false;
+				}
             }
 
 			List<AdventureCard>[] stages = cardsToSponsorQuest(hand, questCard.StageCount);
-			return validateCardsToSponsorQuest(stages);
+			bool sponsor = validateCardsToSponsorQuest(stages);
+			if(sponsor){
+				hand.Player.Match.Log(hand.Player.Username+" sponsors the quest");
+			}
+			else{
+				hand.Player.Match.Log(hand.Player.Username+" does not sponsor the quest");
+			}
+			//return validateCardsToSponsorQuest(stages);
+			return sponsor;
         }
 
         public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {	
-			return cardsToSponsorQuest(hand, questCard.StageCount);
+			List<AdventureCard>[] toSponsor = cardsToSponsorQuest(hand, questCard.StageCount);
+			
+			int i = 1;
+			foreach(List<AdventureCard> stage in toSponsor){
+				hand.Player.Match.Log(hand.Player.Username
+				+" sets up stage " + i + " with cards " + Utils.Stringify.CommaList<AdventureCard>(stage));
+				i += 1;
+			}
+			//return cardsToSponsorQuest(hand, questCard.StageCount);
+			return toSponsor;
         }
 		
         // assuming battleCards is sorted, starting from weakest

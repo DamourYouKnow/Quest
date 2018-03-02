@@ -283,6 +283,8 @@ namespace NUnitTesting {
         [Test]
         public void Prosperity() {
             QuestMatch game = ScenarioCreator.GameNoDeal(3);
+			game.AttachLogger (new Quest.Core.Logger("TestProsperityEvent"));
+
             ProsperityEvent eventCard = new ProsperityEvent(game);
             eventCard.Run();
 
@@ -298,6 +300,8 @@ namespace NUnitTesting {
         [Test]
         public void ChivalrousDeed() {
             QuestMatch game = ScenarioCreator.GameNoDeal(3);
+			game.AttachLogger (new Quest.Core.Logger("TestChivalrousDeedEvent"));
+
             game.Players[0].Rank.AddShields(1);
 
             ChivalrousDeedEvent eventCard = new ChivalrousDeedEvent(game);
@@ -311,6 +315,8 @@ namespace NUnitTesting {
         [Test]
         public void QueensFavour() {
             QuestMatch game = ScenarioCreator.GameNoDeal(3);
+			game.AttachLogger (new Quest.Core.Logger("TestQueensFavourEvent"));
+
             game.Players[0].Rank.AddShields(10);
 
             QueensFavourEvent eventCard = new QueensFavourEvent(game);
@@ -332,6 +338,7 @@ namespace NUnitTesting {
         [Test]
         public void CourtCalled() {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
+			game.AttachLogger (new Quest.Core.Logger("TestCourtCalledEvent"));
 
             List<Card> testCards = new List<Card>() {
                 new KingArthur(game),
@@ -351,6 +358,7 @@ namespace NUnitTesting {
         [Test]
         public void Pox() {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
+			game.AttachLogger (new Quest.Core.Logger("TestPoxEvent"));
             game.Players[0].Rank.AddShields(1);
             game.Players[1].Rank.AddShields(1);
 
@@ -365,6 +373,7 @@ namespace NUnitTesting {
         [Test]
         public void Plague() {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
+			game.AttachLogger (new Quest.Core.Logger("TestPlagueEvent"));
             PlagueEvent eventCard = new PlagueEvent(game);
             game.Players[0].Rank.AddShields(2);
             game.Players[0].Hand.Add(eventCard);
@@ -377,6 +386,7 @@ namespace NUnitTesting {
         [Test]
         public void Ranking() {
             QuestMatch game = new QuestMatch();
+			game.AttachLogger (new Quest.Core.Logger ("TestRanking"));
                 
             Player player = new Player("Test Player", game);
             Assert.AreEqual(Rank.Squire, player.Rank.Value);
@@ -408,6 +418,7 @@ namespace NUnitTesting {
         [Test]
         public void TestTournamentParticipation() {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
+			game.AttachLogger (new Quest.Core.Logger("TestTournamentParticipation"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
             TournamentAtCamelot tournament = new TournamentAtCamelot(game);
@@ -441,6 +452,7 @@ namespace NUnitTesting {
         [Test]
         public void TestQuestSponsoring() {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
+			game.AttachLogger (new Quest.Core.Logger("TestQuestSponsoring"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
             Player winningPlayer = game.Players[1];
@@ -485,6 +497,7 @@ namespace NUnitTesting {
         [Test]
         public void TestQuestParticipation() {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
+			game.AttachLogger (new Quest.Core.Logger("TestQuestParticipation"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
 
@@ -526,6 +539,7 @@ namespace NUnitTesting {
         [Test]
         public void TestPlayCardsInQuest() {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
+			game.AttachLogger (new Quest.Core.Logger("TestPlayCardsInTest"));
             Player aiPlayer = game.Players[0];
             Player sponsorPlayer = game.Players[1];
             aiPlayer.Behaviour = new Strategy2();
@@ -592,6 +606,7 @@ namespace NUnitTesting {
         [Test]
         public void TestSetupTest() {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
+			game.AttachLogger (new Quest.Core.Logger("TestSetupQuest"));
             Player sponsorAI = game.Players[0];
             sponsorAI.Behaviour = new Strategy2();
 

@@ -56,6 +56,7 @@ namespace Quest.Core.Cards{
 			}
 		//	this.match.EndStory ();
 		}
+			
 
 		public void playTournament (){
 			this.match.Log ("playing tournament");
