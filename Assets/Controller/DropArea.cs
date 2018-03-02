@@ -9,6 +9,10 @@ using Quest.Core;
 class DropArea : MonoBehaviour, IDropHandler {
     private const int defaultOffset = 3;
 
+	void Update() {
+		this.AdjustOffset ();
+	}
+
     public void OnDrop(PointerEventData eventData) {
         Draggable draggable = eventData.pointerDrag.GetComponent<Draggable>();
         if (draggable != null) {
