@@ -78,7 +78,7 @@ namespace Quest.Core {
 			}
 			else {
                 logger = new Logger();
-                gm = new QuestMatch(logger);
+                gm = new QuestMatch(this, logger);
      
   				sceneSet = false;
 				waiting = false;
@@ -357,19 +357,21 @@ namespace Quest.Core {
 		}
 		
         public void LoadLocalGameScene(string sceneName) {
-            this.scenario = Scenario.LocalGame;
+			this.scenario = Scenario.LocalGame;
             this.LoadScene(sceneName);
         }
 
         public void LoadScenario1GameScene(string sceneName) {
             this.scenario = Scenario.Scenario1;
-            gm = ScenarioCreator.Scenario1();
+			gm = ScenarioCreator.Scenario1();
+			gm.GC = this;
             this.LoadScene(sceneName);
         }
 
         public void LoadScenario2GameScene(string sceneName) {
             this.scenario = Scenario.Scenario2;
-            gm = ScenarioCreator.Scenario2();
+			gm = ScenarioCreator.Scenario2();
+			gm.GC = this;
             this.LoadScene(sceneName);
         }
 
@@ -746,6 +748,11 @@ namespace Quest.Core {
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = "Too many cards: " + p.Username +"\nPlay or Discard excess";
 			prompt.OnYesClick = () => { Debug.Log("Player Discard Ready clicked");
+				this.ShowHand (p);
+				this.ShowBattleArea(p);
+				GameObject.Find("OtherAreaText").GetComponent<Text>().text = "Discard Area";
+				this.ConfText.GetComponent<Text>().text = "Confirm";};
+			prompt.OnNoClick = () => { Debug.Log("Player Discard Ready clicked");
 				this.ShowHand (p);
 				this.ShowBattleArea(p);
 				GameObject.Find("OtherAreaText").GetComponent<Text>().text = "Discard Area";

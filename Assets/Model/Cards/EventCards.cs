@@ -21,7 +21,9 @@ namespace Quest.Core.Cards {
             foreach (Player player in lowestRanked) {
                 player.Rank.AddShields(3);
 			}
-			this.match.EndStory ();
+			if (this.match.GC != null) {
+				this.match.EndStory ();
+			}
         }
     }
 
@@ -42,7 +44,9 @@ namespace Quest.Core.Cards {
                 player.BattleArea.Transfer(player.Hand, removeCards);
                 player.Discard(removeCards);
 			}
-			this.match.EndStory ();
+			if (this.match.GC != null) {
+				this.match.EndStory ();
+			}
         }
     }
 
@@ -53,7 +57,9 @@ namespace Quest.Core.Cards {
         }
 
 		public override void Run() {
-			this.match.EndStory ();
+			if (this.match.GC != null) {
+				this.match.EndStory ();
+			}
             throw new NotImplementedException();
         }
     }
@@ -65,7 +71,9 @@ namespace Quest.Core.Cards {
         }
 
 		public override void Run() {
-			this.match.EndStory ();
+			if (this.match.GC != null) {
+				this.match.EndStory ();
+			}
             throw new NotImplementedException();
         }
     }
@@ -81,7 +89,9 @@ namespace Quest.Core.Cards {
             if (drawingPlayer != null) {
                 drawingPlayer.Rank.RemoveShields(2);
 			}
-			this.match.EndStory ();
+			if (this.match.GC != null) {
+				this.match.EndStory ();
+			}
         }
     }
 
@@ -98,7 +108,9 @@ namespace Quest.Core.Cards {
                     player.Rank.RemoveShields(1);
                 }
 			}
-			this.match.EndStory ();
+			if (this.match.GC != null) {
+				this.match.EndStory ();
+			}
         }
     }
 
@@ -112,7 +124,9 @@ namespace Quest.Core.Cards {
             foreach (Player player in this.match.Players) {
                 player.Draw(this.match.AdventureDeck, 2);
 			}
-			this.match.EndStory ();
+			if (this.match.GC != null) {
+				this.match.EndStory ();
+			}
         }
     }
 
@@ -127,7 +141,9 @@ namespace Quest.Core.Cards {
             foreach (Player player in lowestRanked) {
                 player.Draw(this.match.AdventureDeck, 2);
 			}
-			this.match.EndStory ();
+			if (this.match.GC != null) {
+				this.match.EndStory ();
+			}
         }
     }
 }

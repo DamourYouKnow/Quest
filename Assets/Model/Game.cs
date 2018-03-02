@@ -36,8 +36,9 @@ namespace Quest.Core {
         private Logger logger;
         private bool waiting;
         private MatchState state;
+		private GameController gc;
 
-        public QuestMatch(Logger logger = null) {
+        public QuestMatch(GameController gc = null, Logger logger = null) {
             this.players = new List<Player>();
             this.currentPlayer = 0;
             this.storyDeck = new StoryDeck(this);
@@ -47,17 +48,23 @@ namespace Quest.Core {
             this.logger = logger;
             this.Log("Creating new Quest match");
             this.waiting = false;
-            this.state = MatchState.INIT;
+			this.state = MatchState.INIT;
+			this.gc = gc;
         }
 
         public bool Waiting {
             get { return this.waiting; }
-        }
+		}
 
-        public int PromptingPlayer {
-            get { return this.promptingPlayer; }
-            set { this.promptingPlayer = value; }
-        }
+		public int PromptingPlayer {
+			get { return this.promptingPlayer; }
+			set { this.promptingPlayer = value; }
+		}
+
+		public GameController GC {
+			get { return this.gc; }
+			set { this.gc = value; }
+		}
 
         public MatchState State {
             get { return this.state; }
@@ -131,28 +138,57 @@ namespace Quest.Core {
         public void RunGame() {
             this.Log("Running game...");
 
-            if (!this.hasWinner()) {
-                this.NextTurn();
-            }
-            else {
-                List<Player> winner = this.getWinners();
-                this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
-            }
+			if (this.GC != null) {
+				if (!this.hasWinner ()) {
+					this.NextTurn ();
+				} else {
+					List<Player> winner = this.getWinners ();
+					this.Log (Utils.Stringify.CommaList<Player> (winner) + " has won the game");
+				}
+			}
+			else {
+				while (!this.hasWinner ()) {
+					this.NextTurn ();
+				}
+				List<Player> winner = this.getWinners ();
+				this.Log (Utils.Stringify.CommaList<Player> (winner) + " has won the game");
+			}
         }
 
         public void NextTurn() {
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
-            this.state = MatchState.START_TURN;
-            this.Wait();
+			if (this.gc != null) {
+				this.state = MatchState.START_TURN;
+				this.Wait ();
+			}
+			else {
+				this.state = MatchState.START_TURN;
+				this.NextStory();
+				this.currentPlayer = (this.currentPlayer + 1)%this.players.Count;
+			}
         }
 
         public void NextStory() {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
             this.Log("Story " + story.ToString() + " drawn");
-            this.currentStory = story;
-            this.state = MatchState.RUN_STORY;
-            this.Wait();
+			this.currentStory = story;
+			if (this.gc != null) {
+				this.state = MatchState.RUN_STORY;
+				this.Wait ();
+			}
+			else {
+				try{
+					story.Run();
+				}
+				catch(NotImplementedException){
+					this.Log ("Feature not implemented");
+				}
+				catch (Exception e){
+					this.Log (e.Message);
+					this.Log (e.StackTrace);
+				}
+			}
         }
         public void RunStory() {
             try {
@@ -169,8 +205,10 @@ namespace Quest.Core {
         }
 
         public void EndStory() {
-            this.state = MatchState.END_STORY;
-            this.Wait();
+			if (this.gc != null) {
+				this.state = MatchState.END_STORY;
+				this.Wait();
+			}
         }
         public void AddPlayer(Player player) {
             this.players.Add(player);
@@ -217,8 +255,10 @@ namespace Quest.Core {
                     player.Draw(this.adventureDeck);
                 }
             }
-            this.state = MatchState.START_TURN;
-            this.Wait();
+			if (this.gc != null) {
+				this.state = MatchState.START_TURN;
+				this.Wait();
+			}
             this.Log("Setup Quest match complete.");
         }
 

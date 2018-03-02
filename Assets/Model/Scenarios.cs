@@ -5,7 +5,7 @@ using Quest.Core.Cards;
 namespace Quest.Core.Scenarios {
     public class ScenarioCreator {
         public static QuestMatch EmptyGame() {
-            return new QuestMatch(new Logger("Scenario"));
+			return new QuestMatch(logger:new Logger("Scenario"));
         }
 
         public static QuestMatch GameNoDeal(int playerCount) {
@@ -32,7 +32,7 @@ namespace Quest.Core.Scenarios {
         }
 
         public static QuestMatch Scenario1() {
-            QuestMatch game = new QuestMatch(new Logger("Scenario1"));
+			QuestMatch game = new QuestMatch(logger:new Logger("Scenario1"));
 
             Player player1 = new Player("Player 1", game);
             player1.Behaviour = new HumanPlayer();
@@ -72,7 +72,7 @@ namespace Quest.Core.Scenarios {
         }
 
         public static QuestMatch Scenario2() {
-            QuestMatch game = new QuestMatch(new Logger("Scenario2"));
+			QuestMatch game = new QuestMatch(logger:new Logger("Scenario2"));
 
             Player player1 = new Player("Player 1", game);
             player1.Behaviour = new HumanPlayer();

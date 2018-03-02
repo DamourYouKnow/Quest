@@ -16,7 +16,7 @@ namespace NUnitTesting {
     public class GameTests {
         [Test]
         public void ThreePlayerAIGameTest() {
-            QuestMatch game = new QuestMatch(new Quest.Core.Logger("TestGame"));
+			QuestMatch game = new QuestMatch(logger:new Quest.Core.Logger("TestGame"));
             for (int i = 1; i <= 3; i++) {
                 Player newPlayer = new Player("AI Player " + i, game);
                 newPlayer.Behaviour = new Strategy2();
@@ -76,23 +76,83 @@ namespace NUnitTesting {
 			Quest.Core.Logger log = new Quest.Core.Logger ("AdventureDeckCheck");
 			QuestMatch game = ScenarioCreator.GameNoDeal(3);
 			AdventureDeck deck = new AdventureDeck(game);
-
-			Assert.IsTrue (deck.Peek (deck) == "Test Of The Questing Beast");
-
+			/*
+			this.cards.Push(new KingArthur(this.match));
+			this.cards.Push(new KingPellinore(this.match));
+			this.cards.Push(new SirGalahad(this.match));
+			this.cards.Push(new SirGawain(this.match));
+			this.cards.Push(new SirLancelot(this.match));
+			this.cards.Push(new SirPercival(this.match));
+			this.cards.Push(new SirTristan(this.match)); 
+			for (int i = 0; i < 11; i++) {
+				this.cards.Push (new Horse (this.match));
+			}
+			for (int i = 0; i < 16; i++) {
+				this.cards.Push (new Sword (this.match));
+			}
+			for (int i = 0; i < 6; i++) {
+				this.cards.Push (new Dagger (this.match));
+			}
+			for (int i = 0; i < 2; i++) {
+				this.cards.Push (new Excalibur (this.match));
+			}
+			for (int i = 0; i < 6; i++) {
+				this.cards.Push (new Lance (this.match));
+			}
+			for (int i = 0; i < 8; i++) {
+				this.cards.Push (new BattleAx (this.match));
+			}
+			*/
 			for (int i = 0; i < 77; i++) {
-				deck.Draw ();
-				if (i == 2) {
+				if (i == 1) {
+					Assert.IsTrue (deck.Peek (deck) == "Test Of The Questing Beast");
+				}
+				if (i == 3) {
 					Assert.IsTrue (deck.Peek (deck) == "Test Of Morgan Le Fey");
 				}
-				if (i == 10) {
+				if (i == 5) {
+					Assert.IsTrue (deck.Peek (deck) == "Test Of Temptation");
+				}
+				if (i == 7) {
+					Assert.IsTrue (deck.Peek (deck) == "Test Of Valor");
+				}
+				if (i == 9) {
 					Assert.IsTrue (deck.Peek (deck) == "Thieves");
 				}
-				if (i == 20) {
+				if (i == 17) {
+					Assert.IsTrue (deck.Peek (deck) == "Boar");
+				}
+				if (i == 21) {
 					Assert.IsTrue (deck.Peek (deck) == "Saxons");
 				}
-				if (i == 30) {
+				if (i == 26) {
 					Assert.IsTrue (deck.Peek (deck) == "Robber Knight");
 				}
+				if (i == 33) {
+					Assert.IsTrue (deck.Peek (deck) == "Saxon Knight");
+				}
+				if (i == 41) {
+					Assert.IsTrue (deck.Peek (deck) == "Evil Knight");
+				}
+				if (i == 47) {
+					Assert.IsTrue (deck.Peek (deck) == "Black Knight");
+				}
+				if (i == 50) {
+					Assert.IsTrue (deck.Peek (deck) == "Green Knight");
+				}
+				if (i == 52) {
+					Assert.IsTrue (deck.Peek (deck) == "Mordred");
+				}
+				if (i == 56) {
+					Assert.IsTrue (deck.Peek (deck) == "Giant");
+				}
+				if (i == 58) {
+					Assert.IsTrue (deck.Peek (deck) == "Dragon");
+				}
+				if (i == 59) {
+					Assert.IsTrue (deck.Peek (deck) == "BattleAx");
+				}
+				deck.Draw ();
 			}
 			//Assert.IsTrue (deck.Peek (deck) == "Dagger"); 
 		}
@@ -121,7 +181,7 @@ namespace NUnitTesting {
 
 		[Test]
 		public void QuestTest(){
-			QuestMatch match = new QuestMatch (new Quest.Core.Logger ("QuestTest"));
+			QuestMatch match = new QuestMatch (logger:new Quest.Core.Logger ("QuestTest"));
 			Player p1 = new Player ("p1", match);
 			Player p2 = new Player ("p2", match);
 			Player p3 = new Player ("p3", match);

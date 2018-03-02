@@ -135,59 +135,77 @@ namespace Quest.Core.Cards{
 			this.match.Wait ();
 		}
 		public void RunStage(){
-			this.match.State = MatchState.RUN_STAGE;
-			this.match.Wait ();
+			if (this.match.GC != null) {
+				this.match.State = MatchState.RUN_STAGE;
+				this.match.Wait ();
+			}else {
+
+			}
 		}
 		public override void Run() {
-			if (this.sponsor == null) {
-				this.requestSponsor ();
-			}
-			else if (this.participants.Count == 0) {
-				this.match.EndStory ();
-			}
-			else if (this.stages.Count < this.numStages) {
-				requestStage ();
+			if (this.match.GC != null) {
+				if (this.sponsor == null) {
+					this.requestSponsor ();
+				} else if (this.participants.Count == 0) {
+					this.match.EndStory ();
+				} else if (this.stages.Count < this.numStages) {
+					requestStage ();
+				} else {
+					this.match.PromptingPlayer = 0;
+					foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
+						p.Draw (this.match.AdventureDeck);
+					}
+					this.currentStage = 1;
+					this.RunStage ();
+				}
 			}
 			else {
-				this.match.PromptingPlayer = 0;
-				foreach (Player p in (this.match.CurrentStory as QuestCard).participants){
-					p.Draw (this.match.AdventureDeck);
+				// Ask current player to sponsor.
+				Player currentPlayer = this.match.CurrentPlayer;
+				if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
+					this.match.Log("Quest not sponsored");
+					return;
+				} else {
+					this.sponsor = currentPlayer;
 				}
-				this.currentStage = 1;
-				this.RunStage ();
+
+				// Ask other players if they would like to participate.
+				List<Player> otherPlayers = this.match.OtherPlayers;
+				foreach (Player player in otherPlayers) {
+					if (player.Behaviour.ParticipateInQuest(this, player.Hand)) {
+						this.AddParticipant(player);
+					}
+				}
+
+				// Player behaviour functions for individual stage setup.
+				List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
+				foreach (List<AdventureCard> stage in stages) {
+					if (stage.Count == 1 && stage[0] is TestCard) {
+						this.AddTestStage((TestCard)stage[0]);
+					} else {
+						FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
+						List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
+						this.AddFoeStage(foe, weapons);
+					}
+				}
+
+				while (this.currentStage <= this.numStages) {
+					// Participants play cards.
+					foreach (Player participant in this.participants) {
+						participant.Play(participant.Behaviour.PlayCardsInQuest(this, participant.Hand));
+					}
+
+					// Resolve.
+					this.ResolveStage();
+					if (this.participants.Count > 0) {
+						this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
+					} else {
+						this.match.Log("Stage " + this.currentStage + " has no winners");
+					}
+
+					this.currentStage++;
+				}
 			}
-			/*
-            // Player behaviour functions for individual stage setup.
-            List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
-            foreach (List<AdventureCard> stage in stages) {
-                if (stage.Count == 1 && stage[0] is TestCard) {
-                    this.AddTestStage((TestCard)stage[0]);
-                } else {
-                    FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
-                    List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
-                    this.AddFoeStage(foe, weapons);
-                }
-            }
-           
-            while (this.currentStage <= this.numStages) {
-                // Participants play cards.
-                foreach (Player participant in this.participants) {
-                    participant.Play(participant.Behaviour.PlayCardsInQuest(this, participant.Hand));
-                }
-
-                // Resolve.
-                List<Player> winners = this.ResolveStage();
-                if (winners.Count > 0) {
-                    this.match.Log(Utils.Stringify.CommaList<Player>(winners) + " have won stage " + this.numStages);
-                } else {
-                    this.match.Log("Stage " + this.currentStage + " has no winners");
-                }
-
-                this.currentStage++;
-            }
-            
-			*/
-            // TODO: Clean up everything.
 		}
 
 		public void ResolveStage(){
@@ -214,25 +232,47 @@ namespace Quest.Core.Cards{
 			this.participants = winners;
 			this.currentStage += 1;
 
-			//If no more stages or no more players, resolve quest.
-			if (this.participants.Count == 0
-			    || this.currentStage > this.numStages) {
-				foreach (var p in this.participants) {
-					p.Rank.AddShields (this.numStages);
+
+			if (this.match.GC != null) {
+				//If no more stages or no more players, resolve quest.
+				if (this.participants.Count == 0
+				    || this.currentStage > this.numStages) {
+					foreach (var p in this.participants) {
+						p.Rank.AddShields (this.numStages);
+					}
+					int numDraw = 0;
+					foreach (var item in this.stages) {
+						numDraw += item.Count;
+					}
+					numDraw += this.numStages;
+					this.sponsor.Draw (this.match.AdventureDeck, numDraw);
+					this.match.EndStory ();
+				} else {
+					foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
+						p.Draw (this.match.AdventureDeck);
+					}
+					this.RunStage ();
 				}
-				int numDraw = 0;
-				foreach (var item in this.stages) {
-					numDraw += item.Count;
-				}
-				numDraw += this.numStages;
-				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
-				this.match.EndStory();
 			}
 			else {
-				foreach (Player p in (this.match.CurrentStory as QuestCard).participants){
-					p.Draw (this.match.AdventureDeck);
+				//If no more stages or no more players, resolve quest.
+				if (this.participants.Count == 0
+					|| this.currentStage > this.numStages) {
+					foreach (var p in this.participants) {
+						p.Rank.AddShields (this.numStages);
+					}
+					int numDraw = 0;
+					foreach (var item in this.stages) {
+						numDraw += item.Count;
+					}
+					numDraw += this.numStages;
+					this.sponsor.Draw (this.match.AdventureDeck, numDraw);
 				}
-				this.RunStage ();
+				else {
+					foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
+						p.Draw (this.match.AdventureDeck);
+					}
+				}
 			}
 		}
 	}
