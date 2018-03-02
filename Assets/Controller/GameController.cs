@@ -253,21 +253,31 @@ namespace Quest.Core {
 					}
 
 					if (this.gm.State == MatchState.PLAY_TOURNAMENT) {
-						this.waiting = true;
 						TournamentCard tc = this.gm.CurrentStory as TournamentCard;
+						this.GameOtherArea.AddComponent<TournamentCardArea> ();
+						TournamentCardArea tca = this.GameOtherArea.GetComponent<TournamentCardArea>();
+						this.GameOtherArea.GetComponent<TournamentCardArea> ().Cards = tca.Cards;
+						this.waiting = true;
+						//TournamentCard tc = this.gm.CurrentStory as TournamentCard;
+						Player p = tc.Participants [this.gm.PromptingPlayer];
+						//TournamentCardArea tca = this.GameOtherArea.GetComponent<TournamentCardArea>();
+						GameCardArea gba = this.GameBattleArea.GetComponent<GameCardArea> ();
+						this.ClearTournamentGameArea (tca);
+						this.ClearGameArea (gba);
+						this.PopulateTournamentGameArea (tca);
+						GameObject.Destroy (this.GameOtherArea.GetComponent<DropArea> ());
 						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Tournament Aria";
-						this.ConfText.GetComponent<Text>().text = "Confirm Cards";
-						TournamentArea ta = new TournamentArea();
-						GameCardArea gca = this.GameOtherArea.GetComponent<GameCardArea> ();
-						if (gca != null) {
-							this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
-							GameObject.Destroy (this.GameOtherArea.GetComponent<GameCardArea> ());
-							this.GameOtherArea.AddComponent<TournamentCardArea> ().Cards = ta;
+						gba.Cards = p.BattleArea;
+
+						if (p.Behaviour is HumanPlayer) {
+							this.PlayerTournamentTurnPrompt ();
 						}
 						else {
-							TournamentCardArea tgca = this.GameOtherArea.GetComponent<TournamentCardArea> ();
-							tgca.Cards = ta;
-							this.ClearTournamentGameArea (tgca);
+							List<BattleCard> cards = p.Behaviour.PlayCardsInTournament (tc, p);
+							p.BattleArea.Cards = cards.ConvertAll (c => (Card)c);
+							this.gm.Continue ();
+							this.waiting = false;
+							//AIActingPrompt (p.Username + " has played its cards.", );
 						}
 						//ConfirmSponsorPrompt ();
 					}
@@ -473,6 +483,19 @@ namespace Quest.Core {
 			}
 		}
 
+		public void PopulateTournamentGameArea(TournamentCardArea tca){
+			if (tca.Cards == null) {
+				return;
+			}
+			for (int i = 0; i < tca.Cards.Cards.Count; i++) {
+				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+				card.GetComponent<GameCard>().Card = tca.Cards.Cards[i];
+				card.transform.SetParent (tca.transform);
+				card.transform.localScale = new Vector3 (1, 1, 1);
+				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + tca.Cards.Cards[i].ImageFilename);
+			}
+		}
+
 		public void ClearGameArea(GameCardArea gca){
 			foreach (Transform child in gca.transform) {
 				GameObject.Destroy (child.gameObject);
@@ -486,6 +509,7 @@ namespace Quest.Core {
 		}
 
 		public void ClearTournamentGameArea(TournamentCardArea tca){
+			Debug.Log (tca);
 			foreach (Transform child in tca.transform){
 				GameObject.Destroy (child.gameObject);
 			}
@@ -714,11 +738,27 @@ namespace Quest.Core {
 			prompt.OnNoClick = this.PlayerQuestTurnReady;
 		}
 
+		public void PlayerTournamentTurnPrompt(){
+			this.HideHand ();
+			GameObject promptObj = new GameObject("TournamentPrompt");
+			Prompt prompt = promptObj.AddComponent<Prompt>();
+			prompt.Message = (this.gm.CurrentStory as TournamentCard).Participants[this.gm.PromptingPlayer].Username +" ready?";
+			prompt.OnYesClick = this.PlayerTournamentTurnReady;
+			prompt.OnNoClick = this.PlayerTournamentTurnReady;
+		}
+
+		public void PlayerTournamentTurnReady(){
+			this.ShowHand ((this.gm.CurrentStory as TournamentCard).Participants[this.gm.PromptingPlayer]);
+			this.PopulateGameArea (this.GameBattleArea.GetComponent<GameCardArea>());
+			this.ConfText.GetComponent<Text>().text = "Confirm Cards";
+		}
+
 		public void PlayerQuestTurnReady(){
 			this.ShowHand ((this.gm.CurrentStory as QuestCard).Participants[this.gm.PromptingPlayer]);
 			this.PopulateGameArea (this.GameBattleArea.GetComponent<GameCardArea>());
 			this.ConfText.GetComponent<Text>().text = "Confirm Cards";
 		}
+
 		public void DiscardCards(Player p){
 			if (p.Behaviour is HumanPlayer) {
 				this.discardingPlayer = p;
