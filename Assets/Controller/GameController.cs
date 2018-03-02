@@ -21,6 +21,12 @@ namespace Quest.Core {
 		QuestMatch gm;
 		Logger logger;
 		bool waiting;
+		Player discardingPlayer;
+		GameCardArea discardArea;
+		GameCardArea gameCardAreaSave;
+		QuestGameCardArea questGameCardAreaSave;
+		CardArea handAreaSave;
+		CardArea battleAreaSave;
 		int numPlayers;
 		GameObject ConfButton;
 		GameObject ConfText;
@@ -47,6 +53,12 @@ namespace Quest.Core {
 			this.logger = gc.logger;
 			this.sceneSet = gc.sceneSet;
 			this.waiting = gc.waiting;
+			this.discardingPlayer = gc.discardingPlayer;
+			this.discardArea = gc.discardArea;
+			this.gameCardAreaSave = gc.gameCardAreaSave;
+			this.questGameCardAreaSave = gc.questGameCardAreaSave;
+			this.handAreaSave = gc.handAreaSave;
+			this.battleAreaSave = gc.battleAreaSave;
 			this.numPlayers = gc.numPlayers;
 			this.Opponents = gc.Opponents;
 		}
@@ -65,6 +77,12 @@ namespace Quest.Core {
      
   				sceneSet = false;
 				waiting = false;
+				this.discardingPlayer = null;
+				this.discardArea = null;
+				this.gameCardAreaSave = null;
+				this.questGameCardAreaSave = null;
+				this.handAreaSave = null;
+				this.battleAreaSave = null;
 				numPlayers = 0;
 				this.Opponents = new List<OpponentState> ();
 			}
@@ -90,6 +108,28 @@ namespace Quest.Core {
 					opp.update ();
 				}
 				if (this.gm.Waiting && !this.waiting) {
+					foreach (Player p in this.gm.Players) {
+						if (p.Hand.Count > Constants.MaxHandSize) {
+							this.waiting = true;
+							this.discardingPlayer = p;
+							this.gameCardAreaSave = this.GameOtherArea.GetComponent<GameCardArea> ();
+							this.questGameCardAreaSave = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
+							this.handAreaSave = this.GameHandArea.GetComponent<GameCardArea> ().Cards;
+							this.battleAreaSave = this.GameBattleArea.GetComponent<GameCardArea> ().Cards;
+							if (gameCardAreaSave != null) {
+								this.ClearGameArea (gameCardAreaSave);
+								gameCardAreaSave.enabled = false;
+							}
+							if (questGameCardAreaSave != null) {
+								this.ClearQuestGameArea (questGameCardAreaSave);
+								questGameCardAreaSave.enabled = false;
+							}
+							this.discardArea = this.GameOtherArea.AddComponent<GameCardArea> ();
+							this.discardArea.Cards = new BattleArea();
+							DiscardCardsPrompt (p);
+							return;
+						}
+					}
 					if (this.gm.State == MatchState.START_GAME) {
 						this.gm.RunGame();
 					}
@@ -158,7 +198,8 @@ namespace Quest.Core {
 						if (gca != null) {
 							this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea> ());
 							GameObject.Destroy (this.GameOtherArea.GetComponent<GameCardArea> ());
-							this.GameOtherArea.AddComponent<QuestGameCardArea> ().QuestCards = qa;
+							this.GameOtherArea.AddComponent<QuestGameCardArea> ();
+							this.GameOtherArea.GetComponent<QuestGameCardArea> ().QuestCards = qa;
 						}
 						else {
 							QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
@@ -214,19 +255,52 @@ namespace Quest.Core {
 		}
 
 		public void ConfirmationButton(){
-			if (this.gm.State == MatchState.START_TURN && this.waiting) {
+			if (this.discardingPlayer != null && this.waiting) {
+				if (discardingPlayer.Hand.Count == Constants.MaxHandSize) {
+					//Currently Discard setup is transfering to a new card area in UI.
+					//Have to transfer back to player then get player to discard
+					//to ensure discard gets logged.
+					List<Card> discards = new List<Card> ();
+					foreach (Card c in this.discardArea.Cards.Cards) {
+						discards.Add (c);
+					}
+					foreach (Card c in discards) {
+						this.discardArea.Cards.Transfer (discardingPlayer.Hand, c);
+						discardingPlayer.Discard (c);
+					}
+					this.ClearGameArea (this.discardArea);
+					this.discardArea.enabled = false;
+					GameObject.Destroy (this.discardArea);
+					if (gameCardAreaSave != null) {
+						gameCardAreaSave.enabled = true;
+						this.PopulateGameArea (gameCardAreaSave);
+					}
+					if (questGameCardAreaSave != null) {
+						questGameCardAreaSave.enabled = true;
+						this.PopulateQuestGameArea (questGameCardAreaSave);
+					}
+					this.ShowHand (this.handAreaSave);
+					this.ShowBattleArea (this.battleAreaSave);
+					this.discardingPlayer = null;
+					this.waiting = false;
+				}
+				else{
+					this.ConfText.GetComponent<Text> ().text = "Need 12 cards";
+				}
+			}
+			else if (this.gm.State == MatchState.START_TURN && this.waiting) {
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.NextStory();
 			}
-			if (this.gm.State == MatchState.END_STORY && this.waiting) {
+			else if (this.gm.State == MatchState.END_STORY && this.waiting) {
 				this.gm.CurrentPlayerNum = (this.gm.CurrentPlayerNum + 1) % this.gm.Players.Count;
 				this.gm.PromptingPlayer = this.gm.CurrentPlayerNum;
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.NextTurn ();
 			}
-			if (this.gm.State == MatchState.REQUEST_STAGE && this.waiting) {
+			else if (this.gm.State == MatchState.REQUEST_STAGE && this.waiting) {
 				Debug.Log ("requested stage");
 				if (this.GameOtherArea.GetComponent<QuestGameCardArea> ().QuestCards.MainCard != null) {
 					this.gm.Continue ();
@@ -234,7 +308,7 @@ namespace Quest.Core {
 					this.gm.CurrentStory.Run ();
 				}
 			}
-			if (this.gm.State == MatchState.RUN_STAGE && this.waiting) {
+			else if (this.gm.State == MatchState.RUN_STAGE && this.waiting) {
 				QuestCard qc = this.gm.CurrentStory as QuestCard;
 				this.gm.PromptingPlayer = (this.gm.PromptingPlayer + 1) % qc.Participants.Count;
 				this.waiting = false;
@@ -294,8 +368,60 @@ namespace Quest.Core {
 				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + p.Hand.Cards [i].ImageFilename);
 			}
 		}
+		public void ShowHand(CardArea hand){
+			HideHand ();
+			this.GameHandArea.GetComponent<GameCardArea> ().Cards = hand;
+			for (int i = 0; i < hand.Count; i++) {
+				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+				card.GetComponent<GameCard>().Card = hand.Cards[i];
+				card.transform.SetParent (this.GameHandArea.transform);
+				card.transform.localScale = new Vector3 (1, 1, 1);
+				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + hand.Cards [i].ImageFilename);
+			}
+		}
+		public void HideHand(){
+			foreach (Transform child in this.GameHandArea.transform) {
+				GameObject.Destroy (child.gameObject);
+			}
+		}
+		public void ShowBattleArea(Player p){
+			HideBattleArea ();
+			if (p.BattleArea == null) {
+				return;
+			}
+			this.GameBattleArea.GetComponent<GameCardArea> ().Cards = p.BattleArea;
+			for (int i = 0; i < p.BattleArea.Count; i++) {
+				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+				card.GetComponent<GameCard>().Card = p.BattleArea.Cards[i];
+				card.transform.SetParent (this.GameBattleArea.transform);
+				card.transform.localScale = new Vector3 (1, 1, 1);
+				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + p.BattleArea.Cards [i].ImageFilename);
+			}
+		}
+		public void ShowBattleArea(CardArea area){
+			HideBattleArea ();
+			if (area == null) {
+				return;
+			}
+			this.GameBattleArea.GetComponent<GameCardArea> ().Cards = area;
+			for (int i = 0; i < area.Count; i++) {
+				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+				card.GetComponent<GameCard>().Card = area.Cards[i];
+				card.transform.SetParent (this.GameBattleArea.transform);
+				card.transform.localScale = new Vector3 (1, 1, 1);
+				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + area.Cards [i].ImageFilename);
+			}
+		}
+		public void HideBattleArea(){
+			foreach (Transform child in this.GameBattleArea.transform) {
+				GameObject.Destroy (child.gameObject);
+			}
+		}
 
 		public void PopulateGameArea(GameCardArea gca){
+			if (gca.Cards == null) {
+				return;
+			}
 			for (int i = 0; i < gca.Cards.Count; i++) {
 				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
 				card.GetComponent<GameCard>().Card = gca.Cards.Cards[i];
@@ -305,17 +431,15 @@ namespace Quest.Core {
 			}
 		}
 		public void PopulateQuestGameArea(QuestGameCardArea qgca){
+			if (qgca.QuestCards == null) {
+				return;
+			}
 			for (int i = 0; i < qgca.QuestCards.Cards.Count; i++) {
 				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
 				card.GetComponent<GameCard>().Card = qgca.QuestCards.Cards[i];
 				card.transform.SetParent (qgca.transform);
 				card.transform.localScale = new Vector3 (1, 1, 1);
 				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + qgca.QuestCards.Cards[i].ImageFilename);
-			}
-		}
-		public void HideHand(){
-			foreach (Transform child in this.GameHandArea.transform) {
-				GameObject.Destroy (child.gameObject);
 			}
 		}
 
@@ -503,15 +627,16 @@ namespace Quest.Core {
 			this.PopulateGameArea (this.GameBattleArea.GetComponent<GameCardArea>());
 			this.ConfText.GetComponent<Text>().text = "Confirm Cards";
 		}
-		public void DiscardCardsPrompt(){
-			/*
+		public void DiscardCardsPrompt(Player p){
+			this.HideHand ();
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
-			prompt.Message = "You have too many cards.";
-			prompt.OnYesClick = () => { Debug.Log("Player Ready clicked");
-				this.ShowHand ();};
-			GameObject storyCardArea = GameObject.Find ("StoryCard");
-			*/
+			prompt.Message = "Too many cards: " + p.Username +"\nPlay or Discard excess";
+			prompt.OnYesClick = () => { Debug.Log("Player Discard Ready clicked");
+				this.ShowHand (p);
+				this.ShowBattleArea(p);
+				GameObject.Find("OtherAreaText").GetComponent<Text>().text = "Discard Area";
+				this.ConfText.GetComponent<Text>().text = "Confirm";};
 		}
 
 		public void QuitGame(){
