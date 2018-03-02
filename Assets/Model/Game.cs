@@ -253,6 +253,7 @@ namespace Quest.Core {
 
         public List<Card> Cards {
             get { return this.cards; }
+			set { this.cards = value; }
         }
 
         public List<AdventureCard> AdventureCards {
@@ -392,6 +393,7 @@ namespace Quest.Core {
 
         public Card MainCard {
             get { return mainCard; }
+			set { this.mainCard = value; }
         }
 
 		public override void Add(Card card){

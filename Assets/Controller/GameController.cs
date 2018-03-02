@@ -210,7 +210,23 @@ namespace Quest.Core {
 							qgca.QuestCards = qa;
 							this.ClearQuestGameArea (qgca);
 						}
-						ConfirmSponsorPrompt ();
+						if (qc.Sponsor.Behaviour is HumanPlayer) {
+							ConfirmSponsorPrompt ();
+						}
+						else {
+							List<AdventureCard>[] stages = qc.Sponsor.Behaviour.SetupQuest (qc, qc.Sponsor.Hand);
+							for(int i=0; i<qc.StageCount; i++){
+								qc.Stages.Add (new QuestArea ());
+								qc.Stages [i].Cards = stages [i].ConvertAll(c => (Card)c);
+								foreach (Card c in stages[i]) {
+									if (c.GetType ().IsSubclassOf (typeof(TestCard)) || c.GetType ().IsSubclassOf (typeof(FoeCard))) {
+										qc.Stages [i].MainCard = c;
+										break;
+									}
+								}
+							}
+							AIActingPrompt (qc.Sponsor.Username + " has setup " + qc.Name + ".", this.gm.CurrentStory.Run);
+						}
 					}
 					if (this.gm.State == MatchState.RUN_STAGE) {
 						this.waiting = true;
@@ -453,11 +469,21 @@ namespace Quest.Core {
 			gm.RunGame ();
 		}
 		public void AIActingPrompt(string action, UnityAction onclick){
+			this.gm.Continue ();
+			this.waiting = false;
 			this.HideHand ();
 			this.HideBattleArea ();
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = action;
+			prompt.OnYesClick = () => {
+				this.gm.Continue ();
+				this.waiting = false;
+			};
+			prompt.OnNoClick = () => {
+				this.gm.Continue ();
+				this.waiting = false;
+			};
 			prompt.OnYesClick = onclick;
 			prompt.OnNoClick = onclick;
 		}

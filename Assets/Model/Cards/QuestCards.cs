@@ -24,6 +24,7 @@ namespace Quest.Core.Cards{
 
         public List<QuestArea> Stages {
             get { return this.stages; }
+			set { this.stages = value; }
         }
 
 		public List<Player> Participants {
