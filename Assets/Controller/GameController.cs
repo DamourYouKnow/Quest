@@ -788,16 +788,31 @@ namespace Quest.Core {
 		}
 
 		public void AddAIPlayers(int num){
-			for (int i = 0; i < num; i++) {
-				Player p = new Player (this.numPlayers.ToString () + "AI", this.gm);
-				this.gm.AddPlayer (p);
-				GameObject list = GameObject.Find ("List_of_players");
-				if (list != null) {
-					Text t = list.GetComponent<Text> ();
-					t.text = t.text + "\n" + this.numPlayers.ToString() + "AI";
+			bool canAdd = false;
+			foreach (Player p in this.gm.Players) {
+				if (p.Behaviour is HumanPlayer) {
+					canAdd = true;
 				}
-				this.numPlayers += 1;
-				AIStrategyPrompt (p);
+			}
+			if (canAdd) {
+				for (int i = 0; i < num; i++) {
+					Player p = new Player (this.numPlayers.ToString () + "AI", this.gm);
+					this.gm.AddPlayer (p);
+					GameObject list = GameObject.Find ("List_of_players");
+					if (list != null) {
+						Text t = list.GetComponent<Text> ();
+						t.text = t.text + "\n" + this.numPlayers.ToString () + "AI";
+					}
+					this.numPlayers += 1;
+					AIStrategyPrompt (p);
+				}
+			}
+			else {
+				GameObject promptObj = new GameObject("PlayerPrompt");
+				Prompt prompt = promptObj.AddComponent<Prompt>();
+				prompt.Message = "Must have a human player first";
+				prompt.YesButton.GetComponentInChildren<Text> ().text = "OK";
+				prompt.NoButton.GetComponentInChildren<Text> ().text = "OK";
 			}
 		}
 
