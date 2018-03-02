@@ -93,6 +93,11 @@ namespace Quest.Core.Scenarios {
             game.StoryDeck.Push(new ProsperityEvent(game));
             game.StoryDeck.Push(new BoarHunt(game));
 
+			player1.Behaviour = new HumanPlayer ();
+			player2.Behaviour = new HumanPlayer ();
+			player3.Behaviour = new HumanPlayer ();
+			player4.Behaviour = new HumanPlayer ();
+
             game.AddPlayer(player1);
             game.AddPlayer(player2);
             game.AddPlayer(player3);
