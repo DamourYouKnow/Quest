@@ -194,6 +194,7 @@ namespace Quest.Core.Players {
                 discarded++;
             }
 			
+			hand.Player.Match.Log(hand.Player.Username+" has discarded "+Utils.Stringify.CommaList<Card>(discards));
             return discards;
         }
 
@@ -259,7 +260,15 @@ namespace Quest.Core.Players {
             if (discardableFoeCards.Count < 2) return false;
 
             List<BattleCard>[] bestQuestParticipation = this.bestCardsToPlayInQuest(questCard, hand);
-            return validateCardsToPlayInQuest(bestQuestParticipation);
+			bool participate = validateCardsToPlayInQuest(bestQuestParticipation);
+			if(participate){
+				hand.Player.Match.Log(hand.Player.Username + " will participate in the quest");
+			}
+			else{
+				hand.Player.Match.Log(hand.Player.Username + " will not participate in the quest");
+			}
+			return participate;
+            //return validateCardsToPlayInQuest(bestQuestParticipation);
         }
 
         public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
