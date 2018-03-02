@@ -10,8 +10,7 @@ public class QuestGameCardArea : MonoBehaviour {
 		get { return this.questCards; }
 		set { this.questCards = value; }
 	}
-	public QuestGameCardArea ()
-	{
-		questCards = null;
+	void Awake() {
+		this.questCards = new QuestArea ();
 	}
 }

@@ -45,6 +45,16 @@ namespace Quest.Core.Players {
         }
 
         public void AddShields(int count) {
+            this.player.Match.Log("Adding " + count + " shields to " + this.player.ToString());
+ 
+            while (count > 0) {
+                this.addShield();
+                count--;
+            }
+        }
+
+        private void addShield() {
+            int count = 1;
             this.shields += count;
             this.player.Match.Log("Adding " + count + " shields to " + this.player.ToString());
             if (this.currentRank == this.ranks.Count - 1) {
@@ -186,7 +196,7 @@ namespace Quest.Core.Players {
             for (int i = 0; i < count; i++) {
                 Card drawnCard = deck.Draw();
                 this.Hand.Add(drawnCard);
-                this.match.Log("Player " + this.username + " drew " + drawnCard.ToString());
+                this.match.Log(this.username + " drew " + drawnCard.ToString());
             }
 			
         }
@@ -194,7 +204,7 @@ namespace Quest.Core.Players {
         public void Discard(Card card) {
             this.hand.Remove(card);
             this.match.DiscardPile.Push(card);
-            this.match.Log("Player " + this.username + " discarded " + card.ToString());
+            this.match.Log(this.username + " discarded " + card.ToString());
         }
 
         public void Discard(List<Card> cards) {
@@ -220,12 +230,12 @@ namespace Quest.Core.Players {
             //will need to check if a card is playable or not
             //(that might be handled elsewhere, not in this function (not sure))
 
-            this.match.Log("Player " + this.username + " played " + card.ToString());
+            this.match.Log(this.username + " played " + card.ToString());
 		}
 
         public void Play(List<BattleCard> cards) {
             this.hand.Transfer(this.battleArea, cards.Cast<Card>().ToList());
-            this.match.Log("Player " + this.username + " played " + Utils.Stringify.CommaList(cards));
+            this.match.Log(this.username + " played " + Utils.Stringify.CommaList(cards));
         }
 
         public static List<Player> LowestShields(List<Player> players) {

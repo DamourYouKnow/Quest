@@ -95,13 +95,13 @@ namespace Quest.Core {
 
         public List<Player> OtherPlayers {
             get {
-                List<Player> retList = this.players;
+                List<Player> retList = new List<Player>(this.players);
                 retList.Remove(this.CurrentPlayer);
                 return retList;
             }
         }
 
-        /// <summary>
+          /// <summary>
         /// Called by logic to wait for a response from the UI.
         /// </summary>
         public void Wait() {
@@ -205,9 +205,11 @@ namespace Quest.Core {
             return maxPlayer;
         }
 
-        public void Setup() {
-            this.storyDeck.Shuffle();
-            this.adventureDeck.Shuffle();
+        public void Setup(bool shuffleDecks = true) {
+            if (shuffleDecks) {
+                this.storyDeck.Shuffle();
+                this.adventureDeck.Shuffle();
+            }
 
             // Deal startingHandSize adventure cards to each player.
             foreach (Player player in this.players) {
@@ -251,6 +253,7 @@ namespace Quest.Core {
 
         public List<Card> Cards {
             get { return this.cards; }
+			set { this.cards = value; }
         }
 
         public List<AdventureCard> AdventureCards {
@@ -314,7 +317,7 @@ namespace Quest.Core {
         }
 
         public virtual void Transfer(CardArea target, Card card) {
-            if (this.cards.Contains(card)) {
+			if (target != null && this.cards.Contains(card)) {
                 if (target.GetType().Equals(typeof(QuestArea))) {
                     QuestArea qatarget = target as QuestArea;
                     qatarget.Add(card);
@@ -390,6 +393,7 @@ namespace Quest.Core {
 
         public Card MainCard {
             get { return mainCard; }
+			set { this.mainCard = value; }
         }
 
 		public override void Add(Card card){

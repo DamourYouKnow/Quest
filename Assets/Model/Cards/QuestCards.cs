@@ -24,6 +24,7 @@ namespace Quest.Core.Cards{
 
         public List<QuestArea> Stages {
             get { return this.stages; }
+			set { this.stages = value; }
         }
 
 		public List<Player> Participants {
@@ -42,6 +43,18 @@ namespace Quest.Core.Cards{
 		public Player Sponsor {
 			get { return this.sponsor; }
 			set { this.sponsor = value; }
+		}
+		public int SponsorNum{
+			get{
+				if (this.sponsor != null) {
+					for (int i = 0; i < match.Players.Count; i++) {
+						if (match.Players [i] == this.sponsor) {
+							return i;
+						}
+					}
+				}
+				return -1;
+			}
 		}
 
 		public List<Type> QuestFoes {
@@ -114,14 +127,7 @@ namespace Quest.Core.Cards{
 			this.match.Log ("Requesting Participants");
 			this.match.State = MatchState.REQUEST_PARTICIPANTS;
 
-			int i = 0;
-			for (; i < this.match.Players.Count; i++) {
-				if (this.match.Players [i] == this.Sponsor) {
-					break;
-				}
-			}
-
-			this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
+			this.match.PromptingPlayer = (this.SponsorNum + 1)%this.match.Players.Count;
 			this.match.Wait ();
 		}
 		public void requestStage(){
@@ -136,21 +142,16 @@ namespace Quest.Core.Cards{
 			if (this.sponsor == null) {
 				this.requestSponsor ();
 			}
+			else if (this.participants.Count == 0) {
+				this.match.EndStory ();
+			}
 			else if (this.stages.Count < this.numStages) {
 				requestStage ();
 			}
 			else {
-				int i = 0;
-				for (; i < this.match.Players.Count; i++) {
-					if (this.match.Players [i] == this.Sponsor) {
-						break;
-					}
-				}
-				this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
-				foreach (Player p in this.match.Players){
-					if (p != this.sponsor){
-						p.Draw (this.match.AdventureDeck, 1);
-					}
+				this.match.PromptingPlayer = 0;
+				foreach (Player p in (this.match.CurrentStory as QuestCard).participants){
+					p.Draw (this.match.AdventureDeck);
 				}
 				this.currentStage = 1;
 				this.RunStage ();
@@ -176,7 +177,12 @@ namespace Quest.Core.Cards{
 
                 // Resolve.
                 List<Player> winners = this.ResolveStage();
-                this.match.Log(Utils.Stringify.CommaList<Player>(winners) + " have won stage " + this.numStages);
+                if (winners.Count > 0) {
+                    this.match.Log(Utils.Stringify.CommaList<Player>(winners) + " have won stage " + this.numStages);
+                } else {
+                    this.match.Log("Stage " + this.currentStage + " has no winners");
+                }
+
                 this.currentStage++;
             }
             
@@ -184,7 +190,7 @@ namespace Quest.Core.Cards{
             // TODO: Clean up everything.
 		}
 
-		public List<Player> ResolveStage(){
+		public void ResolveStage(){
 			List<Player> winners = new List<Player>();
             if (this.stages[currentStage - 1].MainCard is TestCard) {
                 // TODO: Implement Test stage.
@@ -217,17 +223,17 @@ namespace Quest.Core.Cards{
 				int numDraw = 0;
 				foreach (var item in this.stages) {
 					numDraw += item.Count;
-					this.match.Log (numDraw.ToString ());
 				}
 				numDraw += this.numStages;
-				this.match.Log (numDraw.ToString ());
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
+				this.match.EndStory();
 			}
 			else {
-				this.match.State = MatchState.RESOLVE_STAGE;
-				this.match.Wait ();
+				foreach (Player p in (this.match.CurrentStory as QuestCard).participants){
+					p.Draw (this.match.AdventureDeck);
+				}
+				this.RunStage ();
 			}
-			return winners;
 		}
 	}
 

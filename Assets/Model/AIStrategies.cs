@@ -10,7 +10,13 @@ namespace Quest.Core.Players {
         }
 
         public override List<Card> DiscardExcessCards(Hand hand) {
-            throw new NotImplementedException();
+			List<Card> discards = new List<Card> ();
+			for (int i = 0; i < hand.Count; i++) {
+				if (i >= Constants.MaxHandSize) {
+					discards.Add (hand.Cards [i]);
+				}
+			}
+			return discards;
         }
 
         public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
@@ -18,7 +24,27 @@ namespace Quest.Core.Players {
         }
 
         public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+			List<BattleCard> yourCards = hand.BattleCards;
+            List<BattleCard> discardableFoeCards = new List<BattleCard>();
+			List<BattleCard> WepsAndAllies = new List<BattleCard>();
+			
+			foreach (BattleCard card in yourCards){
+				if(card is FoeCard){
+					if(card.BattlePoints < 20){
+						discardableFoeCards.Add(card);
+					}
+				}
+				else if((card is WeaponCard)||(card is AllyCard)){
+					WepsAndAllies.Add(card);
+				}
+				
+				if((WepsAndAllies.Count/questCard.StageCount >= 2)
+					&&(discardableFoeCards.Count >= 2)){
+						return true;
+					}
+			}
+			
+            return false;
         }
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
@@ -29,7 +55,69 @@ namespace Quest.Core.Players {
         }
 
         public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+			List<BattleCard> yourCards = hand.BattleCards;
+			List<BattleCard> toPlay = new List<BattleCard>();
+			List<BattleCard> amours = new List<BattleCard>();
+			List<BattleCard> allies = new List<BattleCard>();
+			List<BattleCard> weapons = new List<BattleCard>();
+			
+			//sort in descending order (highest bp first)
+			yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+			
+			//filter your cards into amour/ally/weapon
+			foreach(BattleCard card in yourCards){
+				if(card is Amour){
+					amours.Add(card);
+				}
+				else if(card is AllyCard){
+					allies.Add(card);
+				}
+				//add only unique weapons
+				else if(card is WeaponCard){
+					bool isDuplicate = false;
+					//check for duplicate weapons
+					if(weapons.Count > 0){
+						foreach(BattleCard wep in weapons){
+							if (card.ToString() == wep.ToString()){
+								isDuplicate = true;
+							}
+						}
+					}
+					if(!isDuplicate){
+						weapons.Add(card);
+					}
+				}
+			}
+			//if last stage: play all allies and weapons
+			if (questCard.CurrentStage == questCard.StageCount) {
+                if(allies.Count >= 1){
+					foreach(BattleCard ally in allies){
+						toPlay.Add(ally);
+					}
+				}
+				if(weapons.Count >= 1){
+					foreach(BattleCard wep in weapons){
+						toPlay.Add(wep);
+					}
+				}
+            }
+			//if not last stage:
+			else{
+				//just play 1 amour
+				if(amours.Count >= 1){
+					toPlay.Add(amours[0]);
+				}
+				//or just 1 ally if you don't have amour
+				else if(allies.Count >= 1){
+					toPlay.Add(allies[0]);
+				}
+				//or 2 weapons if you don't have either of the above
+				else if(weapons.Count >= 2){
+					toPlay.Add(weapons[0]);
+					toPlay.Add(weapons[1]);
+				}
+			}
+            return toPlay;
         }
 
         public override List<BattleCard> PlayCardsInTournament(TournamentCard tournamentCard, Player player) {
@@ -154,7 +242,7 @@ namespace Quest.Core.Players {
             // Do not participate if there is less than 2 discardable foes.
             if (discardableFoeCards.Count < 2) return false;
 
-            List<BattleCard>[] bestQuestParticipation = this.bestCardsToPlayInQuest(yourCards, questCard.StageCount);
+            List<BattleCard>[] bestQuestParticipation = this.bestCardsToPlayInQuest(questCard, hand);
             return validateCardsToPlayInQuest(bestQuestParticipation);
         }
 
@@ -216,86 +304,62 @@ namespace Quest.Core.Players {
         }
 		
         // assuming battleCards is sorted, starting from weakest
-        private List<BattleCard>[] bestCardsToPlayInQuest(List<BattleCard> battleCards, int size) {
-            List<BattleCard>[] cardsToPlay = new List<BattleCard>[size];
-            List<Amour> yourAmours = new List<Amour>();
-            List<AllyCard> yourAllies = new List<AllyCard>();
-            List<WeaponCard> yourWeapons = new List<WeaponCard>();
-			
-            for (int i = 0; i < size; i++) {
-                cardsToPlay[i] = new List<BattleCard>();
+        private List<BattleCard>[] bestCardsToPlayInQuest(QuestCard questCard, Hand hand) {
+            List<BattleCard>[] stages = new List<BattleCard>[questCard.StageCount];
+
+            List<Amour> amours = new List<Amour>(hand.GetDistinctCards<Amour>());
+            List<AllyCard> allies = new List<AllyCard>(hand.GetCards<AllyCard>());
+            List<WeaponCard> weapons = new List<WeaponCard>(hand.GetCards<WeaponCard>());
+
+            allies.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+            weapons.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+
+            for (int i = 0; i < questCard.StageCount; i++) {
+                stages[i] = new List<BattleCard>();
             }
 
-            //split your cards up into amour, allies, and weapons
-            foreach (BattleCard card in battleCards) {
-                if (card is Amour) {
-                    yourAmours.Add((Amour)card);
-					//battleCards.Remove(card);
-                }
-                else if (card is AllyCard) {
-                    yourAllies.Add((AllyCard)card);
-                }
-                else if (card is WeaponCard) {
-                    yourWeapons.Add((WeaponCard)card);
-                }
-            }
-            //cards to use for the first stage
-            if (yourAmours.Count >= 1) {
-                cardsToPlay[0].Add(yourAmours[0]);
-                yourAmours.Remove(yourAmours[0]);
-            }
-            else if (yourAllies.Count >= 1) {
-                cardsToPlay[0].Add(yourAllies[0]);
-                yourAllies.Remove(yourAllies[0]);
-            }
-            else if (yourWeapons.Count >= 1) {
-                cardsToPlay[0].Add(yourWeapons[0]);
-                yourWeapons.Remove(yourWeapons[0]);
-            }
-            //start at stage 2
-            for (int i = 1; i < size; i++) {
-                int previousBP = 0;
-                int currentBP = 0;
-                foreach (BattleCard card in cardsToPlay[i - 1]) {
-                    previousBP += card.BattlePoints;
-                }
-                //while current stage's BP is still 10 less than the previous stage's BP
-                while (currentBP - previousBP < 10) {
-					
-                    if (yourAllies.Count >= 1) {
-                        cardsToPlay[i].Add(yourAllies[0]);
-                        currentBP += yourAllies[0].BattlePoints;
-                        yourAllies.Remove(yourAllies[0]);
+            BattleArea lastCards = new BattleArea();
+            BattleArea currCards;
+            for (int i = 0; i < questCard.StageCount; i++) {
+                currCards = new BattleArea();
+
+                BattleArea weaponArea = new BattleArea();
+                weapons.ForEach(x => weaponArea.Add(x));
+                List<WeaponCard> playableWeapons = weaponArea.GetDistinctCards<WeaponCard>();
+
+                while (currCards.BattlePoints() < lastCards.BattlePoints() + 10 && amours.Count + allies.Count + playableWeapons.Count > 0) {
+                    if (i == 0 && amours.Count > 0) {
+                        Amour nextAmour = amours[0];
+                        stages[i].Add(nextAmour);
+                        currCards.Add(nextAmour);
+                        amours.Remove(nextAmour);
+                        continue;
+                    } 
+
+                    // Add ally.
+                    else if (allies.Count > 0) {
+                        AllyCard nextAlly = allies[0];
+                        stages[i].Add(nextAlly);
+                        currCards.Add(nextAlly);
+                        allies.Remove(nextAlly);
+                        continue;
                     }
-                    if ((yourWeapons.Count >= 1) && (currentBP - previousBP < 10)) {
-                        int index = 0;//the next index that contains a non duplicate weapon
-                                      
-                        //check for duplicate weapons
-                        foreach (BattleCard card in cardsToPlay[i]) {
-                            if (card.ToString() == yourWeapons[index].ToString()) {
-                                index += 1;
-                                //if every single weapon is a duplicate
-                                if (index > yourWeapons.Count - 1) {
-                                    return cardsToPlay;
-                                }
-                            }
-                                else {
-                                    break;
-                                }
-                        }
-                                     
-                        cardsToPlay[i].Add(yourWeapons[index]);
-                        currentBP += yourWeapons[index].BattlePoints;
-                        yourWeapons.Remove(yourWeapons[index]);
+
+                    // Add wepon
+                    else if (playableWeapons.Count > 0) {
+                        WeaponCard nextWeapon = playableWeapons[0];
+                        stages[i].Add(nextWeapon);
+                        currCards.Add(nextWeapon);
+                        playableWeapons.Remove(nextWeapon);
+                        weapons.Remove(nextWeapon);
+                        continue;
                     }
-                    else if ((yourAllies.Count == 0)
-                        && (yourWeapons.Count == 0)) {
-                        return cardsToPlay;
-                    }
-					
                 }
+
+                lastCards = currCards;
             }
-            return cardsToPlay;
+    
+            return stages;
         }
 
         protected List<AdventureCard>[] cardsToSponsorQuest(Hand hand, int size) {

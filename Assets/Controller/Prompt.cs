@@ -13,9 +13,15 @@ public class Prompt : MonoBehaviour {
     private Button yesButton;
     private Button noButton;
 
-    public string Message {
-        set { this.messageText.text = value; }
-    }
+	public string Message {
+		set { this.messageText.text = value; }
+	}
+	public Button YesButton {
+		get { return this.yesButton; }
+	}
+	public Button NoButton {
+		get { return this.noButton; }
+	}
 
     public UnityAction OnYesClick {
         set { this.yesButton.onClick.AddListener(value); }
@@ -39,8 +45,12 @@ public class Prompt : MonoBehaviour {
     }
 
     void Start() {
-        this.gameObject.transform.SetParent(GameObject.Find("GameCanvas").transform, false);
-        this.promptObj.transform.SetParent(GameObject.Find("GameCanvas").transform, false);
+		GameObject parent = GameObject.Find ("GameCanvas");
+		if (parent == null) {
+			parent = GameObject.Find ("Canvas");
+		}
+        this.gameObject.transform.SetParent(parent.transform, false);
+        this.promptObj.transform.SetParent(parent.transform, false);
     }
 
     public void SetParent(Transform transform) {
