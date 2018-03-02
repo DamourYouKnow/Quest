@@ -1,5 +1,6 @@
 ﻿using System;
 using Quest.Core.Players;
+using Quest.Core.Cards;
 
 namespace Quest.Core.Scenarios {
     public class ScenarioCreator {
@@ -31,8 +32,38 @@ namespace Quest.Core.Scenarios {
         }
 
         public static QuestMatch Scenario1() {
-            // TODO: Create match and run all code to simulate scenario 1.
-            throw new NotImplementedException();
+            QuestMatch game = new QuestMatch(new Logger("Scenario1"));
+
+            Player player1 = new Player("Player 1", game);
+            player1.Behaviour = new HumanPlayer();
+            player1.Hand.Add(new Saxons(game));
+            player1.Hand.Add(new Boar(game));
+            player1.Hand.Add(new Sword(game));
+            player1.Hand.Add(new Dagger(game));
+
+            Player player2 = new Player("Player 2", game);
+            player2.Hand.Add(new Dagger(game)); // So that player 2 can discard a weapon.
+
+            Player player3 = new Player("Player 3", game);
+            player3.Hand.Add(new Horse(game));
+            player3.Hand.Add(new Excalibur(game));
+            player3.Hand.Add(new Amour(game));
+
+            Player player4 = new Player("Player 4", game);
+            player4.Hand.Add(new BattleAx(game));
+            player4.Hand.Add(new Lance(game));
+
+            game.StoryDeck.Push(new ProsperityEvent(game));
+            game.StoryDeck.Push(new BoarHunt(game));
+
+            game.AddPlayer(player1);
+            game.AddPlayer(player2);
+            game.AddPlayer(player3);
+            game.AddPlayer(player4);
+
+            game.Setup();
+
+            return game;
         }
 
         public static QuestMatch Scenario2() {

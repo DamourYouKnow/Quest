@@ -41,6 +41,11 @@ namespace Quest.Core.Players {
             return (player.Rank.ShieldsToVictory() <= questCard.StageCount);
         }
 
+        // for AI deciding to sponsor tournament
+        protected bool promotableThroughTournament(Player player, TournamentCard tournamentCard) {
+            return (player.Rank.ShieldsToVictory() <= tournamentCard.Shields);
+        }
+
         protected List<BattleCard> playableInQuest(QuestCard questCard, Hand hand) {
             List<BattleCard> playable = new List<BattleCard>();
 
@@ -70,11 +75,10 @@ namespace Quest.Core.Players {
         }
     }
 
-    internal class HumanPlayer : PlayerBehaviour {
-        public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+	internal class HumanPlayer : PlayerBehaviour {
+		public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
+			throw new NotImplementedException();
         }
-
         public override List<Card> DiscardExcessCards(Hand hand) {
             throw new NotImplementedException();
         }

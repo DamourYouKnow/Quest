@@ -20,7 +20,8 @@ namespace Quest.Core.Cards {
             List<Player> lowestRanked = Player.LowestShields(this.match.Players);
             foreach (Player player in lowestRanked) {
                 player.Rank.AddShields(3);
-            }
+			}
+			this.match.EndStory ();
         }
     }
 
@@ -40,7 +41,8 @@ namespace Quest.Core.Cards {
                 }
                 player.BattleArea.Transfer(player.Hand, removeCards);
                 player.Discard(removeCards);
-            }
+			}
+			this.match.EndStory ();
         }
     }
 
@@ -50,7 +52,8 @@ namespace Quest.Core.Cards {
 			this.imageFilename = "event_kings_call_to_arms";
         }
 
-        public override void Run() {
+		public override void Run() {
+			this.match.EndStory ();
             throw new NotImplementedException();
         }
     }
@@ -61,22 +64,24 @@ namespace Quest.Core.Cards {
 			this.imageFilename = "event_kings_recognition";
         }
 
-        public override void Run() {
+		public override void Run() {
+			this.match.EndStory ();
             throw new NotImplementedException();
         }
     }
 
     public class PlagueEvent : EventCard {
         public PlagueEvent(QuestMatch match) : base(match) {
-			this.name = "Plauge";
-			this.imageFilename = "event_plauge";
+			this.name = "Plague";
+			this.imageFilename = "event_plague";
         }
 
         public override void Run() {
             Player drawingPlayer = this.match.PlayerWithCard(this);
             if (drawingPlayer != null) {
                 drawingPlayer.Rank.RemoveShields(2);
-            }
+			}
+			this.match.EndStory ();
         }
     }
 
@@ -92,20 +97,22 @@ namespace Quest.Core.Cards {
                 if (player != drawingPlayer) {
                     player.Rank.RemoveShields(1);
                 }
-            }
+			}
+			this.match.EndStory ();
         }
     }
 
     public class ProsperityEvent : EventCard {
         public ProsperityEvent(QuestMatch match) : base(match) {
-			this.name = "Prosperity Throughout The Relm";
-			this.imageFilename = "event_prosperity_throughout_the_relm";
+			this.name = "Prosperity Throughout The Realm";
+			this.imageFilename = "event_prosperity_throughout_the_realm";
         }
 
         public override void Run() {
             foreach (Player player in this.match.Players) {
                 player.Draw(this.match.AdventureDeck, 2);
-            }
+			}
+			this.match.EndStory ();
         }
     }
 
@@ -119,7 +126,8 @@ namespace Quest.Core.Cards {
             List<Player> lowestRanked = Player.LowestRanked(this.match.Players);
             foreach (Player player in lowestRanked) {
                 player.Draw(this.match.AdventureDeck, 2);
-            }
+			}
+			this.match.EndStory ();
         }
     }
 }

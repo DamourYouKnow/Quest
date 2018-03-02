@@ -43,6 +43,18 @@ namespace Quest.Core.Cards{
 			get { return this.sponsor; }
 			set { this.sponsor = value; }
 		}
+		public int SponsorNum{
+			get{
+				if (this.sponsor != null) {
+					for (int i = 0; i < match.Players.Count; i++) {
+						if (match.Players [i] == this.sponsor) {
+							return i;
+						}
+					}
+				}
+				return -1;
+			}
+		}
 
 		public List<Type> QuestFoes {
 			get { return this.questFoes; }
@@ -105,8 +117,35 @@ namespace Quest.Core.Cards{
         public void ForceStage(int stageNumber) {
             this.currentStage = stageNumber;
         }
+		public void requestSponsor(){
+			this.match.Log ("Requesting Sponsor");
+			this.match.State = MatchState.REQUEST_SPONSOR;
+			this.match.Wait ();
+		}
+		public void requestParticipation(){
+			this.match.Log ("Requesting Participants");
+			this.match.State = MatchState.REQUEST_PARTICIPANTS;
 
+			int i = 0;
+			for (; i < this.match.Players.Count; i++) {
+				if (this.match.Players [i] == this.Sponsor) {
+					break;
+				}
+			}
+
+			this.match.PromptingPlayer = (i + 1)%this.match.Players.Count;
+			this.match.Wait ();
+		}
+		public void requestStage(){
+			this.match.State = MatchState.REQUEST_STAGE;
+			this.match.Wait ();
+		}
+		public void RunStage(){
+			this.match.State = MatchState.RUN_STAGE;
+			this.match.Wait ();
+		}
 		public override void Run() {
+<<<<<<< HEAD
             // Ask current player to sponsor.
             Player currentPlayer = this.match.CurrentPlayer;
             if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
@@ -124,6 +163,23 @@ namespace Quest.Core.Cards{
                 }
             }
 
+=======
+			if (this.sponsor == null) {
+				this.requestSponsor ();
+			}
+			else if (this.stages.Count < this.numStages) {
+				requestStage ();
+			}
+			else {
+				this.match.PromptingPlayer = 0;
+				foreach (Player p in (this.match.CurrentStory as QuestCard).participants){
+					p.Draw (this.match.AdventureDeck, 1);
+				}
+				this.currentStage = 1;
+				this.RunStage ();
+			}
+			/*
+>>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
             // Player behaviour functions for individual stage setup.
             List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
             foreach (List<AdventureCard> stage in stages) {
@@ -152,7 +208,8 @@ namespace Quest.Core.Cards{
 
                 this.currentStage++;
             }
-
+            
+			*/
             // TODO: Clean up everything.
 		}
 
@@ -181,7 +238,11 @@ namespace Quest.Core.Cards{
 
 			//If no more stages or no more players, resolve quest.
 			if (this.participants.Count == 0
+<<<<<<< HEAD
 				|| this.currentStage >= this.numStages) {
+=======
+			    || this.currentStage > this.numStages) {
+>>>>>>> 112fbf1b1a22d91db45a9492e0036d9de48283ab
 				foreach (var p in this.participants) {
 					p.Rank.AddShields (this.numStages);
 				}
@@ -191,6 +252,11 @@ namespace Quest.Core.Cards{
 				}
 				numDraw += this.numStages;
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
+				this.match.EndStory();
+			}
+			else {
+				this.match.State = MatchState.RUN_STAGE;
+				this.match.Wait ();
 			}
 			return winners;
 		}
@@ -310,7 +376,7 @@ namespace Quest.Core.Cards{
 		public SlayTheDragon(QuestMatch match) : base(match) {
 			this.name = "Slay The Dragon";
 			this.imageFilename = "quest_slay_the_dragon";
-			this.stages = new List<QuestArea> (3);
+			this.numStages = 3;
 			this.questFoes.Add (typeof(Dragon));
 		}
 
