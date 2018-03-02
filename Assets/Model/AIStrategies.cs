@@ -10,7 +10,13 @@ namespace Quest.Core.Players {
         }
 
         public override List<Card> DiscardExcessCards(Hand hand) {
-            throw new NotImplementedException();
+			List<Card> discards = new List<Card> ();
+			for (int i = 0; i < hand.Count; i++) {
+				if (i >= Constants.MaxHandSize) {
+					discards.Add (hand.Cards [i]);
+				}
+			}
+			return discards;
         }
 
         public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
