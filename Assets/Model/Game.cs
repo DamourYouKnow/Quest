@@ -222,6 +222,10 @@ namespace Quest.Core {
             this.Log("Setup Quest match complete.");
         }
 
+		public void AttachLogger(Logger logger) {
+			this.logger = logger;
+		}
+
         public void Log(string message) {
             if (this.logger != null) {
                 this.logger.Log(message);

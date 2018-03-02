@@ -348,6 +348,7 @@ namespace NUnitTesting {
         [Test]
         public void TestTournamentParticipation() {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
+			game.AttachLogger (new Quest.Core.Logger("TestTournamentParticipation"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
             TournamentAtCamelot tournament = new TournamentAtCamelot(game);
@@ -381,6 +382,7 @@ namespace NUnitTesting {
         [Test]
         public void TestQuestSponsoring() {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
+			game.AttachLogger (new Quest.Core.Logger("TestQuestSponsoring"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
             Player winningPlayer = game.Players[1];
@@ -425,6 +427,7 @@ namespace NUnitTesting {
         [Test]
         public void TestQuestParticipation() {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
+			game.AttachLogger (new Quest.Core.Logger("TestQuestParticipation"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
 
@@ -466,6 +469,7 @@ namespace NUnitTesting {
         [Test]
         public void TestPlayCardsInQuest() {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
+			game.AttachLogger (new Quest.Core.Logger("TestPlayCardsInTest"));
             Player aiPlayer = game.Players[0];
             Player sponsorPlayer = game.Players[1];
             aiPlayer.Behaviour = new Strategy2();
@@ -532,6 +536,7 @@ namespace NUnitTesting {
         [Test]
         public void TestSetupTest() {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
+			game.AttachLogger (new Quest.Core.Logger("TestSetupQuest"));
             Player sponsorAI = game.Players[0];
             sponsorAI.Behaviour = new Strategy2();
 
