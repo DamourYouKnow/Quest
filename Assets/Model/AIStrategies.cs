@@ -18,7 +18,27 @@ namespace Quest.Core.Players {
         }
 
         public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+			List<BattleCard> yourCards = hand.BattleCards;
+            List<BattleCard> discardableFoeCards = new List<BattleCard>();
+			List<BattleCard> WepsAndAllies = new List<BattleCard>();
+			
+			foreach (BattleCard card in yourCards){
+				if(card is FoeCard){
+					if(card.BattlePoints < 20){
+						discardableFoeCards.Add(card);
+					}
+				}
+				else if((card is WeaponCard)||(card is AllyCard)){
+					WepsAndAllies.Add(card);
+				}
+				
+				if((WepsAndAllies.Count/questCard.StageCount >= 2)
+					&&(discardableFoeCards.Count >= 2)){
+						return true;
+					}
+			}
+			
+            return false;
         }
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
