@@ -1,4 +1,5 @@
 ﻿//"connected" to the GameController game object
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -145,6 +146,8 @@ namespace Quest.Core {
 							StartTurnPrompt ();
 						}
 						else {
+							this.gm.Continue ();
+							this.waiting = false;
 							this.gm.NextStory ();
 						}
 					}
@@ -178,7 +181,16 @@ namespace Quest.Core {
 						}
 						this.ClearGameArea (this.GameOtherArea.GetComponent<GameCardArea>());
 						this.ClearGameArea (this.GameBattleArea.GetComponent<GameCardArea> ());
-						this.ConfText.GetComponent<Text>().text = "End Turn";
+						if (this.gm.CurrentPlayer.Behaviour is HumanPlayer) {
+							this.ConfText.GetComponent<Text> ().text = "End Turn";
+						}
+						else {
+							this.gm.CurrentPlayerNum = (this.gm.CurrentPlayerNum + 1) % this.gm.Players.Count;
+							this.gm.PromptingPlayer = this.gm.CurrentPlayerNum;
+							this.gm.Continue ();
+							this.waiting = false;
+							this.gm.NextTurn ();
+						}
 					}
 					if (this.gm.State == MatchState.REQUEST_PARTICIPANTS) {
 						this.waiting = true;
@@ -225,12 +237,15 @@ namespace Quest.Core {
 									}
 								}
 							}
+							this.gm.Continue ();
+							this.waiting = false;
 							AIActingPrompt (qc.Sponsor.Username + " has setup " + qc.Name + ".", this.gm.CurrentStory.Run);
 						}
 					}
 					if (this.gm.State == MatchState.RUN_STAGE) {
 						this.waiting = true;
 						QuestCard qc = this.gm.CurrentStory as QuestCard;
+						Player p = qc.Participants [this.gm.PromptingPlayer];
 						QuestGameCardArea qgca = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
 						GameCardArea gba = this.GameBattleArea.GetComponent<GameCardArea> ();
 						this.ClearQuestGameArea (qgca);
@@ -239,8 +254,18 @@ namespace Quest.Core {
 						this.PopulateQuestGameArea (qgca);
 						GameObject.Destroy(this.GameOtherArea.GetComponent<DropArea> ());
 						GameObject.Find ("OtherAreaText").GetComponent<Text>().text = "Stage " + qc.CurrentStage + " Area";
-						gba.Cards = (this.gm.CurrentStory as QuestCard).Participants [this.gm.PromptingPlayer].BattleArea;
-						this.PlayerQuestTurnPrompt ();
+						gba.Cards = p.BattleArea;
+
+						if (p.Behaviour is HumanPlayer) {
+							this.PlayerQuestTurnPrompt ();
+						}
+						else {
+							List<BattleCard> cards = p.Behaviour.PlayCardsInQuest (qc, p.Hand);
+							p.BattleArea.Cards = cards.ConvertAll(c => (Card)c);
+							this.gm.Continue ();
+							this.waiting = false;
+							AIActingPrompt (p.Username + " has played its cards.", qc.ResolveStage);
+						}
 					}
 
 					if (this.gm.State == MatchState.PLAY_TOURNAMENT) {
@@ -324,7 +349,16 @@ namespace Quest.Core {
 				this.waiting = false;
 				if (this.gm.PromptingPlayer == 0) {
 					this.gm.Continue ();
-					qc.ResolveStage ();
+					try{
+						qc.ResolveStage ();
+					}
+					catch(NotImplementedException){
+						this.logger.Log("Feature not implemented");
+					}
+					catch (Exception e) {
+						this.logger.Log(e.Message);
+						this.logger.Log(e.StackTrace);
+					}
 				}
 			}
 		}
@@ -469,21 +503,11 @@ namespace Quest.Core {
 			gm.RunGame ();
 		}
 		public void AIActingPrompt(string action, UnityAction onclick){
-			this.gm.Continue ();
-			this.waiting = false;
 			this.HideHand ();
 			this.HideBattleArea ();
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = action;
-			prompt.OnYesClick = () => {
-				this.gm.Continue ();
-				this.waiting = false;
-			};
-			prompt.OnNoClick = () => {
-				this.gm.Continue ();
-				this.waiting = false;
-			};
 			prompt.OnYesClick = onclick;
 			prompt.OnNoClick = onclick;
 		}
@@ -650,7 +674,7 @@ namespace Quest.Core {
 			else {
 				bool willParticipate = p.Behaviour.ParticipateInQuest (this.gm.CurrentStory as QuestCard, p.Hand);
 				if (willParticipate) {
-					this.AIActingPrompt (p.Username + " will participate in.", this.ParticipateYes);
+					this.AIActingPrompt (p.Username + " will participate.", this.ParticipateYes);
 				}
 				else {
 					this.AIActingPrompt (p.Username + " will not participate.", this.ParticipateNo);
@@ -661,16 +685,10 @@ namespace Quest.Core {
 
 		public void ParticipateYes(){
 			QuestCard qc = this.gm.CurrentStory as QuestCard;
-			int i = 0;
-			for (; i < this.gm.Players.Count; i++) {
-				if (this.gm.Players [i] == qc.Sponsor) {
-					break;
-				}
-			}
 			this.gm.Log("Participate Yes Clicked");
 			qc.AddParticipant (this.gm.Players [this.gm.PromptingPlayer]);
 			this.gm.PromptingPlayer = (this.gm.PromptingPlayer+1)%this.gm.Players.Count;
-			if (this.gm.PromptingPlayer == i) {
+			if (this.gm.PromptingPlayer == qc.SponsorNum) {
 				this.gm.Continue ();
 				this.waiting = false;
 				this.gm.CurrentStory.Run ();
@@ -682,15 +700,9 @@ namespace Quest.Core {
 
 		public void ParticipateNo(){
 			QuestCard qc = this.gm.CurrentStory as QuestCard;
-			int i = 0;
-			for (; i < this.gm.Players.Count; i++) {
-				if (this.gm.Players [i] == qc.Sponsor) {
-					break;
-				}
-			}
 			this.gm.Log("Participate No Clicked");
 			this.gm.PromptingPlayer = (this.gm.PromptingPlayer+1)%this.gm.Players.Count;
-			if (this.gm.PromptingPlayer == i){
+			if (this.gm.PromptingPlayer == qc.SponsorNum){
 				this.gm.Continue();
 				this.waiting = false;
 				this.gm.CurrentStory.Run ();
@@ -765,7 +777,6 @@ namespace Quest.Core {
 		public void AddAIPlayers(int num){
 			for (int i = 0; i < num; i++) {
 				Player p = new Player (this.numPlayers.ToString () + "AI", this.gm);
-				AIStrategyPrompt (p);
 				this.gm.AddPlayer (p);
 				GameObject list = GameObject.Find ("List_of_players");
 				if (list != null) {
@@ -773,6 +784,7 @@ namespace Quest.Core {
 					t.text = t.text + "\n" + this.numPlayers.ToString() + "AI";
 				}
 				this.numPlayers += 1;
+				AIStrategyPrompt (p);
 			}
 		}
 

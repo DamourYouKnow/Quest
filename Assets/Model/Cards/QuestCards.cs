@@ -142,6 +142,9 @@ namespace Quest.Core.Cards{
 			if (this.sponsor == null) {
 				this.requestSponsor ();
 			}
+			else if (this.participants.Count == 0) {
+				this.match.EndStory ();
+			}
 			else if (this.stages.Count < this.numStages) {
 				requestStage ();
 			}
@@ -187,7 +190,7 @@ namespace Quest.Core.Cards{
             // TODO: Clean up everything.
 		}
 
-		public List<Player> ResolveStage(){
+		public void ResolveStage(){
 			List<Player> winners = new List<Player>();
             if (this.stages[currentStage - 1].MainCard is TestCard) {
                 // TODO: Implement Test stage.
@@ -229,7 +232,6 @@ namespace Quest.Core.Cards{
 				this.match.State = MatchState.RUN_STAGE;
 				this.match.Wait ();
 			}
-			return winners;
 		}
 	}
 
