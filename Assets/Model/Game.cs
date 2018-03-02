@@ -95,13 +95,13 @@ namespace Quest.Core {
 
         public List<Player> OtherPlayers {
             get {
-                List<Player> retList = this.players;
+                List<Player> retList = new List<Player>(this.players);
                 retList.Remove(this.CurrentPlayer);
                 return retList;
             }
         }
 
-        /// <summary>
+          /// <summary>
         /// Called by logic to wait for a response from the UI.
         /// </summary>
         public void Wait() {

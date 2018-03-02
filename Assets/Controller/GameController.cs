@@ -62,6 +62,7 @@ namespace Quest.Core {
 			this.numPlayers = gc.numPlayers;
 			this.Opponents = gc.Opponents;
 		}
+
 		//Awake is called before Start function, guaranteeing we'll have it setup for other scripts
 		void Awake(){
 			//This setup ensures only one GameController is running at a time.
@@ -327,7 +328,7 @@ namespace Quest.Core {
 			SceneManager.LoadScene(sceneName);
 			sceneSet = false;
 		}
-
+		
         public void LoadLocalGameScene(string sceneName) {
             this.scenario = Scenario.LocalGame;
             this.LoadScene(sceneName);
@@ -682,6 +683,7 @@ namespace Quest.Core {
 				this.numPlayers += 1;
 			}
 		}
+			
 	}
 	public class OpponentState{
 		GameController gc;

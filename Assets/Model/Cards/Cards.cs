@@ -152,6 +152,12 @@ namespace Quest.Core.Cards {
         }
 
         public Card Draw() {
+            // Check if out of cards.
+            if (this.cards.Count == 0) {
+                this.Init();
+                this.Shuffle();
+            }
+
             Card drawn = this.cards.Pop();
             return drawn;
         }
