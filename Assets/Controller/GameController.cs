@@ -125,7 +125,9 @@ namespace Quest.Core {
 								this.ClearQuestGameArea (questGameCardAreaSave);
 								questGameCardAreaSave.enabled = false;
 							}
-							this.discardArea = this.GameOtherArea.AddComponent<GameCardArea> ();
+							this.GameOtherArea.AddComponent<DropArea> ();
+							this.GameOtherArea.AddComponent<GameCardArea> ();
+							this.discardArea = this.GameOtherArea.GetComponent<GameCardArea> ();
 							this.discardArea.Cards = new BattleArea();
 							DiscardCardsPrompt (p);
 							return;
@@ -272,18 +274,8 @@ namespace Quest.Core {
 					this.ClearGameArea (this.discardArea);
 					this.discardArea.enabled = false;
 					GameObject.Destroy (this.discardArea);
-					if (gameCardAreaSave != null) {
-						gameCardAreaSave.enabled = true;
-						this.PopulateGameArea (gameCardAreaSave);
-					}
-					if (questGameCardAreaSave != null) {
-						questGameCardAreaSave.enabled = true;
-						this.PopulateQuestGameArea (questGameCardAreaSave);
-					}
-					this.ShowHand (this.handAreaSave);
-					this.ShowBattleArea (this.battleAreaSave);
-					this.discardingPlayer = null;
-					this.waiting = false;
+					GameObject.Destroy(this.GameOtherArea.GetComponent<DropArea> ());
+					this.EndDiscardPrompt ();
 				}
 				else{
 					this.ConfText.GetComponent<Text> ().text = "Need 12 cards";
@@ -461,6 +453,7 @@ namespace Quest.Core {
 		}
 
 		public void StartTurnPrompt(){
+			this.HideHand ();
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = this.gm.CurrentPlayer.Username +" ready?";
@@ -469,6 +462,30 @@ namespace Quest.Core {
 				this.ConfText.GetComponent<Text>().text = "Draw Story";};
 			GameObject storyCardArea = GameObject.Find ("StoryCard");
 			storyCardArea.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + "story_card_back");
+		}
+		public void EndDiscardPrompt(){
+			this.HideHand();
+			this.HideBattleArea ();
+			GameObject promptObj = new GameObject("PlayerPrompt");
+			Prompt prompt = promptObj.AddComponent<Prompt>();
+			prompt.Message = "Return to current player?";
+			prompt.OnYesClick = () => { Debug.Log("Player Discard Ready clicked");
+				if (gameCardAreaSave != null) {
+					gameCardAreaSave.enabled = true;
+					this.PopulateGameArea (gameCardAreaSave);
+				}
+				if (questGameCardAreaSave != null) {
+					questGameCardAreaSave.enabled = true;
+					this.PopulateQuestGameArea (questGameCardAreaSave);
+				}
+				this.discardingPlayer = null;
+				this.gameCardAreaSave = null;
+				this.questGameCardAreaSave = null;
+				this.waiting = false;
+				this.ShowHand (this.handAreaSave);
+				this.ShowBattleArea (this.battleAreaSave);
+				this.handAreaSave = null;
+				this.battleAreaSave = null;};
 		}
 		public void ConfirmSponsorPrompt(){
 			GameObject promptObj = new GameObject("PlayerPrompt");
@@ -630,6 +647,7 @@ namespace Quest.Core {
 		}
 		public void DiscardCardsPrompt(Player p){
 			this.HideHand ();
+			this.HideBattleArea ();
 			GameObject promptObj = new GameObject("PlayerPrompt");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
 			prompt.Message = "Too many cards: " + p.Username +"\nPlay or Discard excess";

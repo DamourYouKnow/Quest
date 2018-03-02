@@ -316,7 +316,7 @@ namespace Quest.Core {
         }
 
         public virtual void Transfer(CardArea target, Card card) {
-            if (this.cards.Contains(card)) {
+			if (target != null && this.cards.Contains(card)) {
                 if (target.GetType().Equals(typeof(QuestArea))) {
                     QuestArea qatarget = target as QuestArea;
                     qatarget.Add(card);
