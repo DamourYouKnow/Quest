@@ -49,7 +49,69 @@ namespace Quest.Core.Players {
         }
 
         public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+			List<BattleCard> yourCards = hand.BattleCards;
+			List<BattleCard> toPlay = new List<BattleCard>();
+			List<BattleCard> amours = new List<BattleCard>();
+			List<BattleCard> allies = new List<BattleCard>();
+			List<BattleCard> weapons = new List<BattleCard>();
+			
+			//sort in descending order (highest bp first)
+			yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+			
+			//filter your cards into amour/ally/weapon
+			foreach(BattleCard card in yourCards){
+				if(card is Amour){
+					amours.Add(card);
+				}
+				else if(card is AllyCard){
+					allies.Add(card);
+				}
+				//add only unique weapons
+				else if(card is WeaponCard){
+					bool isDuplicate = false;
+					//check for duplicate weapons
+					if(weapons.Count > 0){
+						foreach(BattleCard wep in weapons){
+							if (card.ToString() == wep.ToString()){
+								isDuplicate = true;
+							}
+						}
+					}
+					if(!isDuplicate){
+						weapons.Add(card);
+					}
+				}
+			}
+			//if last stage: play all allies and weapons
+			if (questCard.CurrentStage == questCard.StageCount) {
+                if(allies.Count >= 1){
+					foreach(BattleCard ally in allies){
+						toPlay.Add(ally);
+					}
+				}
+				if(weapons.Count >= 1){
+					foreach(BattleCard wep in weapons){
+						toPlay.Add(wep);
+					}
+				}
+            }
+			//if not last stage:
+			else{
+				//just play 1 amour
+				if(amours.Count >= 1){
+					toPlay.Add(amours[0]);
+				}
+				//or just 1 ally if you don't have amour
+				else if(allies.Count >= 1){
+					toPlay.Add(allies[0]);
+				}
+				//or 2 weapons if you don't have either of the above
+				else if(weapons.Count >= 2){
+					toPlay.Add(weapons[0]);
+					toPlay.Add(weapons[1]);
+				}
+			}
+            return toPlay;
         }
 
         public override List<BattleCard> PlayCardsInTournament(TournamentCard tournamentCard, Player player) {
