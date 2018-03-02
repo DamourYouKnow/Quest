@@ -304,7 +304,7 @@ namespace Quest.Core.Players {
                 cardsToPlay.Add(card);
                 currentBattlePoints += card.BattlePoints;
             }
-			player.Match.Log(player.Username+" plays "+Utils.Stringify.CommaList<BattleCard>(cardsToPlay);
+			player.Match.Log(player.Username+" plays "+Utils.Stringify.CommaList<BattleCard>(cardsToPlay));
             return cardsToPlay;
         }
 
