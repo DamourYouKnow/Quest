@@ -285,6 +285,7 @@ namespace Quest.Core {
 			}
 			else{
 				if(SceneManager.GetActiveScene().name == "Match"){
+					this.gm.GC = this;
 					SetupMatchScene ();
 					sceneSet = true;
 					this.ConfButton = GameObject.Find ("ConfirmationButton");
