@@ -215,6 +215,7 @@ namespace Quest.Core.Cards{
 				}
 			}
 			this.participants = winners;
+			this.currentStage += 1;
 
 			//If no more stages or no more players, resolve quest.
 			if (this.participants.Count == 0

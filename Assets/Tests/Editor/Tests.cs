@@ -172,7 +172,6 @@ namespace NUnitTesting {
 			Assert.AreEqual (10, p4.BattleArea.BattlePoints ());
 
 			quest.ResolveStage ();
-            quest.ForceStage(quest.CurrentStage + 1); // Because this test is no longer need and I just want it to shut up.
 
 			Assert.AreEqual (2, quest.CurrentStage);
 
