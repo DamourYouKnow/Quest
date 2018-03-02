@@ -42,6 +42,8 @@ namespace Quest.Core.Cards{
         }
 
         public override void Run() {
+			throw new NotImplementedException();
+			/*
 			this.firstPlayer = this.match.CurrentPlayer;
 			for (int i = 0; i < this.match.Players.Count; i++) {
 				if (this.match.Players [i] == this.firstPlayer) {
@@ -54,6 +56,7 @@ namespace Quest.Core.Cards{
 			} else {
 				playTournament ();
 			}
+			*/
 		//	this.match.EndStory ();
 		}
 			
