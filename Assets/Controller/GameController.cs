@@ -115,24 +115,7 @@ namespace Quest.Core {
 					foreach (Player p in this.gm.Players) {
 						if (p.Hand.Count > Constants.MaxHandSize) {
 							this.waiting = true;
-							this.discardingPlayer = p;
-							this.gameCardAreaSave = this.GameOtherArea.GetComponent<GameCardArea> ();
-							this.questGameCardAreaSave = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
-							this.handAreaSave = this.GameHandArea.GetComponent<GameCardArea> ().Cards;
-							this.battleAreaSave = this.GameBattleArea.GetComponent<GameCardArea> ().Cards;
-							if (gameCardAreaSave != null) {
-								this.ClearGameArea (gameCardAreaSave);
-								gameCardAreaSave.enabled = false;
-							}
-							if (questGameCardAreaSave != null) {
-								this.ClearQuestGameArea (questGameCardAreaSave);
-								questGameCardAreaSave.enabled = false;
-							}
-							this.GameOtherArea.AddComponent<DropArea> ();
-							this.GameOtherArea.AddComponent<GameCardArea> ();
-							this.discardArea = this.GameOtherArea.GetComponent<GameCardArea> ();
-							this.discardArea.Cards = new BattleArea();
-							DiscardCardsPrompt (p);
+							this.DiscardCards (p);
 							return;
 						}
 					}
@@ -548,6 +531,7 @@ namespace Quest.Core {
 			this.discardingPlayer = null;
 			this.gameCardAreaSave = null;
 			this.questGameCardAreaSave = null;
+			this.gm.Continue ();
 			this.waiting = false;
 			this.ShowHand (this.handAreaSave);
 			this.ShowBattleArea (this.battleAreaSave);
@@ -726,6 +710,35 @@ namespace Quest.Core {
 			this.ShowHand ((this.gm.CurrentStory as QuestCard).Participants[this.gm.PromptingPlayer]);
 			this.PopulateGameArea (this.GameBattleArea.GetComponent<GameCardArea>());
 			this.ConfText.GetComponent<Text>().text = "Confirm Cards";
+		}
+		public void DiscardCards(Player p){
+			if (p.Behaviour is HumanPlayer) {
+				this.discardingPlayer = p;
+				this.gameCardAreaSave = this.GameOtherArea.GetComponent<GameCardArea> ();
+				this.questGameCardAreaSave = this.GameOtherArea.GetComponent<QuestGameCardArea> ();
+				this.handAreaSave = this.GameHandArea.GetComponent<GameCardArea> ().Cards;
+				this.battleAreaSave = this.GameBattleArea.GetComponent<GameCardArea> ().Cards;
+				if (gameCardAreaSave != null) {
+					this.ClearGameArea (gameCardAreaSave);
+					gameCardAreaSave.enabled = false;
+				}
+				if (questGameCardAreaSave != null) {
+					this.ClearQuestGameArea (questGameCardAreaSave);
+					questGameCardAreaSave.enabled = false;
+				}
+				this.GameOtherArea.AddComponent<DropArea> ();
+				this.GameOtherArea.AddComponent<GameCardArea> ();
+				this.discardArea = this.GameOtherArea.GetComponent<GameCardArea> ();
+				this.discardArea.Cards = new BattleArea ();
+				DiscardCardsPrompt (p);
+			}
+			else {
+				List<Card> discards = p.Behaviour.DiscardExcessCards (p.Hand);
+				p.Discard (discards);
+				this.AIActingPrompt (p.Username + " discarded excess cards.", () => {
+					this.waiting = false;
+				});
+			}
 		}
 		public void DiscardCardsPrompt(Player p){
 			this.HideHand ();
