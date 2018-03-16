@@ -7,6 +7,9 @@ public class WebSockets : MonoBehaviour {
     private void Start() {
         this.socket = new UnityWebSocket("");
         this.socket.OnClose += this.OnClose;
+        this.socket.OnOpen += this.OnOpen;
+        this.socket.OnMessage += this.OnMessage;
+        this.socket.OnError += this.OnError;
     }
 
     public void OnClose(UnityWebSocket sender, int code, string reason) {
