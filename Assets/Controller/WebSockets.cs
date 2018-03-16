@@ -5,7 +5,7 @@ public class WebSockets : MonoBehaviour {
     private UnityWebSocket socket;
 
     private void Start() {
-        this.socket = new UnityWebSocket("");
+        this.socket = new UnityWebSocket("ws://localhost:63736/quest");
         this.socket.OnClose += this.OnClose;
         this.socket.OnOpen += this.OnOpen;
         this.socket.OnMessage += this.OnMessage;
@@ -18,6 +18,7 @@ public class WebSockets : MonoBehaviour {
 
     public void OnOpen(UnityWebSocket accepted) {
         Debug.Log("Connetion established");
+        this.SendMessage(accepted, "Test message");
     }
 
     public void OnMessage(UnityWebSocket sender, byte[] data) {
