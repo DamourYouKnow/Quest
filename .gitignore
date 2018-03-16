@@ -366,3 +366,4 @@ ASALocalRun/
 
 # include meta files
 !*.*.meta
+!*QuestServer.csproj
