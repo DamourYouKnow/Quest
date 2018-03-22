@@ -1,6 +1,3 @@
-﻿using UnityEngine;
-using UnityEditor;
-using UnityEngine.TestTools;
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -11,13 +8,17 @@ using Quest.Core.Players;
 using Quest.Core.Scenarios;
 using Utils;
 
-namespace NUnitTesting {
+namespace UnitTests
+{
     [TestFixture]
-    public class GameTests {
+    public class GameTests
+    {
         [Test]
-        public void ThreePlayerAIGameTest() {
-			QuestMatch game = new QuestMatch(logger:new Quest.Core.Logger("TestGame"));
-            for (int i = 1; i <= 3; i++) {
+        public void ThreePlayerAIGameTest()
+        {
+            QuestMatch game = new QuestMatch(logger: new Quest.Core.Logger("TestGame"));
+            for (int i = 1; i <= 3; i++)
+            {
                 Player newPlayer = new Player("AI Player " + i, game);
                 newPlayer.Behaviour = new Strategy2();
                 game.AddPlayer(newPlayer);
@@ -29,9 +30,11 @@ namespace NUnitTesting {
     }
 
 
-    public class CardTests {
+    public class CardTests
+    {
         [Test]
-        public void TestDraw() {
+        public void TestDraw()
+        {
             QuestMatch game = ScenarioCreator.EmptyGame();
             AdventureDeck deck = new AdventureDeck(game);
             Player player = new Player("Test Player", game);
@@ -41,7 +44,8 @@ namespace NUnitTesting {
         }
 
         [Test]
-        public void TransferCards() {
+        public void TransferCards()
+        {
             // Transfer cards from player hand to battle area.
             KingArthur testCard = new KingArthur(ScenarioCreator.EmptyGame());
             Hand playerHand = new Hand(null);
@@ -53,50 +57,57 @@ namespace NUnitTesting {
             Assert.AreEqual(battleArea.Count, 1);
         }
 
-		[Test]
-		public void QuestCardRunTest(){
-			QuestMatch match = new QuestMatch ();
+        [Test]
+        public void QuestCardRunTest()
+        {
+            QuestMatch match = new QuestMatch();
 
-			//match has no story to start
-			Assert.IsTrue (match.CurrentStory == null);
+            //match has no story to start
+            Assert.IsTrue(match.CurrentStory == null);
 
-			BoarHunt boarhunt = new BoarHunt(match);
-			
+            BoarHunt boarhunt = new BoarHunt(match);
+
             // These tests are no longer relevant!
             //boarhunt.Run();
-			//match currentstory is initiated after quest.run
-			//Assert.IsTrue(match.CurrentStory == boarhunt);
+            //match currentstory is initiated after quest.run
+            //Assert.IsTrue(match.CurrentStory == boarhunt);
 
-			//questFoes are initialized
-			Assert.IsTrue(boarhunt.QuestFoes.Contains (typeof(Boar)));
-		}
+            //questFoes are initialized
+            Assert.IsTrue(boarhunt.QuestFoes.Contains(typeof(Boar)));
+        }
 
-		[Test]
-		public void AdventureDeckCheck(){
-			Quest.Core.Logger log = new Quest.Core.Logger ("AdventureDeckCheck");
-			QuestMatch game = ScenarioCreator.GameNoDeal(3);
-			AdventureDeck deck = new AdventureDeck(game);
+        [Test]
+        public void AdventureDeckCheck()
+        {
+            Quest.Core.Logger log = new Quest.Core.Logger("AdventureDeckCheck");
+            QuestMatch game = ScenarioCreator.GameNoDeal(3);
+            AdventureDeck deck = new AdventureDeck(game);
 
-			Assert.IsTrue (deck.Peek (deck) == "Test Of The Questing Beast");
+            Assert.IsTrue(deck.Peek(deck) == "Test Of The Questing Beast");
 
-			for (int i = 0; i < 77; i++) {
-				deck.Draw ();
-				if (i == 2) {
-					Assert.IsTrue (deck.Peek (deck) == "Test Of Morgan Le Fey");
-				}
-				if (i == 10) {
-					Assert.IsTrue (deck.Peek (deck) == "Thieves");
-				}
-				if (i == 20) {
-					Assert.IsTrue (deck.Peek (deck) == "Saxons");
-				}
-				if (i == 30) {
-					Assert.IsTrue (deck.Peek (deck) == "Robber Knight");
-				}
-			}
-			//Assert.IsTrue (deck.Peek (deck) == "Dagger"); 
-		}
-		/*
+            for (int i = 0; i < 77; i++)
+            {
+                deck.Draw();
+                if (i == 2)
+                {
+                    Assert.IsTrue(deck.Peek(deck) == "Test Of Morgan Le Fey");
+                }
+                if (i == 10)
+                {
+                    Assert.IsTrue(deck.Peek(deck) == "Thieves");
+                }
+                if (i == 20)
+                {
+                    Assert.IsTrue(deck.Peek(deck) == "Saxons");
+                }
+                if (i == 30)
+                {
+                    Assert.IsTrue(deck.Peek(deck) == "Robber Knight");
+                }
+            }
+            //Assert.IsTrue (deck.Peek (deck) == "Dagger"); 
+        }
+        /*
 		public void AdventureDeckCheck(){
 			Quest.Core.Logger log = new Quest.Core.Logger ("AdventureDeckCheck");
 			QuestMatch game = ScenarioCreator.GameNoDeal(3);
@@ -183,150 +194,165 @@ namespace NUnitTesting {
 		}
 	*/
 
-		[Test]
-		public void StoryDeckCheck(){
-			QuestMatch game = ScenarioCreator.GameNoDeal(3);
-			StoryDeck deck = new StoryDeck(game);
+        [Test]
+        public void StoryDeckCheck()
+        {
+            QuestMatch game = ScenarioCreator.GameNoDeal(3);
+            StoryDeck deck = new StoryDeck(game);
 
-			Assert.IsTrue (deck.Peek (deck) == "King's Call To Arms");
+            Assert.IsTrue(deck.Peek(deck) == "King's Call To Arms");
 
-			for (int i = 0; i < 27; i++) {
-				deck.Draw ();
-				if (i == 1) {
-					Assert.IsTrue (deck.Peek (deck) == "Chivalrous Deed");
-				}
-				if (i == 10) {
-					Assert.IsTrue (deck.Peek (deck) == "Tournament At York");
-				}
-				if (i == 20) {
-					Assert.IsTrue (deck.Peek (deck) == "Vanquish King Arthur's Enemies");
-				}
-			}
-			Assert.IsTrue (deck.Peek (deck) == "Search For The Holy Grail"); 
-		}
+            for (int i = 0; i < 27; i++)
+            {
+                deck.Draw();
+                if (i == 1)
+                {
+                    Assert.IsTrue(deck.Peek(deck) == "Chivalrous Deed");
+                }
+                if (i == 10)
+                {
+                    Assert.IsTrue(deck.Peek(deck) == "Tournament At York");
+                }
+                if (i == 20)
+                {
+                    Assert.IsTrue(deck.Peek(deck) == "Vanquish King Arthur's Enemies");
+                }
+            }
+            Assert.IsTrue(deck.Peek(deck) == "Search For The Holy Grail");
+        }
 
-		[Test]
-		public void QuestTest(){
-			QuestMatch match = new QuestMatch (logger:new Quest.Core.Logger ("QuestTest"));
-			Player p1 = new Player ("p1", match);
-			Player p2 = new Player ("p2", match);
-			Player p3 = new Player ("p3", match);
-			Player p4 = new Player ("p4", match);
+        [Test]
+        public void QuestTest()
+        {
+            QuestMatch match = new QuestMatch(logger: new Quest.Core.Logger("QuestTest"));
+            Player p1 = new Player("p1", match);
+            Player p2 = new Player("p2", match);
+            Player p3 = new Player("p3", match);
+            Player p4 = new Player("p4", match);
 
-			QuestCard quest = new BoarHunt (match);
-			match.CurrentStory = quest;
+            QuestCard quest = new BoarHunt(match);
+            match.CurrentStory = quest;
 
-			quest.Sponsor = p1;
+            quest.Sponsor = p1;
 
-			Assert.IsTrue ((match.CurrentStory as QuestCard).Sponsor == p1);
+            Assert.IsTrue((match.CurrentStory as QuestCard).Sponsor == p1);
 
             quest.AddParticipant(p2);
             quest.AddParticipant(p3);
             quest.AddParticipant(p4);
 
-			Assert.IsTrue(quest.Participants.Contains (p2));
+            Assert.IsTrue(quest.Participants.Contains(p2));
 
             Boar boar = new Boar(match);
             Sword sword = new Sword(match);
             Horse horse = new Horse(match);
-            p1.Hand.Add(new List<Card>() {boar, sword, horse});
+            p1.Hand.Add(new List<Card>() { boar, sword, horse });
 
-            quest.AddFoeStage(boar, new List<WeaponCard>() {sword, horse});
-			Assert.AreEqual (35, quest.GetStage(1).BattlePoints());
+            quest.AddFoeStage(boar, new List<WeaponCard>() { sword, horse });
+            Assert.AreEqual(35, quest.GetStage(1).BattlePoints());
 
             Thieves thieves = new Thieves(match);
             p1.Hand.Add(thieves);
             quest.AddFoeStage(thieves);
-			Assert.AreEqual (5, quest.GetStage(2).BattlePoints());
+            Assert.AreEqual(5, quest.GetStage(2).BattlePoints());
 
-			p2.BattleArea.Add (new Sword(match));
-			p2.BattleArea.Add (new Excalibur(match));
-			p2.BattleArea.Add (new Dagger(match));
-			p2.BattleArea.Add (new Horse(match));
-			p2.BattleArea.Add (new Lance (match));
-			p2.BattleArea.Add (new BattleAx (match));
+            p2.BattleArea.Add(new Sword(match));
+            p2.BattleArea.Add(new Excalibur(match));
+            p2.BattleArea.Add(new Dagger(match));
+            p2.BattleArea.Add(new Horse(match));
+            p2.BattleArea.Add(new Lance(match));
+            p2.BattleArea.Add(new BattleAx(match));
 
-			Assert.AreEqual (90, p2.BattleArea.BattlePoints ());
+            Assert.AreEqual(90, p2.BattleArea.BattlePoints());
 
-			p3.BattleArea.Add (new Dagger (match));
-			p3.BattleArea.Add (new Excalibur (match));
+            p3.BattleArea.Add(new Dagger(match));
+            p3.BattleArea.Add(new Excalibur(match));
 
-			Assert.AreEqual (35, p3.BattleArea.BattlePoints ());
+            Assert.AreEqual(35, p3.BattleArea.BattlePoints());
 
-			p4.BattleArea.Add (new Sword (match));
+            p4.BattleArea.Add(new Sword(match));
 
-			Assert.AreEqual (10, p4.BattleArea.BattlePoints ());
+            Assert.AreEqual(10, p4.BattleArea.BattlePoints());
 
-			quest.ResolveStage ();
+            quest.ResolveStage();
 
-			Assert.AreEqual (2, quest.CurrentStage);
+            Assert.AreEqual(2, quest.CurrentStage);
 
-			Assert.IsTrue (quest.Participants.Contains (p2));
-			Assert.IsTrue (quest.Participants.Contains (p3));
-			Assert.IsFalse (quest.Participants.Contains (p4));
+            Assert.IsTrue(quest.Participants.Contains(p2));
+            Assert.IsTrue(quest.Participants.Contains(p3));
+            Assert.IsFalse(quest.Participants.Contains(p4));
 
-			Assert.IsTrue (p2.BattleArea.Cards.Count == 0);
-			Assert.IsTrue (p3.BattleArea.Cards.Count == 0);
-			Assert.IsTrue (p4.BattleArea.Cards.Count == 0);
+            Assert.IsTrue(p2.BattleArea.Cards.Count == 0);
+            Assert.IsTrue(p3.BattleArea.Cards.Count == 0);
+            Assert.IsTrue(p4.BattleArea.Cards.Count == 0);
 
-			p2.BattleArea.Add (new Dagger (match));
+            p2.BattleArea.Add(new Dagger(match));
 
-			Assert.AreEqual (5, p2.BattleArea.BattlePoints());
+            Assert.AreEqual(5, p2.BattleArea.BattlePoints());
 
-			quest.ResolveStage ();
+            quest.ResolveStage();
 
-			Assert.IsTrue (quest.Participants.Contains (p2));
-			Assert.IsFalse (quest.Participants.Contains (p3));
+            Assert.IsTrue(quest.Participants.Contains(p2));
+            Assert.IsFalse(quest.Participants.Contains(p3));
 
-			Assert.AreEqual (0, p1.Rank.Shields);
-			Assert.AreEqual (2, p2.Rank.Shields);
-			Assert.AreEqual (0, p3.Rank.Shields);
-			Assert.AreEqual (0, p4.Rank.Shields);
+            Assert.AreEqual(0, p1.Rank.Shields);
+            Assert.AreEqual(2, p2.Rank.Shields);
+            Assert.AreEqual(0, p3.Rank.Shields);
+            Assert.AreEqual(0, p4.Rank.Shields);
 
-			Assert.AreEqual (6, p1.Hand.Count);
-			Assert.AreEqual (1, p2.Hand.Count);
-			Assert.AreEqual (1, p3.Hand.Count);
-			Assert.AreEqual (0, p4.Hand.Count);
-		}
+            Assert.AreEqual(6, p1.Hand.Count);
+            Assert.AreEqual(1, p2.Hand.Count);
+            Assert.AreEqual(1, p3.Hand.Count);
+            Assert.AreEqual(0, p4.Hand.Count);
+        }
     }
 
-    public class GameManagerTests {
+    public class GameManagerTests
+    {
         [Test]
-        public void SetupGame() {
+        public void SetupGame()
+        {
             QuestMatch game = ScenarioCreator.GameWithDeal(3);
 
             // Test if each player has 12 adventure cards.
-            foreach (Player player in game.Players) {
+            foreach (Player player in game.Players)
+            {
                 Assert.AreEqual(player.Hand.Count, Constants.MaxHandSize);
-                foreach (Card card in player.Hand.Cards) {
+                foreach (Card card in player.Hand.Cards)
+                {
                     Assert.IsInstanceOf(typeof(AdventureCard), card);
                 }
             }
         }
     }
 
-    public class EventTests {
+    public class EventTests
+    {
         [Test]
-        public void Prosperity() {
+        public void Prosperity()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(3);
-			game.AttachLogger (new Quest.Core.Logger("TestProsperityEvent"));
+            game.AttachLogger(new Quest.Core.Logger("TestProsperityEvent"));
 
             ProsperityEvent eventCard = new ProsperityEvent(game);
             eventCard.Run();
 
             // TODO: Player pulls event, run handler on draw.
-            foreach (Player player in game.Players) {
+            foreach (Player player in game.Players)
+            {
                 Assert.AreEqual(2, player.Hand.Count);
-                foreach (Card card in player.Hand.Cards) {
+                foreach (Card card in player.Hand.Cards)
+                {
                     Assert.IsInstanceOf(typeof(AdventureCard), card);
                 }
-            } 
+            }
         }
 
         [Test]
-        public void ChivalrousDeed() {
+        public void ChivalrousDeed()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(3);
-			game.AttachLogger (new Quest.Core.Logger("TestChivalrousDeedEvent"));
+            game.AttachLogger(new Quest.Core.Logger("TestChivalrousDeedEvent"));
 
             game.Players[0].Rank.AddShields(1);
 
@@ -339,9 +365,10 @@ namespace NUnitTesting {
         }
 
         [Test]
-        public void QueensFavour() {
+        public void QueensFavour()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(3);
-			game.AttachLogger (new Quest.Core.Logger("TestQueensFavourEvent"));
+            game.AttachLogger(new Quest.Core.Logger("TestQueensFavourEvent"));
 
             game.Players[0].Rank.AddShields(10);
 
@@ -352,19 +379,22 @@ namespace NUnitTesting {
             Assert.AreEqual(2, game.Players[1].Hand.Count);
             Assert.AreEqual(2, game.Players[2].Hand.Count);
 
-            foreach (Card card in game.Players[1].Hand.Cards) {
+            foreach (Card card in game.Players[1].Hand.Cards)
+            {
                 Assert.IsInstanceOf(typeof(AdventureCard), card);
             }
 
-            foreach (Card card in game.Players[2].Hand.Cards) {
+            foreach (Card card in game.Players[2].Hand.Cards)
+            {
                 Assert.IsInstanceOf(typeof(AdventureCard), card);
             }
         }
 
         [Test]
-        public void CourtCalled() {
+        public void CourtCalled()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
-			game.AttachLogger (new Quest.Core.Logger("TestCourtCalledEvent"));
+            game.AttachLogger(new Quest.Core.Logger("TestCourtCalledEvent"));
 
             List<Card> testCards = new List<Card>() {
                 new KingArthur(game),
@@ -376,15 +406,17 @@ namespace NUnitTesting {
             CourtCalledEvent eventCard = new CourtCalledEvent(game);
             eventCard.Run();
 
-            foreach (Card card in game.Players[0].BattleArea.Cards) {
+            foreach (Card card in game.Players[0].BattleArea.Cards)
+            {
                 Assert.IsNotInstanceOf(typeof(AllyCard), card);
             }
         }
 
         [Test]
-        public void Pox() {
+        public void Pox()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
-			game.AttachLogger (new Quest.Core.Logger("TestPoxEvent"));
+            game.AttachLogger(new Quest.Core.Logger("TestPoxEvent"));
             game.Players[0].Rank.AddShields(1);
             game.Players[1].Rank.AddShields(1);
 
@@ -397,9 +429,10 @@ namespace NUnitTesting {
         }
 
         [Test]
-        public void Plague() {
+        public void Plague()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
-			game.AttachLogger (new Quest.Core.Logger("TestPlagueEvent"));
+            game.AttachLogger(new Quest.Core.Logger("TestPlagueEvent"));
             PlagueEvent eventCard = new PlagueEvent(game);
             game.Players[0].Rank.AddShields(2);
             game.Players[0].Hand.Add(eventCard);
@@ -408,12 +441,14 @@ namespace NUnitTesting {
         }
     }
 
-    public class PlayerTests {
+    public class PlayerTests
+    {
         [Test]
-        public void Ranking() {
+        public void Ranking()
+        {
             QuestMatch game = new QuestMatch();
-			game.AttachLogger (new Quest.Core.Logger ("TestRanking"));
-                
+            game.AttachLogger(new Quest.Core.Logger("TestRanking"));
+
             Player player = new Player("Test Player", game);
             Assert.AreEqual(Rank.Squire, player.Rank.Value);
             Assert.AreEqual(0, player.Rank.Shields);
@@ -436,15 +471,18 @@ namespace NUnitTesting {
         }
     }
 
-    public class TestTests {
-       
+    public class TestTests
+    {
+
     }
 
-    public class Strategy2Tests {
+    public class Strategy2Tests
+    {
         [Test]
-        public void TestTournamentParticipation() {
+        public void TestTournamentParticipation()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
-			game.AttachLogger (new Quest.Core.Logger("TestTournamentParticipation"));
+            game.AttachLogger(new Quest.Core.Logger("TestTournamentParticipation"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
             TournamentAtCamelot tournament = new TournamentAtCamelot(game);
@@ -476,9 +514,10 @@ namespace NUnitTesting {
         }
 
         [Test]
-        public void TestQuestSponsoring() {
+        public void TestQuestSponsoring()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
-			game.AttachLogger (new Quest.Core.Logger("TestQuestSponsoring"));
+            game.AttachLogger(new Quest.Core.Logger("TestQuestSponsoring"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
             Player winningPlayer = game.Players[1];
@@ -521,9 +560,10 @@ namespace NUnitTesting {
         }
 
         [Test]
-        public void TestQuestParticipation() {
+        public void TestQuestParticipation()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
-			game.AttachLogger (new Quest.Core.Logger("TestQuestParticipation"));
+            game.AttachLogger(new Quest.Core.Logger("TestQuestParticipation"));
             Player aiPlayer = game.Players[0];
             aiPlayer.Behaviour = new Strategy2();
 
@@ -563,9 +603,10 @@ namespace NUnitTesting {
         }
 
         [Test]
-        public void TestPlayCardsInQuest() {
+        public void TestPlayCardsInQuest()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(2);
-			game.AttachLogger (new Quest.Core.Logger("TestPlayCardsInTest"));
+            game.AttachLogger(new Quest.Core.Logger("TestPlayCardsInTest"));
             Player aiPlayer = game.Players[0];
             Player sponsorPlayer = game.Players[1];
             aiPlayer.Behaviour = new Strategy2();
@@ -579,7 +620,7 @@ namespace NUnitTesting {
             Thieves questThieves = new Thieves(game);
             Saxons questSaxons = new Saxons(game);
             RobberKnight questRobberKnight = new RobberKnight(game);
-            sponsorPlayer.Hand.Add(new List<Card>() {questThieves, questSaxons, questRobberKnight});
+            sponsorPlayer.Hand.Add(new List<Card>() { questThieves, questSaxons, questRobberKnight });
 
             quest.AddFoeStage(questThieves);
             quest.AddFoeStage(questSaxons);
@@ -625,14 +666,16 @@ namespace NUnitTesting {
         }
 
         [Test]
-        public void TestDiscardAfterWinningTest() {
+        public void TestDiscardAfterWinningTest()
+        {
             throw new NotImplementedException();
         }
 
         [Test]
-        public void TestSetupTest() {
+        public void TestSetupTest()
+        {
             QuestMatch game = ScenarioCreator.GameNoDeal(1);
-			game.AttachLogger (new Quest.Core.Logger("TestSetupQuest"));
+            game.AttachLogger(new Quest.Core.Logger("TestSetupQuest"));
             Player sponsorAI = game.Players[0];
             sponsorAI.Behaviour = new Strategy2();
 
@@ -648,7 +691,7 @@ namespace NUnitTesting {
             Mordred mordred = new Mordred(game); // 40 BP, played last stage.
             Sword sword = new Sword(game); // 10 BP, played last stage.
 
-            sponsorAI.Hand.Add(new List<Card>() {testOfTemptation, boar, saxons, mordred, sword});
+            sponsorAI.Hand.Add(new List<Card>() { testOfTemptation, boar, saxons, mordred, sword });
 
             List<AdventureCard>[] stages = sponsorAI.Behaviour.SetupQuest(quest, sponsorAI.Hand);
             Assert.AreEqual(4, stages.Length);
