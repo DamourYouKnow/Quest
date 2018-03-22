@@ -368,3 +368,4 @@ ASALocalRun/
 !*.*.meta
 !*QuestServer.csproj
 !*UnitTest.csproj
+!*launchSettings.json

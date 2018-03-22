@@ -5,7 +5,7 @@ public class WebSockets : MonoBehaviour {
     private UnityWebSocket socket;
 
     private void Start() {
-        this.socket = new UnityWebSocket("ws://localhost:63736/quest");
+        this.socket = new UnityWebSocket("ws://localhost:3004/quest");
         this.socket.OnClose += this.OnClose;
         this.socket.OnOpen += this.OnOpen;
         this.socket.OnMessage += this.OnMessage;
