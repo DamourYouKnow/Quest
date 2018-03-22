@@ -1,17 +1,15 @@
 ﻿using System;
 using UnityEngine;
-using Quest.Core.Cards;
-using Quest.Core;
 
 public class GameCardArea  : MonoBehaviour {
-	CardArea cards;
+	//CardArea cards;
 
-	public CardArea Cards {
-		get { return this.cards; }
-		set { this.cards = value; }
-	}
+	//public CardArea Cards {
+	//	get { return this.cards; }
+	//	set { this.cards = value; }
+	//}
 	void Awake() {
-		this.cards = null;
+		//this.cards = null;
 	}
 }
 

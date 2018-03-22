@@ -4,8 +4,6 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.Collections.Generic;
-using Quest.Core;
-using Quest.Core.Cards;
 
 public class Prompt : MonoBehaviour {
     private GameObject promptObj;
@@ -70,11 +68,11 @@ public class CardPrompt : MonoBehaviour {
 	private GameObject cards;
 	private GameObject discards;
 	private Button yesButton;
-	private CardArea currentCards;
+	//private CardArea currentCards;
 
-	public CardArea CurrentCards{
-		set{this.currentCards = value;}
-	}
+	//public CardArea CurrentCards{
+	//	set{this.currentCards = value;}
+	//}
 	public string Message {
 		set { this.messageText.text = value; }
 	}
@@ -93,12 +91,12 @@ public class CardPrompt : MonoBehaviour {
 		this.cards = Instantiate (Resources.Load ("CardPanel")) as GameObject;
 		this.discards = Instantiate (Resources.Load ("CardPanel")) as GameObject;
 
-		for (int i = 0; i < currentCards.Count; i++) {
-			GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
-			card.transform.SetParent (cards.transform, false);
-			card.transform.localScale = new Vector3 (1, 1, 1);
-			card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + currentCards.Cards [i].ImageFilename);
-		}
+		//for (int i = 0; i < currentCards.Count; i++) {
+		//	GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+		//	card.transform.SetParent (cards.transform, false);
+		//	card.transform.localScale = new Vector3 (1, 1, 1);
+		//	card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + currentCards.Cards [i].ImageFilename);
+		//}
 		this.yesButton.onClick.AddListener(closePrompt);
 	}
 
@@ -124,11 +122,11 @@ public class SponsorQuestPrompt : MonoBehaviour {
 	private GameObject card;
 	private Button yesButton;
 	private Button noButton;
-	private Card quest;
+	//private Card quest;
 
-	public Card Quest{
-		set{this.quest = value;}
-	}
+	//public Card Quest{
+	//	set{this.quest = value;}
+	//}
 	public string Message {
 		set { this.messageText.text = value; }
 	}
@@ -161,7 +159,7 @@ public class SponsorQuestPrompt : MonoBehaviour {
 		this.card = Instantiate (Resources.Load ("Card", typeof(GameObject))) as GameObject;
 		card.transform.SetParent (SponsorCard.transform, false);
 		card.transform.localScale = new Vector3 (1, 1, 1);
-		card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + quest.ImageFilename);
+		//card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + quest.ImageFilename);
 	}
 
 	public void SetParent(Transform transform) {

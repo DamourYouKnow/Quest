@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Quest.Core;
-using Quest.Core.Players;
-using Quest.Core.Cards;
 
 namespace Quest.Core{
 	public class CardUI : ScriptableObject {
@@ -21,14 +18,14 @@ namespace Quest.Core{
 			}
 		}
 
-		public void ShowHand(int numOfCards, QuestMatch gm){
-			GameObject hand = GameObject.Find ("HandPanel");
-			for (int i = 0; i < numOfCards; i++) {
-				GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
-				card.transform.SetParent (hand.transform);
-				card.transform.localScale = new Vector3 (1, 1, 1);
-				card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + gm.CurrentPlayer.Hand.Cards [i].ImageFilename);
-			}
-		}
+		//public void ShowHand(int numOfCards, QuestMatch gm){
+		//	GameObject hand = GameObject.Find ("HandPanel");
+		//	for (int i = 0; i < numOfCards; i++) {
+		//		GameObject card = Instantiate (Resources.Load ("DraggableCard", typeof(GameObject))) as GameObject;
+		//		card.transform.SetParent (hand.transform);
+		//		card.transform.localScale = new Vector3 (1, 1, 1);
+		//		card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + gm.CurrentPlayer.Hand.Cards [i].ImageFilename);
+		//	}
+		//}
     }
 }
