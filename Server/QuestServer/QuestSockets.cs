@@ -3,7 +3,9 @@ using System.Text;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
-namespace Utils.Networking {
+using Utils.Networking;
+
+namespace Quest.Utils.Networking {
     public class QuestMessageHandler : WebSocketHandler {
         public QuestMessageHandler(WebSocketConnectionManager connectionManager) : base(connectionManager) {
 

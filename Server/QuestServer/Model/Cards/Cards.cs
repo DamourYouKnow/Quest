@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using Quest.Utils;
 using Quest.Core.Players;
 
 namespace Quest.Core.Cards {
-    public abstract class Card {
+    public abstract class Card : QuestObject {
         protected string name;
         protected string imageFilename;
         protected QuestMatch match;
 
         public Card(QuestMatch match) {
+            this.Converter = new MarkupConverter(new CardJsonConversion());
 			this.match = match;
         }
 

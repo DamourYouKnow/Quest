@@ -4,15 +4,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Quest.Utils {
     public abstract class QuestObject {
-        private JsonConverter jsonConverter;
+        private MarkupConverter converter;
 
-        public QuestObject(JsonConverter jsonConverter = null) {
-            this.jsonConverter = jsonConverter;
+        public QuestObject(MarkupConverter converter=null) {
+            this.converter = converter;
         }
 
-        public JsonConverter JsonConverter {
-            get { return this.jsonConverter; }
-            set { this.jsonConverter = value; }
+        public MarkupConverter Converter {
+            get { return this.converter; }
+            set { this.converter = value; }
         }
     }
 
