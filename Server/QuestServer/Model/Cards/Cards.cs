@@ -5,7 +5,7 @@ using Quest.Utils;
 using Quest.Core.Players;
 
 namespace Quest.Core.Cards {
-    public abstract class Card : QuestObject {
+    public abstract class Card : SerializableObject {
         protected string name;
         protected string imageFilename;
         protected QuestMatch match;

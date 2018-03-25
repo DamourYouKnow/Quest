@@ -3,10 +3,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Quest.Utils {
-    public abstract class QuestObject {
+    public abstract class SerializableObject {
         private MarkupConverter converter;
 
-        public QuestObject() {
+        public SerializableObject() {
             this.converter = new MarkupConverter();
         }
 
@@ -30,21 +30,21 @@ namespace Quest.Utils {
 
 
     public abstract class MarkupConversion {
-        public abstract string ToString(QuestObject obj);
+        public abstract string ToString(SerializableObject obj);
     }
 
 
     public abstract class JsonConversion : MarkupConversion {
-        public override string ToString(QuestObject obj) {
+        public override string ToString(SerializableObject obj) {
             return this.ToJObject(obj).ToString();
         }
 
-        public abstract JObject ToJObject(QuestObject obj);
+        public abstract JObject ToJObject(SerializableObject obj);
     }
 
 
     public class DefaultJsonConversion : JsonConversion {
-        public override JObject ToJObject(QuestObject obj) {
+        public override JObject ToJObject(SerializableObject obj) {
             return JObject.Parse(JsonConvert.SerializeObject(obj));
         }
     }

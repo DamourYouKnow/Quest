@@ -145,7 +145,7 @@ namespace Quest.Core.Players {
         }
     }
 
-    public class Player : QuestObject {
+    public class Player : SerializableObject {
         private QuestMatch match;
         private string username;
         private PlayerBehaviour behaviour;
