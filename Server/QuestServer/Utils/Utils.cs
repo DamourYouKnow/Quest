@@ -6,13 +6,12 @@ namespace Quest.Utils {
     public abstract class QuestObject {
         private MarkupConverter converter;
 
-        public QuestObject(MarkupConverter converter=null) {
-            this.converter = converter;
+        public QuestObject() {
+            this.converter = new MarkupConverter();
         }
 
         public MarkupConverter Converter {
             get { return this.converter; }
-            set { this.converter = value; }
         }
     }
 
@@ -20,17 +19,12 @@ namespace Quest.Utils {
     public class MarkupConverter {
         private JsonConversion jsonConversion;
 
-        public MarkupConverter(JsonConversion jsonConversion=null) {
-            if (jsonConversion == null) {
-                this.jsonConversion = new DefaultJsonConversion();
-            }
-            else {
-                this.jsonConversion = jsonConversion;
-            }
-        }
-
         public JsonConversion Json {
-            get { return this.jsonConversion; }
+            get {
+                if (this.jsonConversion == null) return new DefaultJsonConversion();
+                return this.jsonConversion;
+            }
+            set { this.jsonConversion = value; }
         }
     }
 

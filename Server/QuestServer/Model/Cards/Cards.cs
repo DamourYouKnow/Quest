@@ -11,7 +11,7 @@ namespace Quest.Core.Cards {
         protected QuestMatch match;
 
         public Card(QuestMatch match) {
-            this.Converter = new MarkupConverter(new CardJsonConversion());
+            this.Converter.Json = new CardJsonConversion();
 			this.match = match;
         }
 

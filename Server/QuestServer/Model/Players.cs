@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Quest.Utils;
 using Quest.Core.Cards;
 
 namespace Quest.Core.Players {
@@ -143,7 +145,7 @@ namespace Quest.Core.Players {
         }
     }
 
-    public class Player {
+    public class Player : QuestObject {
         private QuestMatch match;
         private string username;
         private PlayerBehaviour behaviour;
@@ -152,6 +154,7 @@ namespace Quest.Core.Players {
 		private PlayerArea battleArea;
 
         public Player(string username, QuestMatch match=null) {
+            this.Converter.Json = new PlayerJsonConversion();
             this.match = match;
             this.username = username;
             this.rank = new PlayerRank(this);
