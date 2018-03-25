@@ -364,7 +364,7 @@ namespace Quest.Core {
         }
 
 		public override void Add(Card card){
-			if (card.GetType().BaseType.Equals(typeof(FoeCard)) || card.GetType().BaseType.Equals(typeof(TestCard))) {
+			if (card is FoeCard || card is TestCard) {
 				if (this.mainCard == null) {
 					this.mainCard = card;
 					this.cards.Add (card);
@@ -381,7 +381,7 @@ namespace Quest.Core {
 						break;
 					}
 				}
-				if (canAdd && !card.GetType().IsSubclassOf(typeof(AllyCard)) && this.mainCard!=null && !this.mainCard.GetType().IsSubclassOf(typeof(TestCard))) {
+				if (canAdd && !(card is AllyCard) && this.mainCard!=null && !(this.mainCard is TestCard)) {
 					this.cards.Add(card);
 				}
 			}
@@ -397,9 +397,9 @@ namespace Quest.Core {
 		}
 		public override int BattlePoints(){
 			int total = 0;
-			if (this.mainCard.GetType ().IsSubclassOf (typeof(FoeCard))) {
+			if (this.mainCard is FoeCard) {
 				foreach (BattleCard card in this.BattleCards) {
-					if (!card.GetType ().BaseType.Equals (typeof(FoeCard)) && !card.GetType ().BaseType.Equals (typeof(TestCard))) {
+					if (!(card is FoeCard)) {
 						total += card.BattlePoints;
 					}
 				}
@@ -419,7 +419,7 @@ namespace Quest.Core {
 			
 
 		public override void Add(Card card){
-			if (!card.GetType().BaseType.Equals(typeof(FoeCard)) || !card.GetType().BaseType.Equals(typeof(AllyCard))) {
+			if (!(card is FoeCard) || !(card is BattleCard)) {
 				this.cards.Add (card);
 			}
 			else {
