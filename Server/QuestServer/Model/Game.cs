@@ -25,7 +25,7 @@ namespace Quest.Core {
         START_TOURNAMENT,
 		PLAY_TOURNAMENT
     };
-    public class QuestMatch : Subject {
+    public class QuestMatch {
         private List<Player> players;
         private int currentPlayer;
         private int promptingPlayer;
