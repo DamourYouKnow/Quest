@@ -6,7 +6,7 @@ using Quest.Core.Players;
 namespace Quest.Utils {
     public class CardJsonConversion : JsonConversion {
         public override JObject ToJObject(SerializableObject obj) {
-            Card card = (Card)obj;
+            Card card = obj as Card;
 
             JObject jObj = new JObject();
             jObj["name"] = card.Name;
@@ -19,7 +19,7 @@ namespace Quest.Utils {
 
     public class PlayerJsonConversion : JsonConversion {
         public override JObject ToJObject(SerializableObject obj) {
-            Player player = (Player)obj;
+            Player player = obj as Player;
 
             JObject jObj = new JObject();
             jObj["username"] = player.Username;
