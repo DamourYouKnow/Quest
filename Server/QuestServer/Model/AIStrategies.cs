@@ -533,4 +533,43 @@ namespace Quest.Core.Players {
             return true;
         }
     }
+
+
+    public class Strategy3 : PlayerBehaviour {
+        public override List<Card> DiscardAfterWinningTest(QuestCard questCard, Hand hand, int discardCount) {
+            throw new NotImplementedException();
+        }
+
+        public override List<Card> DiscardExcessCards(Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool ParticipateInTournament(TournamentCard tournamentCard) {
+            throw new NotImplementedException();
+        }
+
+        public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override List<BattleCard> PlayCardsInTournament(TournamentCard TournamentCard, Player player) {
+            throw new NotImplementedException();
+        }
+
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
+            throw new NotImplementedException();
+        }
+    }
 }

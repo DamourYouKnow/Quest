@@ -75,6 +75,7 @@ namespace Quest.Core.Players {
         }
     }
 
+    // TODO: Use sockets here to send events to the player.
 	internal class HumanPlayer : PlayerBehaviour {
 		public override List<BattleCard> PlayCardsInQuest(QuestCard questCard, Hand hand) {
 			throw new NotImplementedException();
