@@ -49,5 +49,19 @@ namespace Quest.Core {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Discard(player.Hand.GetCards<Card>(cardNames));
         }
+
+        private void UpdatePlayers() {
+            JObject message = new JObject();
+            message["event"] = "update_players";
+
+            JArray playerArray = new JArray();
+            this.game.Players.ForEach((p) => playerArray.Add(p.Converter.Json.ToJObject(p)));
+            JObject data = new JObject();
+            data["players"] = playerArray;
+
+            message["data"] = data;
+
+            this.messageHandler.SendAllAsync(message.ToString());
+        }
     }
 }
