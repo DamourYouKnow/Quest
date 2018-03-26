@@ -72,4 +72,17 @@ namespace Quest.Utils {
             return string.Join(", ", stringList.ToArray());
         }
     }
+
+
+    public class Jsonify {
+        public static List<T> ArrayToList<T>(JToken array) {
+            List<T> retList = new List<T>();
+
+            foreach (JToken arrayToken in array as JArray) {
+                retList.Add((T)(object)arrayToken);
+            }
+
+            return retList;
+        }
+    }
 }

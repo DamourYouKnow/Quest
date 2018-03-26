@@ -3,7 +3,9 @@ using System.Net.WebSockets;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
+using Quest.Utils;
 using Quest.Utils.Networking;
+using Quest.Core.Cards;
 using Quest.Core.Players;
 
 namespace Quest.Core {
@@ -26,6 +28,7 @@ namespace Quest.Core {
 
             messageHandler.On("test", (data) => {
                 Console.WriteLine(data.ToString());
+                game.Log("Test Event!!!");
             });
         }
 
@@ -33,6 +36,13 @@ namespace Quest.Core {
             string username = (string)data["player"]["username"];
             Player newPlayer = new Player(username, this.game);
             this.players.Add(username, newPlayer);
+        }
+
+        private void OnPlayCards(JToken data) {
+            string username = (string)data["username"];
+            Player player = players[username];
+            List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
+            player.Play(player.Hand.GetCards<BattleCard>(cardNames));
         }
     }
 }

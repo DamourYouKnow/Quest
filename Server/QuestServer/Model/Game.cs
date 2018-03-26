@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using Quest.Core.Cards;
@@ -254,6 +255,21 @@ namespace Quest.Core {
                     cardNames.Add(card.Name);
                 }
             }
+            return retList;
+        }
+
+        public List<T> GetCards<T>(List<string> cardNames) {
+            List<T> retList = new List<T>();
+            HashSet<Card> found = new HashSet<Card>();
+
+            foreach (string cardName in cardNames) {
+                foreach (Card card in this.GetCards<T>().Cast<Card>().ToList()) {
+                    if (cardNames.Contains(card.Name) && !found.Contains(card)) {
+                        retList.Add((T)(object)card);
+                    }
+                }
+            }
+
             return retList;
         }
 
