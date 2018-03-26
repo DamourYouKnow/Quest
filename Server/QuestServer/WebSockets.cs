@@ -92,7 +92,7 @@ namespace Utils.Networking {
             await socketHandler.OnConnected(socket);
 
             await Receive(socket, async(result, buffer) => {
-                if (result.MessageType == WebSocketMessageType.Text) {
+                if (result.MessageType == WebSocketMessageType.Binary) {
                     await socketHandler.ReceiveAsync(socket, result, buffer);
                     return;
                 }

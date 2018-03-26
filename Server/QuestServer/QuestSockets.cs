@@ -12,7 +12,6 @@ namespace Quest.Utils.Networking {
         }
 
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer) {
-            // FIXME: We still are not reaching here!
             string message = Encoding.UTF8.GetString(buffer);
             Console.WriteLine("Message received: " + message);
         }
