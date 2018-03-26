@@ -28,7 +28,7 @@ namespace Quest.Core.Players {
 			List<BattleCard> yourCards = hand.BattleCards;
             List<BattleCard> discardableFoeCards = new List<BattleCard>();
 			List<BattleCard> WepsAndAllies = new List<BattleCard>();
-			
+
 			foreach (BattleCard card in yourCards){
 				if(card is FoeCard){
 					if(card.BattlePoints < 20){
@@ -38,13 +38,13 @@ namespace Quest.Core.Players {
 				else if((card is WeaponCard)||(card is AllyCard)){
 					WepsAndAllies.Add(card);
 				}
-				
+
 				if((WepsAndAllies.Count/questCard.StageCount >= 2)
 					&&(discardableFoeCards.Count >= 2)){
 						return true;
 					}
 			}
-			
+
             return false;
         }
 
@@ -61,10 +61,10 @@ namespace Quest.Core.Players {
 			List<BattleCard> amours = new List<BattleCard>();
 			List<BattleCard> allies = new List<BattleCard>();
 			List<BattleCard> weapons = new List<BattleCard>();
-			
+
 			//sort in descending order (highest bp first)
 			yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
-			
+
 			//filter your cards into amour/ally/weapon
 			foreach(BattleCard card in yourCards){
 				if(card is Amour){
@@ -168,13 +168,13 @@ namespace Quest.Core.Players {
             List<FoeCard> foes = new List<FoeCard>(hand.GetCards<FoeCard>());
             List<WeaponCard> weapons = new List<WeaponCard>(hand.GetCards<WeaponCard>());
 			List<WeaponCard> duplicateWeps = new List<WeaponCard>();
-		
+
 		    foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP(strongest last)
             weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP(strongest first)
 
             for (int i = 0; i < weapons.Count - 1; i++)
             {
-                if (weapons[i].ToString() == weapons[i + 1].toString())
+                if (weapons[i].ToString() == weapons[i + 1].ToString())
                 {
                     duplicateWeps.Add(weapons[i + 1]);
                 }
@@ -226,7 +226,7 @@ namespace Quest.Core.Players {
                 //since we're going backwards towards first stage now
 
                 //create a list of duplicate weapons
-                
+
 				else{
 					int currentStageBP = 0;
 					if(foes.Count > 0){
@@ -270,7 +270,7 @@ namespace Quest.Core.Players {
                 discards.Add(hand.Cards[discarded]);
                 discarded++;
             }
-			
+
 			hand.Player.Match.Log(hand.Player.Username+" has discarded "+Utils.Stringify.CommaList<Card>(discards));
             return discards;
         }
@@ -308,7 +308,7 @@ namespace Quest.Core.Players {
             if (bidValue <= targetBid) {
                 bids.Clear();
             }
-			
+
 			hand.Player.Match.Log(hand.Player.Username+" bids "+Utils.Stringify.CommaList<AdventureCard>(bids));
             return bids;
         }
@@ -368,7 +368,7 @@ namespace Quest.Core.Players {
                     if (currentBattlePoints >= lastBattlePoints + 10) break;
                 }
             }
-			
+
 			hand.Player.Match.Log(hand.Player.Username+" plays "+Utils.Stringify.CommaList<BattleCard>(playing));
             return playing;
         }
@@ -383,7 +383,7 @@ namespace Quest.Core.Players {
             List<BattleCard> playableCards = player.Hand.BattleCards;
             playableCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
             List<BattleCard> cardsToPlay = new List<BattleCard>();
-			
+
             foreach (BattleCard card in playableCards) {
                 if (currentBattlePoints >= tournamentTargetBattlePoints) break;
                 if (hasDuplicate(cardsToPlay, card)) continue;
@@ -394,7 +394,7 @@ namespace Quest.Core.Players {
             return cardsToPlay;
         }
 
-        public override bool SponsorQuest(QuestCard questCard, Hand hand) {	
+        public override bool SponsorQuest(QuestCard questCard, Hand hand) {
             foreach (Player player in questCard.Match.Players) {
                 if (player != hand.Player && promotableThroughQuest(player, questCard)) {
 					hand.Player.Match.Log(hand.Player.Username+" does not sponsor the quest");
@@ -414,9 +414,9 @@ namespace Quest.Core.Players {
 			return sponsor;
         }
 
-        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {	
+        public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
 			List<AdventureCard>[] toSponsor = cardsToSponsorQuest(hand, questCard.StageCount);
-			
+
 			int i = 1;
 			foreach(List<AdventureCard> stage in toSponsor){
 				hand.Player.Match.Log(hand.Player.Username
@@ -426,7 +426,7 @@ namespace Quest.Core.Players {
 			//return cardsToSponsorQuest(hand, questCard.StageCount);
 			return toSponsor;
         }
-		
+
         // assuming battleCards is sorted, starting from weakest
         private List<BattleCard>[] bestCardsToPlayInQuest(QuestCard questCard, Hand hand) {
             List<BattleCard>[] stages = new List<BattleCard>[questCard.StageCount];
@@ -458,7 +458,7 @@ namespace Quest.Core.Players {
                         currCards.Add(nextAmour);
                         amours.Remove(nextAmour);
                         continue;
-                    } 
+                    }
 
                     // Add ally.
                     else if (allies.Count > 0) {
@@ -482,7 +482,7 @@ namespace Quest.Core.Players {
 
                 lastCards = currCards;
             }
-    
+
             return stages;
         }
 
