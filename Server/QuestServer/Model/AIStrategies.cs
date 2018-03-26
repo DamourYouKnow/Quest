@@ -149,17 +149,33 @@ namespace Quest.Core.Players {
         }
 
         public override List<AdventureCard>[] SetupQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+            List<AdventureCard>[] toSponsor = cardsToSponsorQuest(hand, questCard.StageCount);
+
+            int i = 1;
+            foreach (List<AdventureCard> stage in toSponsor){
+                hand.Player.Match.Log(hand.Player.Username
+                + " sets up stage " + i + " with cards " + Utils.Stringify.CommaList<AdventureCard>(stage));
+                i += 1;
+            }
+
+            return toSponsor;
         }
 
         public override bool SponsorQuest(QuestCard questCard, Hand hand) {
             foreach (Player player in questCard.Match.Players) {
                 if (player != hand.Player && promotableThroughQuest(player, questCard)) return false;
             }
-
-            // TODO: Change these functions.
+            
             List<AdventureCard>[] stages = cardsToSponsorQuest(hand, questCard.StageCount);
-            return validateCardsToSponsorQuest(stages);
+            bool sponsor = validateCardsToSponsorQuest(stages);
+            //logging
+            if (sponsor){
+                hand.Player.Match.Log(hand.Player.Username + " sponsors the quest");
+            }
+            else{
+                hand.Player.Match.Log(hand.Player.Username + " does not sponsor the quest");
+            }
+            return sponsor;
         }
 
         private List<AdventureCard>[] cardsToSponsorQuest(Hand hand, int size) {
@@ -171,16 +187,7 @@ namespace Quest.Core.Players {
 
 		    foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP(strongest last)
             weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP(strongest first)
-
-            //create a list of duplicate weapons
-            for (int i = 0; i < weapons.Count - 1; i++)
-            {
-                if (weapons[i].ToString() == weapons[i + 1].ToString())
-                {
-                    duplicateWeps.Add(weapons[i + 1]);
-                }
-            }
-
+            
             int prevStageBP = 0;
             //start from the end of the 'stages' list array, going towards the first stage
             for (int s = stages.Length - 1; s > 0; s--) {
@@ -221,13 +228,21 @@ namespace Quest.Core.Players {
                         }
                     }
                     prevStageBP = currentStageBP;
+
+                    //create a list of duplicate weapons
+                    //must do this after selecting cards for the last stage
+                    //since some weapons may no longer be duplicates
+                    for (int i = 0; i < weapons.Count - 1; i++)
+                    {
+                        if (weapons[i].ToString() == weapons[i + 1].ToString())
+                        {
+                            duplicateWeps.Add(weapons[i + 1]);
+                        }
+                    }
                 }
                 //if not last stage
                 //reminder: 'prevStageBP' should always be more than currentStageBp
                 //since we're going backwards towards first stage now
-
-                //create a list of duplicate weapons
-
 				else{
 					int currentStageBP = 0;
 					if(foes.Count > 0){
@@ -253,9 +268,8 @@ namespace Quest.Core.Players {
 			}
             return stages;
         }
+
 		//validate the above function
-		//valid: num foes w/ increasing battlepoints = numstages
-		//or numstages - 1 if u have test card
         private bool validateCardsToSponsorQuest(List<AdventureCard>[] stages) {
             int lastBattlePoints = 0;
 
@@ -438,7 +452,6 @@ namespace Quest.Core.Players {
 			else{
 				hand.Player.Match.Log(hand.Player.Username+" does not sponsor the quest");
 			}
-			//return validateCardsToSponsorQuest(stages);
 			return sponsor;
         }
 
