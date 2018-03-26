@@ -39,10 +39,15 @@ namespace Quest.Core {
         }
 
         private void OnPlayCards(JToken data) {
-            string username = (string)data["username"];
-            Player player = players[username];
+            Player player = players[(string)data["username"]];
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Play(player.Hand.GetCards<BattleCard>(cardNames));
+        }
+
+        private void OnDiscardCards(JToken data) {
+            Player player = players[(string)data["username"]];
+            List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
+            player.Discard(player.Hand.GetCards<Card>(cardNames));
         }
     }
 }
