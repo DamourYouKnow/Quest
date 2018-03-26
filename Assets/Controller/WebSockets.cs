@@ -18,7 +18,7 @@ public class WebSockets : MonoBehaviour {
 
     public void OnOpen(UnityWebSocket accepted) {
         Debug.Log("Connetion established");
-        this.SendMessage(accepted, "Test message");
+        this.SendMessage(accepted, "{\"event\":\"test\",\"data\":{}}");
     }
 
     public void OnMessage(UnityWebSocket sender, byte[] data) {

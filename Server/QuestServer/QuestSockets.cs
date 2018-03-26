@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Text;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+
 using Quest.Core;
 using Utils.Networking;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Quest.Utils.Networking {
     public class QuestMessageHandler : WebSocketHandler {
         private GameController gc;
+        private Dictionary<string, Action<JToken>> eventHandlers;
+
         public QuestMessageHandler(WebSocketConnectionManager connectionManager) : base(connectionManager) {
+            eventHandlers = new Dictionary<string, Action<JToken>>();
             gc = new GameController(this);
         }
 
@@ -18,7 +22,15 @@ namespace Quest.Utils.Networking {
             string message = Encoding.UTF8.GetString(buffer);
             Console.WriteLine("Message received: " + message);
             JObject jqe = JObject.Parse(message);
-            gc.handle_event(socket, jqe.ToObject<QuestEvent>());
+
+            string eventName = (string)jqe["event"];
+            if (eventHandlers.ContainsKey(eventName)) {
+                eventHandlers[eventName](jqe["data"]);
+            }
+        }
+
+        public void On(string eventName, Action<JToken> handler) {
+            eventHandlers.Add(eventName, handler);
         }
 
         // TODO: Send handler.

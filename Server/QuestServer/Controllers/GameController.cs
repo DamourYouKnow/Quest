@@ -1,66 +1,34 @@
 using System;
-using System.Text;
 using System.Net.WebSockets;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+
 using Quest.Utils.Networking;
+using Quest.Core.Players;
 
 namespace Quest.Core {
     public class GameController {
-        private QuestMessageHandler message_handler;
-        private Dictionary<string, WebSocket> user_socket;
-        private Dictionary<WebSocket, string> socket_user;
+        private Dictionary<WebSocket, Player> playerSockets;
+        private QuestMessageHandler messageHandler;
 
-        //Eventhandler
-        public event EventHandler<OnPlayerJoinedEventArgs> PlayerJoined;
-
-        public GameController(QuestMessageHandler message_handler){
-            this.message_handler = message_handler;
-            this.user_socket = new Dictionary<string, WebSocket>();
-            this.socket_user = new Dictionary<WebSocket, string>();
-
-            //Register addPlayerSocket function to PlayerJoined EventHandler
-            this.PlayerJoined += addPlayerSocket;
+        public GameController(QuestMessageHandler messageHandler) {
+            this.playerSockets = new Dictionary<WebSocket, Player>();
+            this.messageHandler = messageHandler;
+            this.InitEventHandlers();
         }
 
-        //Handles QuestEvents received from QuestMessageHandler
-        public void handle_event(WebSocket socket, QuestEvent qevent){
-            switch(qevent.name){
-                case "player_join":
-                    Console.WriteLine("Event: PlayerJoined");
-                    OnPlayerJoined(new OnPlayerJoinedEventArgs(socket, qevent.data));
-                    break;
-                default:
-                    break;
-            }
+
+        private void InitEventHandlers() {
+            // Link all events to a function with a JToken parameter.
+            messageHandler.On("player_join", OnPlayerJoined);
+
+            messageHandler.On("test", (data) => {
+                Console.WriteLine(data.ToString());
+            });
         }
 
-        //Specific event handler that passes arguments to all registered
-        //methods.
-        protected virtual void OnPlayerJoined(OnPlayerJoinedEventArgs e){
-            EventHandler<OnPlayerJoinedEventArgs> handler = PlayerJoined;
-            if(handler!=null){
-                handler(this, e);
-            }
-        }
-
-        public void addPlayerSocket(object sender, OnPlayerJoinedEventArgs e){
-            if(!this.user_socket.ContainsKey(e.username)){
-                Console.WriteLine("Adding player.");
-                this.user_socket[e.username] = e.socket;
-                this.socket_user[e.socket] = e.username;
-            }
-        }
-    }
-
-    //Event arguments specific to the PlayerJoined event.
-    public class OnPlayerJoinedEventArgs : EventArgs{
-        public WebSocket socket;
-        public string username;
-
-        public OnPlayerJoinedEventArgs(WebSocket socket, string username){
-            this.socket = socket;
-            this.username = username;
+        private static void OnPlayerJoined(JToken data) {
+            Console.WriteLine("Event: PlayerJoined");
         }
     }
 }
