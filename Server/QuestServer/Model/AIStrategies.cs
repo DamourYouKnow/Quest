@@ -172,6 +172,7 @@ namespace Quest.Core.Players {
 		    foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP(strongest last)
             weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP(strongest first)
 
+            //create a list of duplicate weapons
             for (int i = 0; i < weapons.Count - 1; i++)
             {
                 if (weapons[i].ToString() == weapons[i + 1].ToString())
@@ -256,7 +257,34 @@ namespace Quest.Core.Players {
 		//valid: num foes w/ increasing battlepoints = numstages
 		//or numstages - 1 if u have test card
         private bool validateCardsToSponsorQuest(List<AdventureCard>[] stages) {
-            throw new NotImplementedException();
+            int lastBattlePoints = 0;
+
+            foreach (List<AdventureCard> stage in stages){
+                BattleArea compareArea = new BattleArea();
+                List<BattleCard> nonTests = new List<BattleCard>();
+                bool StageIsTest = false;
+                //filter test cards
+                foreach (AdventureCard card in stage){
+                    if (!(card is TestCard)){
+                        nonTests.Add((BattleCard)card);
+                    }
+                    else{
+                        StageIsTest = true;
+                        break;
+                    }
+                }
+                if (!StageIsTest){
+                    foreach (BattleCard card in nonTests){
+                        compareArea.Add(card);
+                    }
+
+                    if (compareArea.BattlePoints() <= lastBattlePoints){
+                        return false;
+                    }
+                    lastBattlePoints = compareArea.BattlePoints();
+                }
+            }
+            return true;
         }
     }
 
