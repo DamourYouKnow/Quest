@@ -194,7 +194,7 @@ namespace Quest.Core.Players {
                         currentStageBP += foes[foes.Count - 1].BattlePoints;
                         foes.RemoveAt(foes.Count - 1);
                     }
-					while((currentStageBP < 50)) || currentStageBP <= prevStageBP) && weapons.Count > 0) {
+					while(((currentStageBP < 50) || (currentStageBP <= prevStageBP)) && weapons.Count > 0) {
 						if(weapons.Count > 0){
 							int index = 0;//the next 'valid' index to play a weapon
 							foreach (AdventureCard card in stages[s]) {
