@@ -8,11 +8,13 @@ using Quest.Core.Players;
 
 namespace Quest.Core {
     public class GameController {
-        private Dictionary<WebSocket, Player> playerSockets;
+        private Dictionary<string, Player> players; // TODO: We may want to map sockets to players instead.
         private QuestMessageHandler messageHandler;
+        private QuestMatch game; // TODO: If we have time make this a dictionary to support multiple games.
 
         public GameController(QuestMessageHandler messageHandler) {
-            this.playerSockets = new Dictionary<WebSocket, Player>();
+            this.game = new QuestMatch(new Logger("ServerGame"));
+            this.players = new Dictionary<string, Player>();
             this.messageHandler = messageHandler;
             this.InitEventHandlers();
         }
@@ -27,8 +29,10 @@ namespace Quest.Core {
             });
         }
 
-        private static void OnPlayerJoined(JToken data) {
-            Console.WriteLine("Event: PlayerJoined");
+        private void OnPlayerJoined(JToken data) {
+            string username = (string)data["player"]["username"];
+            Player newPlayer = new Player(username, this.game);
+            this.players.Add(username, newPlayer);
         }
     }
 }
