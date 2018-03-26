@@ -162,22 +162,95 @@ namespace Quest.Core.Players {
             return validateCardsToSponsorQuest(stages);
         }
 
-        private List<AdventureCard>[] cardsToSponsorQuest(Hand hand, int stageCount) {
-			List<AdventureCard> yourCards = hand.AdventureCards;
-			List<AdventureCard>[] cardsToSponsor = new List<AdventureCard>[stageCount];
-			List<AdventureCard> foes = new List<AdventureCard>();
-			List<AdventureCard> weapons = new List<AdventureCard>();
-			List<AdventureCard> tests = new List<AdventureCard>();
+        private List<AdventureCard>[] cardsToSponsorQuest(Hand hand, int size) {
+			List<AdventureCard>[] stages = new List<AdventureCard>[size];
+            List<TestCard> tests = hand.GetCards<TestCard>();
+            List<FoeCard> foes = new List<FoeCard>(hand.GetCards<FoeCard>());
+            List<WeaponCard> weapons = new List<WeaponCard>(hand.GetCards<WeaponCard>());
+			List<WeaponCard> duplicateWeps = new List<WeaponCard>();
+		
+		    foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP(strongest last)
+            weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP(strongest first)
 			
-			//filter cards into foes/weapons/tests
-			foreach(AdventureCard card in yourCards){
+			int prevStageBP = 0;
+			//start from the end of the 'stages' list array, going towards the first stage
+			for (int s = stages.Length - 1; s > 0; s--){
+				//perhaps 'prevStage' may (or may not) be a better variable name
+				List<AdventureCard> nextStage = new List<AdventureCard>();
+				stages[s] = nextStage;
 				
+				//if 2nd last stage and have test
+				if(s+1 == size - 1 && tests.Count > 0){
+					nextStage.Add(tests[0]);
+				}
+				//if last stage
+				else if(s + 1 == size){
+					int currentStageBP = 0;
+                    if (foes.Count > 0) {
+						//add the last foe in 'foes' list (which should be the one with most bp)
+						//if this isn't working: try replacing 'foes.Count - 1' with 0
+						//and change the order 'foes' list is sorted
+                        nextStage.Add(foes[foes.Count - 1]);
+                        currentStageBP += foes[foes.Count - 1].BattlePoints;
+                        foes.RemoveAt(foes.Count - 1);
+                    }
+					while((currentStageBP < 50)) || currentStageBP <= prevStageBP) && weapons.Count > 0) {
+						if(weapons.Count > 0){
+							int index = 0;//the next 'valid' index to play a weapon
+							foreach (AdventureCard card in stages[s]) {
+                                if (card.ToString() == weapons[index].ToString()) {
+                                    index += 1;//duplicate weapon, go to next index
+                                }
+								
+								if (index > weapons.Count - 1){//out of valid weapons
+									return stages;
+								}
+							}
+							nextStage.Add(weapons[index]);
+                            currentStageBP += weapons[index].BattlePoints;
+                            weapons.RemoveAt(index);
+						}
+					}
+					prevStageBP = currentStageBP;
+				}
+				//if not last stage
+				//reminder: 'prevStageBP' should always be more than currentStageBp
+				//since we're going backwards towards first stage now
+				
+				//create a list of duplicate weapons
+				for(int i = 0; i < weapons.Count - 1; i++){
+					if(weapons[i].ToString() == weapons[i+1].toString()){
+						duplicateWeps.Add(weapons[i+1]);
+					}
+				}
+				else{
+					int currentStageBP = 0;
+					if(foes.Count > 0){
+						int index = foes.Count - 1;
+						//case when a foe has the same battle points as the last
+						//(it'll never be more)
+						if(foes[index].BattlePoints == prevStageBP){
+							index -= 1;
+						}
+						nextStage.Add(foes[index]);
+						currentStageBP += foes[index].BattlePoints;
+                        foes.RemoveAt(index);
+					}
+					//if you can add the weakest duplicate weapon without having more
+					//battle points than the next stage:
+					if(currentStageBP + duplicateWeps[duplicateWeps.Count - 1].BattlePoints < prevStageBP){
+						currentStageBP += duplicateWeps[duplicateWeps.Count - 1].BattlePoints;
+						nextStage.Add(duplicateWeps[duplicateWeps.Count - 1]);
+						duplicateWeps.RemoveAt(duplicateWeps.Count - 1);
+					}
+					prevStageBP = currentStageBP;
+				}
 			}
-			//foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
-			
-            throw new NotImplementedException();
+            return stages;
         }
-
+		//validate the above function
+		//valid: num foes w/ increasing battlepoints = numstages
+		//or numstages - 1 if u have test card
         private bool validateCardsToSponsorQuest(List<AdventureCard>[] stages) {
             throw new NotImplementedException();
         }
