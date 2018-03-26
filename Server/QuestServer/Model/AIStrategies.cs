@@ -171,58 +171,62 @@ namespace Quest.Core.Players {
 		
 		    foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP(strongest last)
             weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP(strongest first)
-			
-			int prevStageBP = 0;
-			//start from the end of the 'stages' list array, going towards the first stage
-			for (int s = stages.Length - 1; s > 0; s--){
-				//perhaps 'prevStage' may (or may not) be a better variable name
-				List<AdventureCard> nextStage = new List<AdventureCard>();
-				stages[s] = nextStage;
-				
-				//if 2nd last stage and have test
-				if(s+1 == size - 1 && tests.Count > 0){
-					nextStage.Add(tests[0]);
-				}
-				//if last stage
-				else if(s + 1 == size){
-					int currentStageBP = 0;
+
+            for (int i = 0; i < weapons.Count - 1; i++)
+            {
+                if (weapons[i].ToString() == weapons[i + 1].toString())
+                {
+                    duplicateWeps.Add(weapons[i + 1]);
+                }
+            }
+
+            int prevStageBP = 0;
+            //start from the end of the 'stages' list array, going towards the first stage
+            for (int s = stages.Length - 1; s > 0; s--) {
+                //perhaps 'prevStage' may (or may not) be a better variable name
+                List<AdventureCard> nextStage = new List<AdventureCard>();
+                stages[s] = nextStage;
+
+                //if 2nd last stage and have test
+                if (s + 1 == size - 1 && tests.Count > 0) {
+                    nextStage.Add(tests[0]);
+                }
+                //if last stage
+                else if (s + 1 == size) {
+                    int currentStageBP = 0;
                     if (foes.Count > 0) {
-						//add the last foe in 'foes' list (which should be the one with most bp)
-						//if this isn't working: try replacing 'foes.Count - 1' with 0
-						//and change the order 'foes' list is sorted
+                        //add the last foe in 'foes' list (which should be the one with most bp)
+                        //if this isn't working: try replacing 'foes.Count - 1' with 0
+                        //and change the order 'foes' list is sorted
                         nextStage.Add(foes[foes.Count - 1]);
                         currentStageBP += foes[foes.Count - 1].BattlePoints;
                         foes.RemoveAt(foes.Count - 1);
                     }
-					while((currentStageBP < 50)) || currentStageBP <= prevStageBP) && weapons.Count > 0) {
-						if(weapons.Count > 0){
-							int index = 0;//the next 'valid' index to play a weapon
-							foreach (AdventureCard card in stages[s]) {
+                    while (((currentStageBP < 50) || (currentStageBP <= prevStageBP)) && weapons.Count > 0) {
+                        if (weapons.Count > 0) {
+                            int index = 0;//the next 'valid' index to play a weapon
+                            foreach (AdventureCard card in stages[s]) {
                                 if (card.ToString() == weapons[index].ToString()) {
                                     index += 1;//duplicate weapon, go to next index
                                 }
-								
-								if (index > weapons.Count - 1){//out of valid weapons
-									return stages;
-								}
-							}
-							nextStage.Add(weapons[index]);
+
+                                if (index > weapons.Count - 1) {//out of valid weapons
+                                    return stages;
+                                }
+                            }
+                            nextStage.Add(weapons[index]);
                             currentStageBP += weapons[index].BattlePoints;
                             weapons.RemoveAt(index);
-						}
-					}
-					prevStageBP = currentStageBP;
-				}
-				//if not last stage
-				//reminder: 'prevStageBP' should always be more than currentStageBp
-				//since we're going backwards towards first stage now
-				
-				//create a list of duplicate weapons
-				for(int i = 0; i < weapons.Count - 1; i++){
-					if(weapons[i].ToString() == weapons[i+1].toString()){
-						duplicateWeps.Add(weapons[i+1]);
-					}
-				}
+                        }
+                    }
+                    prevStageBP = currentStageBP;
+                }
+                //if not last stage
+                //reminder: 'prevStageBP' should always be more than currentStageBp
+                //since we're going backwards towards first stage now
+
+                //create a list of duplicate weapons
+                
 				else{
 					int currentStageBP = 0;
 					if(foes.Count > 0){
