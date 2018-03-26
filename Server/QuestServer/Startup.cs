@@ -42,7 +42,9 @@ namespace QuestServer
 
             app.UseWebSockets();
             app.MapWebSocketManager("/quest", serviceProvider.GetService<QuestMessageHandler>());
-
+            app.UseStaticFiles(new StaticFileOptions{
+                ServeUnknownFileTypes = true
+            });
             app.UseMvc();
         }
     }
