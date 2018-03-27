@@ -45,19 +45,6 @@ namespace Quest.Core.Cards{
 			set { this.sponsor = value; }
 		}
 
-		public int SponsorNum{
-			get{
-				if (this.sponsor != null) {
-					for (int i = 0; i < match.Players.Count; i++) {
-						if (match.Players [i] == this.sponsor) {
-							return i;
-						}
-					}
-				}
-				return -1;
-			}
-		}
-
 		public List<Type> QuestFoes {
 			get { return this.questFoes; }
 		}
@@ -220,10 +207,6 @@ namespace Quest.Core.Cards{
 			this.numStages = 2;
 			this.questFoes.Add (typeof(Boar));
 		}
-
-		public override void Run(){
-			base.Run ();
-		}
 	}
 
 	public class DefendTheQueensHonor : QuestCard{
@@ -243,10 +226,6 @@ namespace Quest.Core.Cards{
 			this.questFoes.Add (typeof(Saxons));
 			this.questFoes.Add (typeof(Thieves));
 		}
-
-		public override void Run(){
-			base.Run ();
-		}
 	}
 
 	public class JourneyThroughTheEnchantedForest : QuestCard{
@@ -255,10 +234,6 @@ namespace Quest.Core.Cards{
 			this.imageFilename = "quest_journey_through_the_enchanted_forest";
 			this.numStages = 3;
 			this.questFoes.Add (typeof(EvilKnight));
-		}
-
-		public override void Run(){
-			base.Run ();
 		}
 	}
 
@@ -270,10 +245,6 @@ namespace Quest.Core.Cards{
 			this.questFoes.Add (typeof(SaxonKnight));
 			this.questFoes.Add (typeof(Saxons));
 		}
-
-		public override void Run(){
-			base.Run ();
-		}
 	}
 
 	public class RescueTheFairMaiden : QuestCard{
@@ -282,10 +253,6 @@ namespace Quest.Core.Cards{
 			this.imageFilename = "quest_rescue_the_fair_maiden";
 			this.numStages = 3;
 			this.questFoes.Add (typeof(BlackKnight));
-		}
-
-		public override void Run(){
-			base.Run ();
 		}
 	}
 
@@ -306,9 +273,6 @@ namespace Quest.Core.Cards{
 			this.questFoes.Add (typeof(Saxons));
 			this.questFoes.Add (typeof(Thieves));
 		}
-		public override void Run(){
-			base.Run ();
-		}
 	}
 
 	public class SearchForTheQuestingBeast : QuestCard{
@@ -316,10 +280,6 @@ namespace Quest.Core.Cards{
 			this.name = "Search For The Questing Beast";
 			this.imageFilename = "quest_search_for_the_questing_beast";
 			this.numStages = 4;
-		}
-
-		public override void Run(){
-			base.Run ();
 		}
 	}
 
@@ -330,10 +290,6 @@ namespace Quest.Core.Cards{
 			this.numStages = 3;
 			this.questFoes.Add (typeof(Dragon));
 		}
-
-		public override void Run(){
-			base.Run ();
-		}
 	}
 
 	public class TestOfTheGreenKnight : QuestCard{
@@ -343,9 +299,6 @@ namespace Quest.Core.Cards{
 			this.numStages = 4;
 			this.questFoes.Add (typeof(GreenKnight));
 		}
-		public override void Run(){
-			base.Run ();
-		}
 	}
 
 	public class VanquishKingArthursEnemies : QuestCard{
@@ -353,10 +306,6 @@ namespace Quest.Core.Cards{
 			this.name = "Vanquish King Arthur's Enemies";
 			this.imageFilename = "quest_vanquish_king_arthurs_enemies";
 			this.numStages = 3;
-		}
-
-		public override void Run(){
-			base.Run ();
 		}
 	}
 }
