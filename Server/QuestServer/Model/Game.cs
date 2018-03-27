@@ -11,21 +11,6 @@ namespace Quest.Core {
         public const int MaxHandSize = 12;
     }
 
-    public enum MatchState {
-        INIT,
-        START_GAME,
-        START_TURN,
-        RUN_STORY,
-        REQUEST_SPONSOR,
-        REQUEST_PARTICIPANTS,
-        REQUEST_STAGE,
-        RUN_STAGE,
-        RESOLVE_STAGE,
-        RESOLVE_QUEST,
-        END_STORY,
-        START_TOURNAMENT,
-		PLAY_TOURNAMENT
-    };
     public class QuestMatch {
         private List<Player> players;
         private int currentPlayer;
