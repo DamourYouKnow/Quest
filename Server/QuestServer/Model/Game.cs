@@ -108,20 +108,6 @@ namespace Quest.Core {
 			}
         }
 
-        public void RunStory() {
-            try {
-                CurrentStory.Run();
-
-            }
-            catch (NotImplementedException) {
-                this.Log("Feature not implemented");
-            }
-            catch (Exception e) {
-                this.Log(e.Message);
-                this.Log(e.StackTrace);
-            }
-        }
-
         public void AddPlayer(Player player) {
             this.players.Add(player);
             this.Log("Added player " + player.Username + " to Quest match");
