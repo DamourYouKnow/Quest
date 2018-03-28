@@ -42,12 +42,6 @@ namespace Quest.Core.Cards{
 			get { return this.questFoes; }
 		}
 
-        public void AddParticipant(Player player) {
-            this.match.Log("Added " + player.ToString() + " as " + this.ToString() + " participant");
-            this.participants.Add(player);
-            this.battleHistory.Add(player, new Stack<List<BattleCard>>());
-        }
-
         public void AddFoeStage(FoeCard foe, List<WeaponCard> weapons = null) {
             if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
 
