@@ -313,17 +313,18 @@ namespace Quest.Core {
     /// Battle area on a game board.
     /// </summary>
     public class PlayerArea : BattleArea {
-		public override void Add(Card card){
-			bool canAdd = true;
-			foreach(Card ccard in this.cards){
-				canAdd = ccard.Name != card.Name;
-				if (!canAdd) {
-					break;
-				}
-			}
-			if (canAdd && !card.GetType().IsSubclassOf(typeof(TestCard)) && !card.GetType().IsSubclassOf(typeof(FoeCard))) {
-				this.cards.Add(card);
-			}
+		public override void Add(Card card) {
+            // Only allow allies, weapons, and amour.
+            if (!(card is AllyCard || card is WeaponCard || card is Amour)) {
+                return;
+            }
+
+            // Do not allow duplicate weapons or amour.
+            if ((card is WeaponCard || card is Amour) && this.ContainsCopy(card)) {
+                return;
+            }
+
+            this.cards.Add(card);
 		}
     }
 
