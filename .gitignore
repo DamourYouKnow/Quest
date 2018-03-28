@@ -367,5 +367,5 @@ ASALocalRun/
 # include meta files
 !*.*.meta
 !*QuestServer.csproj
-!*UnitTest.csproj
+!*UnitTests.csproj
 !*launchSettings.json
