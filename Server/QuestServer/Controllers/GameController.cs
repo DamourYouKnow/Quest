@@ -50,18 +50,36 @@ namespace Quest.Core {
             player.Discard(player.Hand.GetCards<Card>(cardNames));
         }
 
-        private void UpdatePlayers() {
-            JObject message = new JObject();
-            message["event"] = "update_players";
-
+        public void UpdatePlayers() {
+            JObject data = new JObject();
             JArray playerArray = new JArray();
             this.game.Players.ForEach((p) => playerArray.Add(p.Converter.Json.ToJObject(p)));
-            JObject data = new JObject();
             data["players"] = playerArray;
+            EventData ev = new EventData("update_players", data);
+            this.messageHandler.SendAllAsync(ev.ToString());
+        }
+    }
 
-            message["data"] = data;
+    public class EventData {
+        private string eventName;
+        private JObject data;
 
-            this.messageHandler.SendAllAsync(message.ToString());
+        public EventData(string message) {
+            JObject eventJson = JObject.Parse(message);
+            this.eventName = (string)eventJson["event"];
+            this.data = (JObject)eventJson["data"];
+        }
+
+        public EventData(string eventName, JObject data) {
+            this.eventName = eventName;
+            this.data = data;
+        }
+
+        public override string ToString() {
+            JObject eventJson = new JObject();
+            eventJson["event"] = this.eventName;
+            eventJson["data"] = data;
+            return eventJson.ToString();
         }
     }
 }
