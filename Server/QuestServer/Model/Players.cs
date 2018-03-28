@@ -318,5 +318,24 @@ namespace Quest.Core.Players {
 
             return maxList;
         }
+
+        public static List<Player> HighestBattlePoints(List<Player> players) {
+            List<Player> maxList = new List<Player>();
+
+            int max = 0;
+            foreach (Player player in players) {
+                if (player.BattlePointsInPlay() > max) {
+                    max = player.BattlePointsInPlay();
+                }
+            }
+
+            foreach (Player player in players) {
+                if (player.BattlePointsInPlay() == max) {
+                    maxList.Add(player);
+                }
+            }
+
+            return maxList;
+        } 
     }
 }
