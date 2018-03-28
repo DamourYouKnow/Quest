@@ -19,9 +19,10 @@ namespace Quest.Core {
         private AdventureDeck adventureDeck;
         private DiscardPile discardPile;
         private StoryCard currentStory;
+        private GameController controller;
         private Logger logger;
 
-        public QuestMatch(Logger logger = null) {
+        public QuestMatch(Logger logger = null, GameController controller = null) {
             this.players = new List<Player>();
             this.currentPlayer = 0;
             this.storyDeck = new StoryDeck(this);
@@ -29,6 +30,7 @@ namespace Quest.Core {
             this.discardPile = new DiscardPile(this);
             this.currentStory = null;
             this.logger = logger;
+            this.controller = controller;
             this.Log("Creating new Quest match");
         }
 

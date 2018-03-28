@@ -15,7 +15,7 @@ namespace Quest.Core {
         private QuestMatch game; // TODO: If we have time make this a dictionary to support multiple games.
 
         public GameController(QuestMessageHandler messageHandler) {
-            this.game = new QuestMatch(new Logger("ServerGame"));
+            this.game = new QuestMatch(new Logger("ServerGame"), this);
             this.players = new Dictionary<string, Player>();
             this.messageHandler = messageHandler;
             this.InitEventHandlers();
