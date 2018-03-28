@@ -476,6 +476,13 @@ namespace UnitTests
 
     }
 
+    public class TournamentTests {
+        [Test]
+        public void TestTournament() {
+            throw new NotImplementedException();
+        }
+    }
+
     public class Strategy2Tests
     {
         [Test]
