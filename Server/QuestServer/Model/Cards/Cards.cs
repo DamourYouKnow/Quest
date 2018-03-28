@@ -67,6 +67,28 @@ namespace Quest.Core.Cards {
 		public abstract void Run();
     }
 
+    public abstract class InteractiveStoryCard : StoryCard {
+        protected List<Player> participants;
+        protected List<Player> participated;
+
+        public InteractiveStoryCard(QuestMatch match) : base(match) {
+            this.participants = new List<Player>();
+            this.participated = new List<Player>();
+        }
+
+        public List<Player> Participants {
+            get { return this.participants; }
+        }
+
+        public void AddParticipant(Player player) {
+            this.participants.Add(player);
+        }
+
+        public bool AllParticipantsDone() {
+            return this.participated.Count >= this.participants.Count;
+        }
+    }
+
     public class Amour : BattleCard {
         public Amour(QuestMatch match) : base(match) {
             this.name = "Amour";

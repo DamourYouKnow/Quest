@@ -4,11 +4,10 @@ using System.Linq;
 using Quest.Core.Players;
 
 namespace Quest.Core.Cards{
-	public abstract class QuestCard:StoryCard {
+	public abstract class QuestCard: InteractiveStoryCard {
 		protected int numStages;
 		protected int currentStage;
 		protected Player sponsor;
-		protected List<Player> participants;
 		protected List<QuestArea> stages;
 		protected List<Type> questFoes;
         protected Dictionary<Player, Stack<List<BattleCard>>> battleHistory;
@@ -18,7 +17,6 @@ namespace Quest.Core.Cards{
             this.currentStage = 1;
             this.sponsor = null;
             this.stages = new List<QuestArea>();
-            this.participants = new List<Player>();
             this.battleHistory = new Dictionary<Player, Stack<List<BattleCard>>>();
         }
 
@@ -26,11 +24,6 @@ namespace Quest.Core.Cards{
             get { return this.stages; }
 			set { this.stages = value; }
         }
-
-		public List<Player> Participants {
-			get { return this.participants; }
-            set { this.participants = value; }
-		}
 
 		public int CurrentStage {
 			get { return this.currentStage; }

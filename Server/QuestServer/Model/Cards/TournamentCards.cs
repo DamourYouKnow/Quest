@@ -4,20 +4,14 @@ using System.Linq;
 using Quest.Core.Players;
 
 namespace Quest.Core.Cards{
-	public abstract class TournamentCard : StoryCard {
+	public abstract class TournamentCard : InteractiveStoryCard {
 		protected int bonusShields;
         protected int maxParticipants;
-		protected List<Player> participants;
 
 		public TournamentCard(QuestMatch match) : base(match) {
             this.participants = new List<Player>(match.Players);
             this.maxParticipants = this.participants.Count;
 		}
-
-        public List<Player> Participants {
-            get { return this.participants; }
-            set { this.participants = value; }
-        }
 
         public int Shields {
 			get { return this.participants.Count + this.bonusShields; }
