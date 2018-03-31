@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 using Quest.Core;
 using Utils.Networking;
@@ -11,10 +12,12 @@ using Utils.Networking;
 namespace Quest.Utils.Networking {
     public class QuestMessageHandler : WebSocketHandler {
         private GameController gc;
-        private Dictionary<string, Action<JToken>> eventHandlers;
+        private Dictionary<string, Action<string, JToken>> eventHandlers;
+        private Dictionary<WebSocket, string> socket_player;
+        private Dictionary<string, WebSocket> player_socket;
 
         public QuestMessageHandler(WebSocketConnectionManager connectionManager) : base(connectionManager) {
-            eventHandlers = new Dictionary<string, Action<JToken>>();
+            eventHandlers = new Dictionary<string, Action<string, JToken>>();
             gc = new GameController(this);
         }
 
@@ -24,25 +27,25 @@ namespace Quest.Utils.Networking {
             JObject jqe = JObject.Parse(message);
 
             string eventName = (string)jqe["event"];
+            //Register players to socket/player maps on join
+            if(eventName=="player_join"){
+                if(!socket_player.ContainsKey(socket)){
+                    string username = (string)jqe["data"]["username"];
+                    socket_player.Add(socket, username);
+                    player_socket.Add(username, socket);
+                }
+            }
             if (eventHandlers.ContainsKey(eventName)) {
-                eventHandlers[eventName](jqe["data"]);
+                eventHandlers[eventName](socket_player[socket], jqe["data"]);
             }
         }
 
-        public void On(string eventName, Action<JToken> handler) {
-            eventHandlers.Add(eventName, handler);
+        public async Task SendToAsync(string player, JObject message){
+            await this.SendMessageAsync(player_socket[player], JsonConvert.SerializeObject(message));
         }
 
-        // TODO: Send handler.
-    }
-
-    public class QuestEvent{
-        public string name;
-        public string data;
-
-        public QuestEvent(string name, string data){
-            this.name = name;
-            this.data = data;
+        public void On(string eventName, Action<string, JToken> handler) {
+            eventHandlers.Add(eventName, handler);
         }
     }
 }
