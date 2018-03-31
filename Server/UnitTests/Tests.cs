@@ -483,6 +483,22 @@ namespace UnitTests
         }
     }
 
+	public class Strategy1Tests{
+		[Test]
+		public void TestTournamentParticipation(){
+			QuestMatch game = ScenarioCreator.GameNoDeal(2);
+            game.AttachLogger(new Quest.Core.Logger("TestTournamentParticipation"));
+            Player aiPlayer = game.Players[0];
+            aiPlayer.Behaviour = new Strategy1();
+			Player otherPlayer = game.Players[1];
+            TournamentAtCamelot tournament = new TournamentAtCamelot(game);
+			
+			otherPlayer.Rank.AddShields(11);
+            Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
+            otherPlayer.Rank.RemoveShields(10);
+		}
+	}
+	
     public class Strategy2Tests
     {
         [Test]
