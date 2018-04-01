@@ -493,9 +493,81 @@ namespace UnitTests
 			Player otherPlayer = game.Players[1];
             TournamentAtCamelot tournament = new TournamentAtCamelot(game);
 			
+			//no player can rank up by winning tournament - don't participate
 			otherPlayer.Rank.AddShields(11);
+			aiPlayer.Rank.AddShields(11);
+            Assert.IsFalse(aiPlayer.Behaviour.ParticipateInTournament(tournament));
+			
+			//other player has 21 shields, can rank up - participate
+            otherPlayer.Rank.AddShields(10);
+			Assert.IsTrue(aiPlayer.Behaviour.ParticipateInTournament(tournament));
+			
+			//other player can win - play strongest possible hand
+			aiPlayer.Hand.Add(new Amour(game));//10
+			aiPlayer.Hand.Add(new Dagger(game));//5
+			aiPlayer.Hand.Add(new Dagger(game));//5
+			aiPlayer.Hand.Add(new SirGalahad(game));//15
+			aiPlayer.Hand.Add(new Sword(game));//10
+			aiPlayer.Hand.Add(new Sword(game));//10
+			//expected: amour, dagger, SirGalahad, sword
+			List<BattleCard> played1 = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
+			Assert.AreEqual(4, played1.Count);
+            aiPlayer.Play(played1);
+            Assert.AreEqual(40, aiPlayer.BattlePointsInPlay());
+			
+			//other player has 11 shields, can't rank up - play duplicate weapons
+			otherPlayer.Rank.RemoveShields(10);
+			//expected: dagger, sword
+			List<BattleCard> played2 = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
+			Assert.AreEqual(2, played2.Count);
+			aiPlayer.Play(played2);
+            Assert.AreEqual(15, aiPlayer.BattlePointsInPlay());
+		}
+		
+		[Test]
+        public void TestQuestSponsoring(){
+			QuestMatch game = ScenarioCreator.GameNoDeal(2);
+            game.AttachLogger(new Quest.Core.Logger("TestQuestSponsoring"));
+            Player aiPlayer = game.Players[0];
+            aiPlayer.Behaviour = new Strategy1();
+            Player otherPlayer = game.Players[1];
+
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 Stages with bonus to Black Knight.
+            game.CurrentStory = quest;
+			
+			// Test case where another player can win.
+			//(conditions for whether or not to sponsor quest is same as strategy 2)
+            otherPlayer.Rank.AddShields(21);
             Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
             otherPlayer.Rank.RemoveShields(10);
+			
+			//quest cards
+			Dragon dragon = new Dragon(game);//50
+			BlackKnight blackKnight = new BlackKnight(game);//35 (25+10)
+			Mordred mordred = new Mordred(game);//30
+			Thieves thieves = new Thieves(game);//5
+			Boar boar = new Boar(game);//5 
+			Lance lance = new Lance(game);//20
+			Sword sword = new Sword(game);//10
+			Dagger dagger = new Dagger(game);//5
+			
+			aiPlayer.Hand.Add(new TestOfValor(game));
+            aiPlayer.Hand.Add(boar);
+            aiPlayer.Hand.Add(thieves);
+			//hand: boar, thieves, testOfValor - not enough bp
+            Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
+			
+			aiPlayer.Hand.Add(blackKnight);
+			aiPlayer.Hand.Add(lance);
+			//hand: boar, thieves, test, black knight, lance - enough bp
+			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
+			
+			aiPlayer.Hand.Remove(boar);
+			aiPlayer.Hand.Remove(thieves);
+			aiPlayer.Hand.Add(dragon);
+			//hand: black knight, test, lance, dragon - enough bp
+			//(last stage dragon, 2nd stage test, last black knight (no lance))
+			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
 		}
 	}
 	
