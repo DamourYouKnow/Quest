@@ -569,6 +569,49 @@ namespace UnitTests
 			//(last stage dragon, 2nd stage test, last black knight (no lance))
 			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
 		}
+		
+		[Test]
+        public void TestQuestParticipation(){
+			QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            game.AttachLogger(new Quest.Core.Logger("TestQuestParticipation"));
+            Player aiPlayer = game.Players[0];
+            aiPlayer.Behaviour = new Strategy1();
+
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+            game.CurrentStory = quest;
+			
+			//cards
+			Lance lance = new Lance(game);//20
+			Dagger dagger = new Dagger(game);//5
+			Sword sword = new Sword(game);//10
+			SirGalahad sirGalahad = new SirGalahad(game);//15
+			SirLancelot sirLancelot = new SirLancelot(game);//15
+			KingPellinore kingPellinore = new KingPellinore(game);//10
+			Mordred mordred = new Mordred(game);//30
+			Thieves thieves = new Thieves(game);//5
+			Boar boar = new Boar(game);//5 
+			
+			aiPlayer.Hand.Add(lance);
+			aiPlayer.Hand.Add(dagger);
+			aiPlayer.Hand.Add(sword);
+			aiPlayer.Hand.Add(sirGalahad);
+			aiPlayer.Hand.Add(boar);
+			aiPlayer.Hand.Add(thieves);
+			//hand: lance, dagger, sword, galahad, boar, thieves - not enough weapon/allies
+			Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+			
+			aiPlayer.Hand.Add(sirLancelot);
+			aiPlayer.Hand.Add(kingPellinore);
+			//hand: lance, dagger, sword, galahad, lancelot, pelinore, boar, thieves
+			Assert.IsTrue(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+			
+			aiPlayer.Hand.Remove(thieves);
+			//not enough foes (to discard)
+			Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+			//2 foes, but mordred has too much bp
+			aiPlayer.Hand.Add(mordred);
+			Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+		}
 	}
 	
     public class Strategy2Tests
