@@ -664,7 +664,7 @@ namespace UnitTests
 			//2nd stage: galahad
 			played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
             Assert.AreEqual(1, played.Count);
-            Assert.IsTrue(played.Contains(galahad));
+            Assert.IsTrue(played.Contains(sirGalahad));
             aiPlayer.Play(played);
             quest.ResolveStage();
 			//3rd stage: a lance, battleAx, sword, kingPellinore
