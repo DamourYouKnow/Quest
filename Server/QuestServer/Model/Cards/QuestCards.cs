@@ -94,7 +94,19 @@ namespace Quest.Core.Cards{
             this.currentStage = stageNumber;
         }
 
-		public override void Run() {
+        public override void RequestParticipation() {
+            throw new NotImplementedException();
+        }
+
+        public override void RequestPlays() {
+            throw new NotImplementedException();
+        }
+
+        public override void Resolve() {
+            throw new NotImplementedException();
+        }
+
+        public override void Run() {
 			// Ask current player to sponsor.
 			Player currentPlayer = this.match.CurrentPlayer;
 			if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
@@ -108,7 +120,7 @@ namespace Quest.Core.Cards{
 			List<Player> otherPlayers = this.match.OtherPlayers;
 			foreach (Player player in otherPlayers) {
 				if (player.Behaviour.ParticipateInQuest(this, player.Hand)) {
-					this.AddParticipant(player);
+					//this.AddParticipant(player); FIXME.
 				}
 			}
 

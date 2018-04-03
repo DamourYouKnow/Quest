@@ -17,9 +17,17 @@ namespace Quest.Core.Cards{
 			get { return this.participants.Count + this.bonusShields; }
         }
 
-        public override void Run() {
-			throw new NotImplementedException();
-		}
+        public override void RequestParticipation() {
+            throw new NotImplementedException();
+        }
+
+        public override void RequestPlays() {
+            throw new NotImplementedException();
+        }
+
+        public override void Resolve() {
+            throw new NotImplementedException();
+        }
 
         private List<Player> getWinners() {
             return Player.HighestBattlePoints(this.participants);

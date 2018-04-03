@@ -69,10 +69,12 @@ namespace Quest.Core.Cards {
 
     public abstract class InteractiveStoryCard : StoryCard {
         protected List<Player> participants;
+        protected List<Player> responded;
         protected List<Player> participated;
 
         public InteractiveStoryCard(QuestMatch match) : base(match) {
             this.participants = new List<Player>();
+            this.responded = new List<Player>();
             this.participated = new List<Player>();
         }
 
@@ -80,12 +82,53 @@ namespace Quest.Core.Cards {
             get { return this.participants; }
         }
 
-        public void AddParticipant(Player player) {
-            this.participants.Add(player);
+        public override void Run() {
+            this.RequestParticipation();
         }
 
-        public bool AllParticipantsDone() {
-            return this.participated.Count >= this.participants.Count;
+        /// <summary>
+        /// Send prompts to players requesting their participation.
+        /// </summary>
+        public abstract void RequestParticipation();
+
+        /// <summary>
+        /// Send prompts to players requesting their plays.
+        /// </summary>
+        public abstract void RequestPlays();
+
+        /// <summary>
+        /// Resolve story after all players have played.
+        /// </summary>
+        public abstract void Resolve();
+
+        /// <summary>
+        /// Call this function when a player has responsed to a participartion request for a story.
+        /// </summary>
+        /// 
+        /// <param name="player">Player responding to request.</param>
+        /// <param name="participating">Whether player is participating.</param>
+        public void AddResponse(Player player, bool participating) {
+            this.responded.Add(player);
+            if (participating) {
+                this.participants.Add(player);
+            }
+
+            if (this.responded.Count == this.match.Players.Count) {
+                this.RequestPlays();
+            }
+        }
+
+        /// <summary>
+        /// Call this funtion when a player has made their play in a story.
+        /// </summary>
+        /// 
+        /// <param name="player">Player that was made their play.</param>
+        public void AddPlayed(Player player) {
+            this.participated.Add(player);
+
+            if (this.participated.Count == this.participants.Count) {
+                this.Resolve();
+            }
         }
     }
 
