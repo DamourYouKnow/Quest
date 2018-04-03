@@ -106,6 +106,30 @@ namespace Quest.Core.Cards{
             throw new NotImplementedException();
         }
 
+
+        // We need some extra code to wrap around the sponsorship requests.
+        public void RequestSponsorship() {
+            Player currentPlayer = this.match.CurrentPlayer;
+
+            if (currentPlayer.Behaviour is HumanPlayer) {
+                // If human send prompt request.
+                // TODO: Send prompt.
+            }
+            else {
+                // Otherwise decide with strategy.
+                this.SponsorshipResponse(currentPlayer,
+                                         currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand));
+            }
+        }
+
+        public void SponsorshipResponse(Player player, bool sponsor) {
+            if (sponsor) {
+                this.sponsor = player;
+                this.Run();
+            }
+        }
+
+
         public override void Run() {
 			// Ask current player to sponsor.
 			Player currentPlayer = this.match.CurrentPlayer;
