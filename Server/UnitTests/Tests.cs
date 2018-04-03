@@ -612,6 +612,69 @@ namespace UnitTests
 			aiPlayer.Hand.Add(mordred);
 			Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
 		}
+		
+		[Test]
+        public void TestPlayCardsInQuest(){
+			//not testing bids for now
+			QuestMatch game = ScenarioCreator.GameNoDeal(2);
+            game.AttachLogger(new Quest.Core.Logger("TestPlayCardsInTest"));
+            Player aiPlayer = game.Players[0];
+            Player sponsorPlayer = game.Players[1];
+            aiPlayer.Behaviour = new Strategy1();
+			
+			// Setup quest
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+            game.CurrentStory = quest;
+            quest.Sponsor = sponsorPlayer;
+            quest.AddParticipant(aiPlayer);
+			
+			Thieves questThieves = new Thieves(game);
+            Saxons questSaxons = new Saxons(game);
+            RobberKnight questRobberKnight = new RobberKnight(game);
+            sponsorPlayer.Hand.Add(new List<Card>() { questThieves, questSaxons, questRobberKnight });
+
+            quest.AddFoeStage(questThieves);//5
+            quest.AddFoeStage(questSaxons);//10
+            quest.AddFoeStage(questRobberKnight);//15
+			// Make player knight, 10 BP.
+            aiPlayer.Rank.AddShields(5);
+
+			//cards, no foes
+			Lance lance = new Lance(game);//20
+			Lance lance2 = new Lance(game);//20
+			BattleAx battleAx = new BattleAx(game);//15
+			SirGalahad sirGalahad = new SirGalahad(game);//15
+			Amour amour = new Amour(game);//10
+			Sword sword = new Sword(game);//10
+			KingPellinore kingPellinore = new KingPellinore(game);//10
+			aiPlayer.Hand.Add(lance);
+			aiPlayer.Hand.Add(lance2);
+			aiPlayer.Hand.Add(battleAx);
+			aiPlayer.Hand.Add(sirGalahad);//play stage 2
+			aiPlayer.Hand.Add(amour);//play stage 1
+			aiPlayer.Hand.Add(sword);
+			aiPlayer.Hand.Add(kingPellinore);
+			
+			//first stage: amour
+			List<BattleCard> played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
+            Assert.AreEqual(1, played.Count);
+            Assert.IsTrue(played.Contains(amour));
+            aiPlayer.Play(played);
+            quest.ResolveStage();
+			//2nd stage: galahad
+			played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
+            Assert.AreEqual(1, played.Count);
+            Assert.IsTrue(played.Contains(galahad));
+            aiPlayer.Play(played);
+            quest.ResolveStage();
+			//3rd stage: a lance, battleAx, sword, kingPellinore
+			played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
+			Assert.AreEqual(4, played.Count);
+			Assert.IsTrue((played.Contains(lance) || played.Contains(lance2)));
+			Assert.IsTrue(played.Contains(battleAx));
+			Assert.IsTrue(played.Contains(sword));
+			Assert.IsTrue(played.Contains(kingPellinore));
+		}
 	}
 	
     public class Strategy2Tests
