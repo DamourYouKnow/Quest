@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading;
+
 using Quest.Core.Cards;
 using Quest.Core.Players;
-using Utils;
+using Quest.Utils.Networking;
 
 namespace Quest.Core {
     public static class Constants {
@@ -30,8 +30,14 @@ namespace Quest.Core {
             this.discardPile = new DiscardPile(this);
             this.currentStory = null;
             this.logger = logger;
-            this.controller = controller;
             this.Log("Creating new Quest match");
+
+            if (controller != null) {
+                this.controller = controller;
+            }
+            else {
+                this.controller = new GameController(new NullQuestMessageHandler());
+            }
         }
 
         public GameController Controller {

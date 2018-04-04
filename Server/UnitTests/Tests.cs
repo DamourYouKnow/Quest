@@ -274,7 +274,7 @@ namespace UnitTests
 
             Assert.AreEqual(10, p4.BattleArea.BattlePoints());
 
-            quest.ResolveStage();
+            //quest.ResolveStage(); FIXME
 
             Assert.AreEqual(2, quest.CurrentStage);
 
@@ -290,7 +290,7 @@ namespace UnitTests
 
             Assert.AreEqual(5, p2.BattleArea.BattlePoints());
 
-            quest.ResolveStage();
+            //quest.ResolveStage(); FIXME
 
             Assert.IsTrue(quest.Participants.Contains(p2));
             Assert.IsFalse(quest.Participants.Contains(p3));
@@ -660,13 +660,13 @@ namespace UnitTests
             Assert.AreEqual(1, played.Count);
             Assert.IsTrue(played.Contains(amour));
             aiPlayer.Play(played);
-            quest.ResolveStage();
+            //quest.ResolveStage(); FIXME
 			//2nd stage: galahad
 			played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
             Assert.AreEqual(1, played.Count);
             Assert.IsTrue(played.Contains(sirGalahad));
             aiPlayer.Play(played);
-            quest.ResolveStage();
+            //quest.ResolveStage(); FIXME
 			//3rd stage: a lance, battleAx, sword, kingPellinore
 			played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
 			Assert.AreEqual(4, played.Count);
@@ -849,7 +849,7 @@ namespace UnitTests
             Assert.AreEqual(1, played.Count);
             Assert.IsTrue((played.Contains(amour1) || played.Contains(amour2)));
             aiPlayer.Play(played);
-            quest.ResolveStage();
+            //quest.ResolveStage(); // FIXME
 
             // Does allies get played second?
             played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
@@ -857,7 +857,7 @@ namespace UnitTests
             Assert.IsTrue(played.Contains(gawain));
             Assert.IsTrue(played.Contains(tristan));
             aiPlayer.Play(played);
-            quest.ResolveStage();
+            //quest.ResolveStage(); FIXME
 
             // Does weapon (and galahad) get played last?
             played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);

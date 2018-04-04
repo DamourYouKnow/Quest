@@ -48,12 +48,35 @@ namespace Quest.Utils.Networking {
             }
         }
 
-        public async Task SendToAsync(Player player, string message){
+        public virtual async Task SendToAsync(Player player, string message){
             await this.SendMessageAsync(player_socket[player], message);
         }
 
         public void On(string eventName, Action<Player, JToken> handler) {
             eventHandlers.Add(eventName, handler);
+        }
+    }
+
+
+    public class NullQuestMessageHandler : QuestMessageHandler {
+        public NullQuestMessageHandler() : base(null) {
+
+        }
+
+        public override async Task OnConnected(WebSocket socket) {
+            return;
+        }
+
+        public override async Task OnDisconnected(WebSocket socket) {
+            return;
+        }
+
+        public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer) {
+            return;
+        }
+
+        public override async Task SendToAsync(Player player, string message) {
+            return;
         }
     }
 }

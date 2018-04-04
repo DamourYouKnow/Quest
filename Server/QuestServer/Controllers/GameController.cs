@@ -10,7 +10,6 @@ using Quest.Core.Players;
 
 namespace Quest.Core {
     public class GameController {
-        private Dictionary<string, Player> players;
         private QuestMessageHandler messageHandler;
         private QuestMatch match; // TODO: If we have time make this a dictionary to support multiple games.
 
