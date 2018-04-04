@@ -54,8 +54,16 @@ namespace Quest.Core {
             JArray playerArray = new JArray();
             this.match.Players.ForEach((p) => playerArray.Add(p.Converter.Json.ToJObject(p)));
             data["players"] = playerArray;
-            EventData ev = new EventData("update_players", data);
-            await this.messageHandler.SendAllAsync(ev.ToString());
+            EventData evn = new EventData("update_players", data);
+            await this.messageHandler.SendAllAsync(evn.ToString());
+        }
+
+        public async void PromptPlayer(Player player, string type, string message, string image=null) {
+            JObject data = new JObject();
+            data["message"] = message;
+            data["image"] = image;
+            EventData evn = new EventData(type.ToLower(), data);
+            await this.messageHandler.SendToAsync(player, evn.ToString());
         }
     }
 

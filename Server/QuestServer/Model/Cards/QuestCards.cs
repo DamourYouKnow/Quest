@@ -98,7 +98,10 @@ namespace Quest.Core.Cards{
             foreach (Player player in this.match.OtherPlayers) {
                 if (player.Behaviour is HumanPlayer) {
                     // Send participation request to player through sockets.
-                    // TODO.
+                    this.match.Controller.PromptPlayer(player,
+                                                       "request_quest_participation",
+                                                       "Would you like to participate in " + this.name,
+                                                       image: this.imageFilename);
                 } 
                 else {
                     // Use strategies to determine player participation.
@@ -112,7 +115,10 @@ namespace Quest.Core.Cards{
             foreach (Player participant in this.participants) {
                 if (participant.Behaviour is HumanPlayer) {
                     // Send play request to player through sockets.
-                    // TODO.
+                    this.match.Controller.PromptPlayer(participant,
+                                                       "request_play_cards",
+                                                       "Please play your cards");
+
                 }
                 else {
                     // Use AI strategy to determine play then Set player to played.

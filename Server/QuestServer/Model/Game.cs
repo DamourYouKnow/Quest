@@ -34,6 +34,10 @@ namespace Quest.Core {
             this.Log("Creating new Quest match");
         }
 
+        public GameController Controller {
+            get { return this.Controller; }
+        }
+
 		public int PromptingPlayer {
 			get { return this.promptingPlayer; }
 			set { this.promptingPlayer = value; }
