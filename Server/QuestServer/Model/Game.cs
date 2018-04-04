@@ -36,12 +36,12 @@ namespace Quest.Core {
                 this.controller = controller;
             }
             else {
-                this.controller = new GameController(new NullQuestMessageHandler());
+                this.controller = new GameController(new NullQuestMessageHandler(), this);
             }
         }
 
         public GameController Controller {
-            get { return this.Controller; }
+            get { return this.controller; }
         }
 
 		public int PromptingPlayer {

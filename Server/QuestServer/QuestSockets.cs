@@ -21,7 +21,10 @@ namespace Quest.Utils.Networking {
             socket_player = new Dictionary<WebSocket, Player>();
             player_socket = new Dictionary<Player, WebSocket>();
             eventHandlers = new Dictionary<string, Action<Player, JToken>>();
-            gc = new GameController(this);
+
+            if (!(this is NullQuestMessageHandler)) {
+                this.gc = new GameController(this);
+            }
         }
 
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer) {

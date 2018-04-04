@@ -13,8 +13,14 @@ namespace Quest.Core {
         private QuestMessageHandler messageHandler;
         private QuestMatch match; // TODO: If we have time make this a dictionary to support multiple games.
 
-        public GameController(QuestMessageHandler messageHandler) {
-            this.match = new QuestMatch(new Logger("ServerGame"), this);
+        public GameController(QuestMessageHandler messageHandler, QuestMatch match=null) {
+            if (match == null) {
+                this.match = new QuestMatch(new Logger("ServerGame"), this);
+            }
+            else {
+                this.match = match;
+            }
+
             this.messageHandler = messageHandler;
             this.InitEventHandlers();
         }
