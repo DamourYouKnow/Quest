@@ -7,17 +7,20 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
 using Quest.Core;
+using Quest.Core.Players;
 using Utils.Networking;
 
 namespace Quest.Utils.Networking {
     public class QuestMessageHandler : WebSocketHandler {
         private GameController gc;
-        private Dictionary<string, Action<string, JToken>> eventHandlers;
-        private Dictionary<WebSocket, string> socket_player;
-        private Dictionary<string, WebSocket> player_socket;
+        private Dictionary<string, Action<Player, JToken>> eventHandlers;
+        private Dictionary<WebSocket, Player> socket_player;
+        private Dictionary<Player, WebSocket> player_socket;
 
         public QuestMessageHandler(WebSocketConnectionManager connectionManager) : base(connectionManager) {
-            eventHandlers = new Dictionary<string, Action<string, JToken>>();
+            socket_player = new Dictionary<WebSocket, Player>();
+            player_socket = new Dictionary<Player, WebSocket>();
+            eventHandlers = new Dictionary<string, Action<Player, JToken>>();
             gc = new GameController(this);
         }
 
@@ -31,20 +34,25 @@ namespace Quest.Utils.Networking {
             if(eventName=="player_join"){
                 if(!socket_player.ContainsKey(socket)){
                     string username = (string)jqe["data"]["username"];
-                    socket_player.Add(socket, username);
-                    player_socket.Add(username, socket);
+
+                    Player newPlayer = new Player(username, this.gc.Match);
+                    this.gc.Match.AddPlayer(newPlayer);
+
+                    socket_player.Add(socket, newPlayer);
+                    player_socket.Add(newPlayer, socket);
                 }
             }
+
             if (eventHandlers.ContainsKey(eventName)) {
                 eventHandlers[eventName](socket_player[socket], jqe["data"]);
             }
         }
 
-        public async Task SendToAsync(string player, JObject message){
-            await this.SendMessageAsync(player_socket[player], JsonConvert.SerializeObject(message));
+        public async Task SendToAsync(Player player, string message){
+            await this.SendMessageAsync(player_socket[player], message);
         }
 
-        public void On(string eventName, Action<string, JToken> handler) {
+        public void On(string eventName, Action<Player, JToken> handler) {
             eventHandlers.Add(eventName, handler);
         }
     }

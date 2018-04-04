@@ -12,15 +12,17 @@ namespace Quest.Core {
     public class GameController {
         private Dictionary<string, Player> players;
         private QuestMessageHandler messageHandler;
-        private QuestMatch game; // TODO: If we have time make this a dictionary to support multiple games.
+        private QuestMatch match; // TODO: If we have time make this a dictionary to support multiple games.
 
         public GameController(QuestMessageHandler messageHandler) {
-            this.game = new QuestMatch(new Logger("ServerGame"), this);
-            this.players = new Dictionary<string, Player>();
+            this.match = new QuestMatch(new Logger("ServerGame"), this);
             this.messageHandler = messageHandler;
             this.InitEventHandlers();
         }
 
+        public QuestMatch Match {
+            get { return this.match; }
+        }
 
         private void InitEventHandlers() {
             // Link all events to a function with a JToken parameter.
@@ -28,34 +30,32 @@ namespace Quest.Core {
 
             messageHandler.On("test", (username, data) => {
                 Console.WriteLine(data.ToString());
-                game.Log("Test Event!!!");
+                match.Log("Test Event!!!");
             });
         }
 
-        private void OnPlayerJoined(string username, JToken data) {
-            Player newPlayer = new Player(username, this.game);
-            this.players.Add(username, newPlayer);
+        private void OnPlayerJoined(Player player, JToken data) {
+            // As of right now this on is handled in on player joined.
+            this.match.Log(player.Username + " connected");
         }
 
-        private void OnPlayCards(string username, JToken data) {
-            Player player = players[(string)data["username"]];
+        private void OnPlayCards(Player player, JToken data) {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Play(player.Hand.GetCards<BattleCard>(cardNames));
         }
 
-        private void OnDiscardCards(string username, JToken data) {
-            Player player = players[(string)data["username"]];
+        private void OnDiscardCards(Player player, JToken data) {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Discard(player.Hand.GetCards<Card>(cardNames));
         }
 
-        public void UpdatePlayers() {
+        public async void UpdatePlayers() {
             JObject data = new JObject();
             JArray playerArray = new JArray();
-            this.game.Players.ForEach((p) => playerArray.Add(p.Converter.Json.ToJObject(p)));
+            this.match.Players.ForEach((p) => playerArray.Add(p.Converter.Json.ToJObject(p)));
             data["players"] = playerArray;
             EventData ev = new EventData("update_players", data);
-            this.messageHandler.SendAllAsync(ev.ToString());
+            await this.messageHandler.SendAllAsync(ev.ToString());
         }
     }
 
