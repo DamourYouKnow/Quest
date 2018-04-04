@@ -237,9 +237,9 @@ namespace UnitTests
 
             Assert.IsTrue((match.CurrentStory as QuestCard).Sponsor == p1);
 
-            quest.AddParticipant(p2);
-            quest.AddParticipant(p3);
-            quest.AddParticipant(p4);
+            //quest.AddParticipant(p2); FIXME
+            //quest.AddParticipant(p3);
+            //quest.AddParticipant(p4);
 
             Assert.IsTrue(quest.Participants.Contains(p2));
 
@@ -626,7 +626,7 @@ namespace UnitTests
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
             game.CurrentStory = quest;
             quest.Sponsor = sponsorPlayer;
-            quest.AddParticipant(aiPlayer);
+            //quest.AddParticipant(aiPlayer); // FIXME
 			
 			Thieves questThieves = new Thieves(game);
             Saxons questSaxons = new Saxons(game);
@@ -816,7 +816,7 @@ namespace UnitTests
             RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
             game.CurrentStory = quest;
             quest.Sponsor = sponsorPlayer;
-            quest.AddParticipant(aiPlayer);
+            //quest.AddParticipant(aiPlayer); FIXME
 
             Thieves questThieves = new Thieves(game);
             Saxons questSaxons = new Saxons(game);

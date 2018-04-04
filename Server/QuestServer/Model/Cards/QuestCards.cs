@@ -95,11 +95,32 @@ namespace Quest.Core.Cards{
         }
 
         public override void RequestParticipation() {
-            throw new NotImplementedException();
+            foreach (Player player in this.match.OtherPlayers) {
+                if (player.Behaviour is HumanPlayer) {
+                    // Send participation request to player through sockets.
+                    // TODO.
+                } 
+                else {
+                    // Use strategies to determine player participation.
+                    this.AddResponse(player, 
+                                     player.Behaviour.ParticipateInQuest(this, player.Hand));
+                }
+            }
         }
 
         public override void RequestPlays() {
-            throw new NotImplementedException();
+            foreach (Player participant in this.participants) {
+                if (participant.Behaviour is HumanPlayer) {
+                    // Send play request to player through sockets.
+                    // TODO.
+                }
+                else {
+                    // Use AI strategy to determine play then Set player to played.
+                    List<BattleCard> cards = participant.Behaviour.PlayCardsInQuest(this, participant.Hand);
+                    participant.Play(cards);
+                    this.AddPlayed(participant);
+                }
+            }
         }
 
         public override void Resolve() {
