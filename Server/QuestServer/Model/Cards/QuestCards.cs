@@ -129,11 +129,6 @@ namespace Quest.Core.Cards{
             }
         }
 
-        public override void Resolve() {
-            throw new NotImplementedException();
-        }
-
-
         // We need some extra code to wrap around the sponsorship requests.
         public void RequestSponsorship() {
             Player currentPlayer = this.match.CurrentPlayer;
@@ -154,8 +149,12 @@ namespace Quest.Core.Cards{
 
         public void SponsorshipResponse(Player player, bool sponsor) {
             if (sponsor) {
+                this.match.Log("Quest sponsored");
                 this.sponsor = player;
                 this.Run();
+            }
+            else {
+                this.match.Log("Quest not sponsored");
             }
         }
 
@@ -197,7 +196,7 @@ namespace Quest.Core.Cards{
 				}
 
 				// Resolve.
-				this.ResolveStage();
+				this.Resolve();
 				if (this.participants.Count > 0) {
 					this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
 				} else {
@@ -208,7 +207,7 @@ namespace Quest.Core.Cards{
 			}
 		}
 
-		public void ResolveStage(){
+		public override void Resolve(){
 			List<Player> winners = new List<Player>();
             if (this.stages[currentStage - 1].MainCard is TestCard) {
                 // TODO: Implement Test stage.
@@ -233,8 +232,7 @@ namespace Quest.Core.Cards{
 			this.currentStage += 1;
 
 			//If no more stages or no more players, resolve quest.
-			if (this.participants.Count == 0
-				|| this.currentStage > this.numStages) {
+			if (this.participants.Count == 0 || this.currentStage > this.numStages) {
 				foreach (var p in this.participants) {
 					p.Rank.AddShields (this.numStages);
 				}
@@ -249,6 +247,9 @@ namespace Quest.Core.Cards{
 				foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
 					p.Draw (this.match.AdventureDeck);
 				}
+
+                // Request plays for next round.
+                this.RequestPlays();
 			}
 		}
 	}
