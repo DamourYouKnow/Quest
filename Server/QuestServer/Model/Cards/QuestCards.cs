@@ -140,7 +140,10 @@ namespace Quest.Core.Cards{
 
             if (currentPlayer.Behaviour is HumanPlayer) {
                 // If human send prompt request.
-                // TODO: Send prompt.
+                this.match.Controller.PromptPlayer(currentPlayer,
+                                                   "request_quest_sponsor",
+                                                   "Would you like to sponsor " + this.name,
+                                                   image: this.imageFilename);
             }
             else {
                 // Otherwise decide with strategy.
