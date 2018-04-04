@@ -58,6 +58,15 @@ namespace Quest.Core {
             await this.messageHandler.SendAllAsync(evn.ToString());
         }
 
+        public async void UpdateHand(Player player) {
+            JObject data = new JObject();
+            JArray cardArray = new JArray();
+            player.Hand.Cards.ForEach((c) => cardArray.Add(c.Converter.Json.ToJObject(c)));
+            data["cards"] = cardArray;
+            EventData evn = new EventData("update_hand", data);
+            await this.messageHandler.SendToAsync(player, evn.ToString());
+        }
+
         public async void PromptPlayer(Player player, string type, string message, string image=null) {
             JObject data = new JObject();
             data["message"] = message;

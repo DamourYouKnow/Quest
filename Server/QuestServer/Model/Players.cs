@@ -201,7 +201,8 @@ namespace Quest.Core.Players {
                 this.Hand.Add(drawnCard);
                 this.match.Log(this.username + " drew " + drawnCard.ToString());
             }
-			
+
+            this.match.Controller.UpdateHand(this);
         }
 
         public void Discard(Card card) {
