@@ -142,70 +142,46 @@ namespace Quest.Core.Cards{
             }
             else {
                 // Otherwise decide with strategy.
-                this.SponsorshipResponse(currentPlayer,
-                                         currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand));
+                bool sponsor = currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand);
+                this.SponsorshipResponse(currentPlayer, sponsor);
+
+                if (sponsor) {
+                    // Player behaviour functions for individual stage setup.
+                    List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
+                    foreach (List<AdventureCard> stage in stages) {
+                        if (stage.Count == 1 && stage[0] is TestCard) {
+                            this.AddTestStage((TestCard)stage[0]);
+                        }
+                        else {
+                            FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
+                            List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
+                            this.AddFoeStage(foe, weapons);
+                        }
+                    }
+                }
             }
         }
 
+        /// <summary>
+        /// This should be called when a player sponsors a quest.
+        /// If sponsor if true, then the stages should be added before calling this.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="sponsor"></param>
         public void SponsorshipResponse(Player player, bool sponsor) {
             if (sponsor) {
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
-                this.Run();
+                this.RequestParticipation();
             }
             else {
                 this.match.Log("Quest not sponsored");
             }
         }
 
-
         public override void Run() {
-			// Ask current player to sponsor.
-			Player currentPlayer = this.match.CurrentPlayer;
-			if (!currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand)) {
-				this.match.Log("Quest not sponsored");
-				return;
-			} else {
-				this.sponsor = currentPlayer;
-			}
-
-			// Ask other players if they would like to participate.
-			List<Player> otherPlayers = this.match.OtherPlayers;
-			foreach (Player player in otherPlayers) {
-				if (player.Behaviour.ParticipateInQuest(this, player.Hand)) {
-					//this.AddParticipant(player); FIXME.
-				}
-			}
-
-			// Player behaviour functions for individual stage setup.
-			List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
-			foreach (List<AdventureCard> stage in stages) {
-				if (stage.Count == 1 && stage[0] is TestCard) {
-					this.AddTestStage((TestCard)stage[0]);
-				} else {
-					FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
-					List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
-					this.AddFoeStage(foe, weapons);
-				}
-			}
-
-			while (this.currentStage <= this.numStages) {
-				// Participants play cards.
-				foreach (Player participant in this.participants) {
-					participant.Play(participant.Behaviour.PlayCardsInQuest(this, participant.Hand));
-				}
-
-				// Resolve.
-				this.Resolve();
-				if (this.participants.Count > 0) {
-					this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
-				} else {
-					this.match.Log("Stage " + this.currentStage + " has no winners");
-				}
-
-				this.currentStage++;
-			}
-		}
+            this.RequestSponsorship();
+        }
 
 		public override void Resolve(){
 			List<Player> winners = new List<Player>();
@@ -231,8 +207,15 @@ namespace Quest.Core.Cards{
 			this.participants = winners;
 			this.currentStage += 1;
 
-			//If no more stages or no more players, resolve quest.
-			if (this.participants.Count == 0 || this.currentStage > this.numStages) {
+            if (this.participants.Count > 0) {
+                this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
+            }
+            else {
+                this.match.Log("Stage " + this.currentStage + " has no winners");
+            }
+
+            //If no more stages or no more players, resolve quest.
+            if (this.participants.Count == 0 || this.currentStage > this.numStages) {
 				foreach (var p in this.participants) {
 					p.Rank.AddShields (this.numStages);
 				}
@@ -247,6 +230,8 @@ namespace Quest.Core.Cards{
 				foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
 					p.Draw (this.match.AdventureDeck);
 				}
+
+                this.participated.Clear();
 
                 // Request plays for next round.
                 this.RequestPlays();
