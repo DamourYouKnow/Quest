@@ -29,7 +29,7 @@ namespace UnitTests
         }
     }
 
-
+    [TestFixture]
     public class CardTests
     {
         [Test]
@@ -220,6 +220,7 @@ namespace UnitTests
         }
     }
 
+    [TestFixture]
     public class GameManagerTests
     {
         [Test]
@@ -239,6 +240,7 @@ namespace UnitTests
         }
     }
 
+    [TestFixture]
     public class EventTests
     {
         [Test]
@@ -354,6 +356,7 @@ namespace UnitTests
         }
     }
 
+    [TestFixture]
     public class PlayerTests
     {
         [Test]
@@ -384,11 +387,13 @@ namespace UnitTests
         }
     }
 
+    [TestFixture]
     public class TestTests
     {
 
     }
 
+    [TestFixture]
     public class TournamentTests {
         [Test]
         public void TestTournament() {
@@ -396,7 +401,8 @@ namespace UnitTests
         }
     }
 
-	public class Strategy1Tests{
+    [TestFixture]
+    public class Strategy1Tests{
 		[Test]
 		public void TestTournamentParticipation(){
 			QuestMatch game = ScenarioCreator.GameNoDeal(2);
@@ -589,7 +595,8 @@ namespace UnitTests
 			Assert.IsTrue(played.Contains(kingPellinore));
 		}
 	}
-	
+
+    [TestFixture]
     public class Strategy2Tests
     {
         [Test]
