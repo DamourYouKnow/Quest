@@ -20,8 +20,10 @@ namespace Quest.Core.View{
 			private string userName;
 			private string serverAddress;
 			private bool isHost;
+			private bool isConnected;
 			private List<int> games;
 			private Dictionary<string, GameObject> disabledObjects;
+			private int scenario;
 
 			public GameObject GameCanvas {
 				get {return this.gameCanvas;}
@@ -33,6 +35,8 @@ namespace Quest.Core.View{
 			this.serverAddress = Constants.DEFAULT_SERVER_ADDRESS;
 			this.userName = Constants.DEFAULT_USERNAME;
 			this.isHost = false;
+			this.isConnected = false;
+			this.scenario = 0;
 			SceneManager.activeSceneChanged += OnSceneChanged;
 			DontDestroyOnLoad (this);
 		}
@@ -47,6 +51,48 @@ namespace Quest.Core.View{
 								this.gameCanvas = gc;
 						}
 				}
+				if (this.isConnected){
+					UpdateOnline();
+				}
+				else{
+					UpdateOffline();
+				}
+		}
+
+		public void UpdateOnline(){
+			switch(this.sceneName){
+				case "MainMenu":
+					UpdateOnlineMainMenu();
+					break;
+			}
+		}
+
+		public void UpdateOnlineMainMenu(){
+			if(!this.disabledObjects.ContainsKey("Button_Connect")){
+				EnableObject("Button_HostNetwork");
+				EnableObject("Button_JoinNetwork");
+				DisableObject("Canvas_Username");
+				DisableObject("Canvas_Server");
+				DisableObject("Button_Connect");
+			}
+		}
+
+		public void UpdateOffline(){
+			switch(this.sceneName){
+				case "MainMenu":
+					UpdateOfflineMainMenu();
+					break;
+			}
+		}
+
+		public void UpdateOfflineMainMenu(){
+			if(this.disabledObjects.ContainsKey("Button_Connect")){
+				DisableObject("Button_HostNetwork");
+				DisableObject("Button_JoinNetwork");
+				EnableObject("Canvas_Username");
+				EnableObject("Canvas_Server");
+				EnableObject("Button_Connect");
+			}
 		}
 
 		public void OnSceneChanged(Scene lastScene, Scene nextScene){
@@ -100,6 +146,7 @@ namespace Quest.Core.View{
 
 	    public void OnClose(UnityWebSocket sender, int code, string reason) {
 	        Debug.Log("Connection closed: " + reason);
+					this.isConnected = false;
 	    }
 
 	    public void OnOpen(UnityWebSocket accepted) {
@@ -108,12 +155,7 @@ namespace Quest.Core.View{
           data["username"] = this.userName;
           EventData evn = new EventData("player_join", data);
 					this.SendMessage(evn.ToString());
-					EnableObject("Button_HostNetwork");
-					EnableObject("Button_JoinNetwork");
-					DisableObject("Canvas_Username");
-					DisableObject("Canvas_Server");
-					DisableObject("Button_Connect");
-
+					this.isConnected = true;
 	    }
 
 	    public void OnMessage(UnityWebSocket sender, byte[] data) {
@@ -210,6 +252,7 @@ namespace Quest.Core.View{
 		public void OnHostNetwork(){
 			this.isHost = true;
 			JObject data = new JObject();
+			data["scenario"] = 0;
 			EventData evn = new EventData("create_game", data);
 			SendMessage(evn.ToString());
 			LoadScene("Lobby");
