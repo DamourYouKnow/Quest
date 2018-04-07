@@ -32,11 +32,10 @@ namespace Quest.Core {
         private void InitEventHandlers() {
             // Link all events to a function with a JToken parameter.
             messageHandler.On("player_join", OnPlayerJoined);
-
-            messageHandler.On("test", (username, data) => {
-                Console.WriteLine(data.ToString());
-                match.Log("Test Event!!!");
-            });
+            messageHandler.On("play_cards", OnPlayCards);
+            messageHandler.On("discard", OnDiscard);
+            messageHandler.On("participation_response", OnParticipationResponse);
+            messageHandler.On("quest_sponsor_response", OnQuestSponsorResponse);
         }
 
         private void OnPlayerJoined(Player player, JToken data) {
@@ -49,9 +48,19 @@ namespace Quest.Core {
             player.Play(player.Hand.GetCards<BattleCard>(cardNames));
         }
 
-        private void OnDiscardCards(Player player, JToken data) {
+        private void OnDiscard(Player player, JToken data) {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Discard(player.Hand.GetCards<Card>(cardNames));
+        }
+
+        private void OnParticipationResponse(Player player, JToken data) {
+            InteractiveStoryCard story = this.match.CurrentStory as InteractiveStoryCard;
+            story.AddResponse(player, (bool)data["participating"]);
+        }
+
+        private void OnQuestSponsorResponse(Player player, JToken data) {
+            QuestCard quest = this.match.CurrentStory as QuestCard;
+            quest.SponsorshipResponse(player, (bool)data["sponsoring"]);
         }
 
         public async void UpdatePlayers() {

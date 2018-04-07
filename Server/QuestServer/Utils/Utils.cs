@@ -84,5 +84,11 @@ namespace Quest.Utils {
 
             return retList;
         }
+
+        public static JArray ListToArray<T>(List<T> list) {
+            JArray a = new JArray();
+            list.ForEach((x) => a.Add(x));
+            return a;
+        }
     }
 }
