@@ -7,6 +7,7 @@ using Quest.Utils;
 using Quest.Utils.Networking;
 using Quest.Core.Cards;
 using Quest.Core.Players;
+using Quest.Core.Scenarios;
 
 namespace Quest.Core {
     public class GameController {
@@ -52,9 +53,21 @@ namespace Quest.Core {
         }
 
         private void OnCreateGame(Player player, JToken data) {
-            QuestMatch newGame = new QuestMatch(new Logger("ServerGame"), this);
-            newGame.AddPlayer(player);
-            this.matches.Add(player, newGame);
+            QuestMatch match = ScenarioCreator.EmptyGame();
+            match.AttachLogger(new Logger("DefaultMatch"));
+            int scenario = (int)data["scenario"];
+
+            if (scenario == 1) {
+                match = ScenarioCreator.Scenario1();
+                match.AttachLogger(new Logger("Scenario1"));
+            }
+            if (scenario == 2) {
+                match = ScenarioCreator.Scenario2();
+                match.AttachLogger(new Logger("Scenario2"));
+            }
+
+            match.AddPlayer(player);
+            this.matches.Add(player, match);
         }
 
         private void OnJoinGame(Player player, JToken data) {
