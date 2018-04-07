@@ -107,7 +107,7 @@ namespace Quest.Core.Cards {
         /// 
         /// <param name="player">Player responding to request.</param>
         /// <param name="participating">Whether player is participating.</param>
-        public void AddResponse(Player player, bool participating) {
+        public void ParticipationResponse(Player player, bool participating) {
             this.responded.Add(player);
             if (participating) {
                 this.participants.Add(player);

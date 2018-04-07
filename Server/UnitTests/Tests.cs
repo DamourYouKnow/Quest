@@ -142,19 +142,26 @@ namespace UnitTests
             Player p2 = new Player("p2", match);
             Player p3 = new Player("p3", match);
             Player p4 = new Player("p4", match);
+            match.AddPlayer(p1);
+            match.AddPlayer(p2);
+            match.AddPlayer(p3);
+            match.AddPlayer(p4);
 
             QuestCard quest = new BoarHunt(match);
             match.CurrentStory = quest;
 
-            quest.Sponsor = p1;
+            quest.SponsorshipResponse(p1, true);
 
             Assert.IsTrue((match.CurrentStory as QuestCard).Sponsor == p1);
 
-            //quest.AddParticipant(p2); FIXME
-            //quest.AddParticipant(p3);
-            //quest.AddParticipant(p4);
+            quest.ParticipationResponse(p2, true);
+            quest.ParticipationResponse(p3, true);
+            quest.ParticipationResponse(p4, true);
 
+            Assert.IsFalse(quest.Participants.Contains(p1));
             Assert.IsTrue(quest.Participants.Contains(p2));
+            Assert.IsTrue(quest.Participants.Contains(p3));
+            Assert.IsTrue(quest.Participants.Contains(p4));
 
             Boar boar = new Boar(match);
             Sword sword = new Sword(match);
@@ -187,7 +194,7 @@ namespace UnitTests
 
             Assert.AreEqual(10, p4.BattleArea.BattlePoints());
 
-            //quest.ResolveStage(); FIXME
+            quest.Resolve(); 
 
             Assert.AreEqual(2, quest.CurrentStage);
 
@@ -203,7 +210,7 @@ namespace UnitTests
 
             Assert.AreEqual(5, p2.BattleArea.BattlePoints());
 
-            //quest.ResolveStage(); FIXME
+            quest.Resolve();
 
             Assert.IsTrue(quest.Participants.Contains(p2));
             Assert.IsFalse(quest.Participants.Contains(p3));

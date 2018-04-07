@@ -79,7 +79,7 @@ namespace Quest.Core {
 
         private void OnParticipationResponse(Player player, JToken data) {
             InteractiveStoryCard story = this.matches[player].CurrentStory as InteractiveStoryCard;
-            story.AddResponse(player, (bool)data["participating"]);
+            story.ParticipationResponse(player, (bool)data["participating"]);
         }
 
         private void OnQuestSponsorResponse(Player player, JToken data) {
