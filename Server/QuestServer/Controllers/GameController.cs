@@ -59,11 +59,9 @@ namespace Quest.Core {
 
             if (scenario == 1) {
                 match = ScenarioCreator.Scenario1();
-                match.AttachLogger(new Logger("Scenario1"));
             }
             if (scenario == 2) {
                 match = ScenarioCreator.Scenario2();
-                match.AttachLogger(new Logger("Scenario2"));
             }
 
             match.AddPlayer(player);
