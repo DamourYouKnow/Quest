@@ -103,9 +103,9 @@ namespace Quest.Core.Cards{
                                                        "Would you like to participate in " + this.name,
                                                        image: this.imageFilename);
                 } 
-                else {
+                else if (player.Behaviour != null) {
                     // Use strategies to determine player participation.
-                    this.AddResponse(player, 
+                    this.ParticipationResponse(player, 
                                      player.Behaviour.ParticipateInQuest(this, player.Hand));
                 }
             }
@@ -120,7 +120,7 @@ namespace Quest.Core.Cards{
                                                        "Please play your cards");
 
                 }
-                else {
+                else if (participant.Behaviour != null){
                     // Use AI strategy to determine play then Set player to played.
                     List<BattleCard> cards = participant.Behaviour.PlayCardsInQuest(this, participant.Hand);
                     participant.Play(cards);
@@ -140,7 +140,7 @@ namespace Quest.Core.Cards{
                                                    "Would you like to sponsor " + this.name,
                                                    image: this.imageFilename);
             }
-            else {
+            else  if (currentPlayer.Behaviour != null) {
                 // Otherwise decide with strategy.
                 bool sponsor = currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand);
                 this.SponsorshipResponse(currentPlayer, sponsor);
