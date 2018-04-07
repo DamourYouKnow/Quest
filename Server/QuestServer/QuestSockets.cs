@@ -48,13 +48,13 @@ namespace Quest.Utils.Networking {
             }
         }
 
-        public virtual async Task SendToAsync(Player player, string message){
+        public virtual async Task SendToPlayerAsync(Player player, string message){
             await this.SendMessageAsync(player_socket[player], message);
         }
 
         public virtual async Task SendToMatchAsync(QuestMatch match, string message) {
             foreach (Player player in match.Players) {
-                await this.SendToAsync(player, message);
+                await this.SendToPlayerAsync(player, message);
             }
         }
 
@@ -81,7 +81,7 @@ namespace Quest.Utils.Networking {
             return;
         }
 
-        public override async Task SendToAsync(Player player, string message) {
+        public override async Task SendToPlayerAsync(Player player, string message) {
             return;
         }
     }
