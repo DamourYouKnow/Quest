@@ -12,6 +12,9 @@ namespace Quest.Core {
     }
 
     public class QuestMatch {
+        private static int nextId = 1;
+
+        private int id;
         private List<Player> players;
         private int currentPlayer;
         private int promptingPlayer;
@@ -23,6 +26,7 @@ namespace Quest.Core {
         private Logger logger;
 
         public QuestMatch(Logger logger = null, GameController controller = null) {
+            this.id = nextId++;
             this.players = new List<Player>();
             this.currentPlayer = 0;
             this.storyDeck = new StoryDeck(this);
@@ -38,6 +42,10 @@ namespace Quest.Core {
             else {
                 this.controller = new GameController(new NullQuestMessageHandler(), this);
             }
+        }
+
+        public int Id {
+            get { return this.id; }
         }
 
         public GameController Controller {
@@ -121,6 +129,7 @@ namespace Quest.Core {
         }
 
         public void AddPlayer(Player player) {
+            player.Match = this;
             this.players.Add(player);
             this.Log("Added player " + player.Username + " to Quest match");
         }

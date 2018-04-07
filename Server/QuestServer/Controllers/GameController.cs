@@ -11,22 +11,23 @@ using Quest.Core.Players;
 namespace Quest.Core {
     public class GameController {
         private QuestMessageHandler messageHandler;
-        private QuestMatch match; // TODO: If we have time make this a dictionary to support multiple games.
+        private Dictionary<Player, QuestMatch> matches;
 
         public GameController(QuestMessageHandler messageHandler, QuestMatch match=null) {
             if (match == null) {
-                this.match = new QuestMatch(new Logger("ServerGame"), this);
+                this.matches = new Dictionary<Player, QuestMatch>();
             }
             else {
-                this.match = match;
+                this.matches = new Dictionary<Player, QuestMatch>();
+
             }
 
             this.messageHandler = messageHandler;
             this.InitEventHandlers();
         }
 
-        public QuestMatch Match {
-            get { return this.match; }
+        public QuestMatch GetMatch(Player player) {
+            return this.matches[player];
         }
 
         private void InitEventHandlers() {
@@ -40,7 +41,22 @@ namespace Quest.Core {
 
         private void OnPlayerJoined(Player player, JToken data) {
             // As of right now this on is handled in on player joined.
-            this.match.Log(player.Username + " connected");
+        }
+
+        private void OnCreateGame(Player player, JToken data) {
+            QuestMatch newGame = new QuestMatch(new Logger("ServerGame"), this);
+            newGame.AddPlayer(player);
+            this.matches.Add(player, newGame);
+        }
+
+        private void OnJoinGame(Player player, JToken data) {
+            int gameId = (int)data["game_id"];
+            gameWithId(gameId).AddPlayer(player);
+        }
+
+        private void OnStartGame(Player player, JToken data) {
+            this.matches[player].Setup(shuffleDecks:true);
+            this.matches[player].RunGame();
         }
 
         private void OnPlayCards(Player player, JToken data) {
@@ -54,22 +70,22 @@ namespace Quest.Core {
         }
 
         private void OnParticipationResponse(Player player, JToken data) {
-            InteractiveStoryCard story = this.match.CurrentStory as InteractiveStoryCard;
+            InteractiveStoryCard story = this.matches[player].CurrentStory as InteractiveStoryCard;
             story.AddResponse(player, (bool)data["participating"]);
         }
 
         private void OnQuestSponsorResponse(Player player, JToken data) {
-            QuestCard quest = this.match.CurrentStory as QuestCard;
+            QuestCard quest = this.matches[player].CurrentStory as QuestCard;
             quest.SponsorshipResponse(player, (bool)data["sponsoring"]);
         }
 
-        public async void UpdatePlayers() {
+        public async void UpdatePlayers(QuestMatch match) {
             JObject data = new JObject();
             JArray playerArray = new JArray();
-            this.match.Players.ForEach((p) => playerArray.Add(p.Converter.Json.ToJObject(p)));
+            match.Players.ForEach((p) => playerArray.Add(p.Converter.Json.ToJObject(p)));
             data["players"] = playerArray;
             EventData evn = new EventData("update_players", data);
-            await this.messageHandler.SendAllAsync(evn.ToString());
+            await this.messageHandler.SendToMatchAsync(match, evn.ToString());
         }
 
         public async void UpdateHand(Player player) {
@@ -87,6 +103,13 @@ namespace Quest.Core {
             data["image"] = image;
             EventData evn = new EventData(type.ToLower(), data);
             await this.messageHandler.SendToAsync(player, evn.ToString());
+        }
+
+        private QuestMatch gameWithId(int id) {
+            foreach (QuestMatch match in this.matches.Values) {
+                if (id == match.Id) return match;
+            }
+            return null;
         }
     }
 

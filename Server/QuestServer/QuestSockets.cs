@@ -37,10 +37,7 @@ namespace Quest.Utils.Networking {
             if(eventName=="player_join"){
                 if(!socket_player.ContainsKey(socket)){
                     string username = (string)jqe["data"]["username"];
-
-                    Player newPlayer = new Player(username, this.gc.Match);
-                    this.gc.Match.AddPlayer(newPlayer);
-
+                    Player newPlayer = new Player(username, null);
                     socket_player.Add(socket, newPlayer);
                     player_socket.Add(newPlayer, socket);
                 }
@@ -53,6 +50,12 @@ namespace Quest.Utils.Networking {
 
         public virtual async Task SendToAsync(Player player, string message){
             await this.SendMessageAsync(player_socket[player], message);
+        }
+
+        public virtual async Task SendToMatchAsync(QuestMatch match, string message) {
+            foreach (Player player in match.Players) {
+                await this.SendToAsync(player, message);
+            }
         }
 
         public void On(string eventName, Action<Player, JToken> handler) {

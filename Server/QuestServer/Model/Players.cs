@@ -164,10 +164,12 @@ namespace Quest.Core.Players {
 
 		public string Username {
 			get { return username; }
+            set { this.username = value; }
 		}
 
 		public QuestMatch Match {
 			get { return match; }
+            set { this.match = value; }
 		}
 
         public PlayerBehaviour Behaviour {
