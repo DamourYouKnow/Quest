@@ -37,6 +37,7 @@ namespace Quest.Core {
             messageHandler.On("request_games", OnRequestGames);
             messageHandler.On("create_game", OnCreateGame);
             messageHandler.On("join_game", OnJoinGame);
+            messageHandler.On("add_ai", OnAddAI);
             messageHandler.On("start_game", OnStartGame);
             messageHandler.On("play_cards", OnPlayCards);
             messageHandler.On("discard", OnDiscard);
@@ -71,6 +72,18 @@ namespace Quest.Core {
         private void OnJoinGame(Player player, JToken data) {
             int gameId = (int)data["game_id"];
             gameWithId(gameId).AddPlayer(player);
+        }
+
+        private void OnAddAI(Player player, JToken data) {
+            int strat = (int)data["strategy"];
+            QuestMatch match = this.matches[player];
+
+            Player aiPlayer = new Player("player " + match.Players.Count);
+            if (strat == 1) aiPlayer.Behaviour = new Strategy1();
+            if (strat == 2) aiPlayer.Behaviour = new Strategy2();
+            if (strat == 3) aiPlayer.Behaviour = new Strategy3();
+
+            match.AddPlayer(aiPlayer);
         }
 
         private void OnStartGame(Player player, JToken data) {
