@@ -528,21 +528,58 @@ namespace UnitTests
             aiPlayer.Hand.Add(thieves);
 			//hand: boar, thieves, testOfValor - not enough bp
             Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
-			
-			aiPlayer.Hand.Add(blackKnight);
-			aiPlayer.Hand.Add(lance);
-			//hand: boar, thieves, test, black knight, lance - enough bp
+
+			aiPlayer.Hand.Add(dragon);
+			//hand: boar, thieves, test, dragon - enough bp
 			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
-			
+			/*
 			aiPlayer.Hand.Remove(boar);
 			aiPlayer.Hand.Remove(thieves);
 			aiPlayer.Hand.Add(dragon);
 			//hand: black knight, test, lance, dragon - enough bp
 			//(last stage dragon, 2nd stage test, last black knight (no lance))
 			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
-		}
-		
-		[Test]
+            */
+        }
+
+        [Test]
+        public void TestSetupQuest()
+        {
+            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            game.AttachLogger(new Quest.Core.Logger("TestSetupQuest"));
+            Player sponsorAI = game.Players[0];
+            sponsorAI.Behaviour = new Strategy1();
+
+            // Setup quest
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game);//3 stages
+            game.CurrentStory = quest;
+            quest.Sponsor = sponsorAI;
+
+            //quest cards
+            Dragon dragon = new Dragon(game);//50
+            BlackKnight blackKnight = new BlackKnight(game);//35 (25+10)
+            Thieves thieves = new Thieves(game);//5
+            Boar boar = new Boar(game);//5 
+            TestOfValor testOfValor = new TestOfValor(game);
+
+            sponsorAI.Hand.Add(new List<Card>() { testOfValor, boar, thieves, dragon });
+
+            List<AdventureCard>[] stages = sponsorAI.Behaviour.SetupQuest(quest, sponsorAI.Hand);
+            Assert.AreEqual(3, stages.Length);
+
+            //test last stage - should contain strongest foe (dragon)
+            Assert.AreEqual(1, stages[2].Count);
+            Assert.IsTrue(stages[2].Contains(dragon));
+
+            //test second last stage - should contain test of valor
+            Assert.AreEqual(1, stages[1].Count);
+            Assert.IsTrue(stages[1].Contains(testOfValor));
+
+            //test first stage
+            Assert.AreEqual(1, stages[0].Count);
+        }
+
+        [Test]
         public void TestQuestParticipation(){
 			QuestMatch game = ScenarioCreator.GameNoDeal(1);
             game.AttachLogger(new Quest.Core.Logger("TestQuestParticipation"));
