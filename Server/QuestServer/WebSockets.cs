@@ -94,10 +94,12 @@ namespace Utils.Networking {
             await Receive(socket, async(result, buffer) => {
                 if (result.MessageType == WebSocketMessageType.Binary) {
                     await socketHandler.ReceiveAsync(socket, result, buffer);
+                    Array.Clear(buffer, 0, buffer.Length);
                     return;
                 }
                 else if (result.MessageType == WebSocketMessageType.Close) {
                     await socketHandler.OnDisconnected(socket);
+                    Array.Clear(buffer, 0, buffer.Length);
                     return;
                 }
             });
