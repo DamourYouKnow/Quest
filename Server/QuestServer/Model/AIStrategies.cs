@@ -124,7 +124,7 @@ namespace Quest.Core.Players {
         public override List<BattleCard> PlayCardsInTournament(TournamentCard tournamentCard, Player player) {
             bool strongestHand = false;
             foreach (Player participant in tournamentCard.Participants) {
-                if (promotableThroughTournament(participant, tournamentCard)) strongestHand = true;
+                if ((promotableThroughTournament(participant, tournamentCard))&&(participant != player)) strongestHand = true;
             }
 
             Hand hand = player.Hand;

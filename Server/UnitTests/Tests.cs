@@ -413,37 +413,83 @@ namespace UnitTests
             TournamentAtCamelot tournament = new TournamentAtCamelot(game);
 			
 			//no player can rank up by winning tournament - don't participate
-			otherPlayer.Rank.AddShields(11);
-			aiPlayer.Rank.AddShields(11);
+			otherPlayer.Rank.AddShields(1);
+			aiPlayer.Rank.AddShields(1);
             Assert.IsFalse(aiPlayer.Behaviour.ParticipateInTournament(tournament));
 			
-			//other player has 21 shields, can rank up - participate
+			//other player has 11 shields, can rank up - participate
             otherPlayer.Rank.AddShields(10);
 			Assert.IsTrue(aiPlayer.Behaviour.ParticipateInTournament(tournament));
-			
-			//other player can win - play strongest possible hand
-			aiPlayer.Hand.Add(new Amour(game));//10
-			aiPlayer.Hand.Add(new Dagger(game));//5
-			aiPlayer.Hand.Add(new Dagger(game));//5
-			aiPlayer.Hand.Add(new SirGalahad(game));//15
-			aiPlayer.Hand.Add(new Sword(game));//10
-			aiPlayer.Hand.Add(new Sword(game));//10
+
+            //make ai player a knight - 10 base BP
+            aiPlayer.Rank.AddShields(10);
+
+            //cards
+            Amour amour = new Amour(game);
+            Dagger dagger = new Dagger(game);
+            Dagger dagger2 = new Dagger(game);
+            SirGalahad sirGalahad = new SirGalahad(game);
+            Sword sword = new Sword(game);
+            Sword sword2 = new Sword(game);
+            //other player can win - play strongest possible hand
+            aiPlayer.Hand.Add(amour);//10
+			aiPlayer.Hand.Add(dagger);//5
+			aiPlayer.Hand.Add(dagger2);//5
+			aiPlayer.Hand.Add(sirGalahad);//15
+			aiPlayer.Hand.Add(sword);//10
+			aiPlayer.Hand.Add(sword2);//10
 			//expected: amour, dagger, SirGalahad, sword
 			List<BattleCard> played1 = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
 			Assert.AreEqual(4, played1.Count);
             aiPlayer.Play(played1);
-            Assert.AreEqual(40, aiPlayer.BattlePointsInPlay());
-			
-			//other player has 11 shields, can't rank up - play duplicate weapons
-			otherPlayer.Rank.RemoveShields(10);
-			//expected: dagger, sword
-			List<BattleCard> played2 = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
-			Assert.AreEqual(2, played2.Count);
-			aiPlayer.Play(played2);
-            Assert.AreEqual(15, aiPlayer.BattlePointsInPlay());
-		}
-		
-		[Test]
+            //40 BP from cards, 10 base BP from rank
+            Assert.AreEqual(50, aiPlayer.BattlePointsInPlay());
+        }
+
+        [Test]
+        public void TestTournamentParticipation2()
+        {
+            QuestMatch game = ScenarioCreator.GameNoDeal(2);
+            game.AttachLogger(new Quest.Core.Logger("TestTournamentParticipation2"));
+            Player aiPlayer = game.Players[0];
+            aiPlayer.Behaviour = new Strategy1();
+            Player otherPlayer = game.Players[1];
+            TournamentAtCamelot tournament = new TournamentAtCamelot(game);
+            
+            //ai player has 11 shields, can rank up - participate
+            aiPlayer.Rank.AddShields(11);
+            Assert.IsTrue(aiPlayer.Behaviour.ParticipateInTournament(tournament));
+
+            //make other player a squire - 5 base BP, can't rank up
+            otherPlayer.Rank.AddShields(1);
+
+            //cards
+            Amour amour = new Amour(game);
+            Dagger dagger = new Dagger(game);
+            Dagger dagger2 = new Dagger(game);
+            SirGalahad sirGalahad = new SirGalahad(game);
+            Sword sword = new Sword(game);
+            Sword sword2 = new Sword(game);
+            //other player can win - play strongest possible hand
+            aiPlayer.Hand.Add(amour);//10
+            aiPlayer.Hand.Add(dagger);//5
+            aiPlayer.Hand.Add(dagger2);//5
+            aiPlayer.Hand.Add(sirGalahad);//15
+            aiPlayer.Hand.Add(sword);//10
+            aiPlayer.Hand.Add(sword2);//10
+
+            //expected: dagger, sword
+            List<BattleCard> played2 = aiPlayer.Behaviour.PlayCardsInTournament(tournament, aiPlayer);
+            Assert.IsTrue((played2.Contains(dagger2))||(played2.Contains(dagger)));
+            Assert.IsTrue((played2.Contains(sword2)) || (played2.Contains(sword)));
+            Assert.AreEqual(2, played2.Count);
+            aiPlayer.Play(played2);
+            //5 from a dagger, 10 from a sword, 10 from base BP
+            Assert.AreEqual(25, aiPlayer.BattlePointsInPlay());
+        }
+
+
+        [Test]
         public void TestQuestSponsoring(){
 			QuestMatch game = ScenarioCreator.GameNoDeal(2);
             game.AttachLogger(new Quest.Core.Logger("TestQuestSponsoring"));
