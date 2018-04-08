@@ -27,8 +27,18 @@ namespace Quest.Core.View{
 			private Dictionary<string, Action<JToken>> eventHandlers;
 			private int gameid;
 			private List<Player> players;
-			private string currentStory;
+			private string currentStoryName;
 			private string currentStoryImage;
+			private List<string> otherAreaCards;
+			private List<string> handAreaCards;
+			private List<string> selfAreaCards;
+
+			private GameObject handArea;
+			private GameObject battleArea;
+			private GameObject otherArea;
+			private Text otherAreaText;
+			private Image currentStoryCard;
+			private Dictionary<string, GameObject> opponents;
 
 			public int Gameid{
 				get {return this.gameid;}
@@ -49,12 +59,16 @@ namespace Quest.Core.View{
 			this.gameid = -1;
 			this.games = new List<string>();
 			this.players = new List<Player>();
+
 			this.eventHandlers = new Dictionary<string, Action<JToken>>();
 			On("update_games", OnRCVUpdateGames);
 			On("update_players", OnRCVUpdatePlayers);
-			//messageHandler.On("player_join", OnPlayerJoined);
+			On("update_story", OnRCVUpdateStory);
+			On("update_player_area", OnRCVUpdatePlayerArea);
+			On("update_other_area", OnRCVUpdateOtherArea);
+
 			SceneManager.activeSceneChanged += OnUISceneChanged;
-			//messageHandler.On("player_join", OnPlayerJoined);
+
 			DontDestroyOnLoad (this);
 		}
 
@@ -84,6 +98,9 @@ namespace Quest.Core.View{
 				case "Lobby":
 					UpdateOnlineLobby();
 					break;
+				case "Match":
+					UpdateOnlineMatch();
+					break;
 			}
 		}
 
@@ -108,7 +125,6 @@ namespace Quest.Core.View{
 				}
 			}
 		}
-
 		private void UpdateOnlineLobby(){
 			GameObject list = GameObject.Find ("List_of_players");
 			Text t = list.GetComponent<Text> ();
@@ -116,6 +132,9 @@ namespace Quest.Core.View{
 			foreach(Player p in this.players){
 				t.text = t.text + p.username + "\n";
 			}
+		}
+		private void UpdateOnlineMatch(){
+			//Instantiate(Resources.Load("Prompt"))
 		}
 
 		private void UpdateOffline(){
@@ -125,7 +144,6 @@ namespace Quest.Core.View{
 					break;
 			}
 		}
-
 		private void UpdateOfflineMainMenu(){
 			if(this.disabledObjects.ContainsKey("Button_Connect")){
 				DisableObject("Canvas_NetworkGames");
@@ -146,6 +164,9 @@ namespace Quest.Core.View{
 					case "Lobby":
 						InitLobby();
 						break;
+					case "Match":
+						InitMatch();
+						break;
 				}
 		}
 		public void InitMainMenu(){
@@ -165,6 +186,17 @@ namespace Quest.Core.View{
 				DisableObject("Canvas_AI");
 				DisableObject("Button_startGame");
 			}
+		}
+		public void InitMatch(){
+			handArea = GameObject.Find("HandPanel");
+			battleArea = GameObject.Find("BattleArea");
+			otherArea = GameObject.Find("OtherArea");
+			otherAreaText = GameObject.Find("OtherAreaText").GetComponent<Text>();
+			currentStoryCard = GameObject.Find("StoryCard").GetComponent<Image>();
+
+			GameObject opponentsPanel = GameObject.Find("Opponents");
+
+			//private Dictionary<string, GameObject> opponents;
 		}
 
 			//public void OnUpdateGames()
@@ -238,8 +270,14 @@ namespace Quest.Core.View{
 				if(sceneName!="Match"){
 					LoadScene("Match");
 				}
-				this.currentStory = (string)data["name"];
+				this.currentStoryName = (string)data["name"];
 				this.currentStoryImage = (string)data["image"];
+			}
+			public void OnRCVUpdatePlayerArea(JToken data){
+
+			}
+			public void OnRCVUpdateOtherArea(JToken data){
+
 			}
 
 			private void DisableObject(string objectName){
