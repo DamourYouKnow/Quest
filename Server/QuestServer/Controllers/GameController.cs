@@ -88,6 +88,7 @@ namespace Quest.Core {
             if (strat == 3) aiPlayer.Behaviour = new Strategy3();
 
             match.AddPlayer(aiPlayer);
+            this.UpdatePlayers(this.matches[player]);
         }
 
         private void OnStartGame(Player player, JToken data) {
