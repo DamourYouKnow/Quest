@@ -96,6 +96,10 @@ namespace Quest.Core {
             this.UpdatePlayers(this.matches[player]);
         }
 
+        private void OnRoundEnd(Player player, JToken data) {
+            this.matches[player].RoundEndResponse(player);
+        }
+
         private void OnPlayCards(Player player, JToken data) {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Play(player.Hand.GetCards<BattleCard>(cardNames));
