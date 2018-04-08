@@ -529,17 +529,18 @@ namespace UnitTests
 			//hand: boar, thieves, testOfValor - not enough bp
             Assert.IsFalse(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
 
-			aiPlayer.Hand.Add(dragon);
-			//hand: boar, thieves, test, dragon - enough bp
+			aiPlayer.Hand.Add(blackKnight);
+            aiPlayer.Hand.Add(lance);
+			//hand: boar, thieves, test, blackknight, lance - enough bp
 			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
-			/*
+			
 			aiPlayer.Hand.Remove(boar);
 			aiPlayer.Hand.Remove(thieves);
+            aiPlayer.Hand.Remove(lance);
 			aiPlayer.Hand.Add(dragon);
 			//hand: black knight, test, lance, dragon - enough bp
-			//(last stage dragon, 2nd stage test, last black knight (no lance))
+			//(last stage dragon, 2nd stage test, first black knight (no lance))
 			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
-            */
         }
 
         [Test]
@@ -577,6 +578,55 @@ namespace UnitTests
 
             //test first stage
             Assert.AreEqual(1, stages[0].Count);
+        }
+
+        [Test]
+        public void TestSetupQuest2()
+        {
+            QuestMatch game = ScenarioCreator.GameNoDeal(1);
+            game.AttachLogger(new Quest.Core.Logger("TestSetupQuest2"));
+            Player sponsorAI = game.Players[0];
+            sponsorAI.Behaviour = new Strategy1();
+
+            // Setup quest
+            SearchForTheQuestingBeast quest = new SearchForTheQuestingBeast(game); // 4 stages.
+            game.CurrentStory = quest;
+            quest.Sponsor = sponsorAI;
+
+            //cards, no test
+            Giant giant = new Giant(game);//40
+            Lance lance = new Lance(game);//20
+            Mordred mordred = new Mordred(game);//30
+            Sword sword = new Sword(game);//10
+            Sword sword2 = new Sword(game);//10
+            Dagger dagger = new Dagger(game);//5
+            Dagger dagger2 = new Dagger(game);//5
+            Thieves thieves = new Thieves(game);//5
+            Boar boar = new Boar(game);//5 
+
+            sponsorAI.Hand.Add(new List<Card>() { giant, lance, thieves, boar, mordred,
+                                                    dagger, dagger2, sword, sword2});
+
+            List<AdventureCard>[] stages = sponsorAI.Behaviour.SetupQuest(quest, sponsorAI.Hand);
+            Assert.AreEqual(4, stages.Length);
+
+            //test last stage - should contain giant and lance
+            Assert.AreEqual(2, stages[3].Count);
+            Assert.IsTrue(stages[3].Contains(giant));
+            Assert.IsTrue(stages[3].Contains(lance));
+
+            //test 3rd stage - should be mordred and one of the daggers
+            Assert.AreEqual(2, stages[2].Count);
+            Assert.IsTrue(stages[2].Contains(mordred));
+            Assert.IsTrue((stages[2].Contains(dagger))||(stages[2].Contains(dagger2)));
+
+            //test 2nd stage - thieves or boar, and one of the swords
+            Assert.AreEqual(2, stages[1].Count);
+            Assert.IsTrue((stages[1].Contains(thieves)) || (stages[1].Contains(boar)));
+            Assert.IsTrue((stages[1].Contains(sword)) || (stages[1].Contains(sword2)));
+            //test 1st stage - thieves or boar (whichever wasn't played previously)
+            Assert.AreEqual(1, stages[0].Count);
+            Assert.IsTrue((stages[1].Contains(thieves)) || (stages[1].Contains(boar)));
         }
 
         [Test]

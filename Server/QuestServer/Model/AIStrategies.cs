@@ -198,7 +198,7 @@ namespace Quest.Core.Players {
             }
             //start from the end of the 'stages' list array, going towards the first stage
             for (int s = stages.Length - 1; s >= 0; s--) {
-                //if last stage - working
+                //if last stage
                 if (s + 1 == size) {
                     int currentStageBP = 0;
                     if (foes.Count > 0) {
@@ -238,15 +238,13 @@ namespace Quest.Core.Players {
                     }
                 }
 
-                //else if 2nd last stage and have test - working
+                //else if 2nd last stage and have test
                 else if ((s + 1 == size - 1) && (tests.Count > 0))
                 {
                     stages[s].Add(tests[0]);
                 }
 
                 //if not last stage
-                //reminder: 'prevStageBP' should always be more than currentStageBp
-                //since we're going backwards towards first stage now
                 else
                 {
 					int currentStageBP = 0;
@@ -257,7 +255,7 @@ namespace Quest.Core.Players {
 						if(foes[index].BattlePoints == prevStageBP){
 							index -= 1;
 						}
-                        if (index > 0)
+                        if (index >= 0)
                         {
                             stages[s].Add(foes[index]);
                             currentStageBP += foes[index].BattlePoints;
