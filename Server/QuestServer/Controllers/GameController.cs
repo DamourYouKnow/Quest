@@ -73,8 +73,9 @@ namespace Quest.Core {
         }
 
         private void OnJoinGame(Player player, JToken data) {
-            int gameId = (int)data["game_id"];
-            gameWithId(gameId).AddPlayer(player);
+            QuestMatch game = this.gameWithId((int)data["game_id"]);
+            game.AddPlayer(player);
+            this.matches.Add(player, game);
             this.UpdatePlayers(this.matches[player]);
         }
 
