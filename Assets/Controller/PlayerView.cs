@@ -129,6 +129,8 @@ namespace Quest.Core.View{
 				EnableObject("Canvas_NetworkGames");
 				EnableObject("Button_HostGame");
 				EnableObject("Button_JoinGame");
+				EnableObject("button_Scenario1");
+				EnableObject("button_Scenario2");
 				DisableObject("Canvas_Username");
 				DisableObject("Canvas_Server");
 				DisableObject("Button_Connect");
@@ -189,6 +191,8 @@ namespace Quest.Core.View{
 				DisableObject("Canvas_NetworkGames");
 				DisableObject("Button_HostNetwork");
 				DisableObject("Button_JoinNetwork");
+				DisableObject("button_Scenario1");
+				DisableObject("button_Scenario2");
 				EnableObject("Canvas_Username");
 				EnableObject("Canvas_Server");
 				EnableObject("Button_Connect");
@@ -245,6 +249,9 @@ namespace Quest.Core.View{
 			DisableObject("Canvas_NetworkGames");
 			DisableObject("Button_JoinGame");
 			DisableObject("Button_HostGame");
+			DisableObject("button_HotSeatPlay");
+			DisableObject("button_Scenario1");
+			DisableObject("button_Scenario2");
 		}
 		public void InitLobby(){
 			Button btnAddAI = GameObject.Find("Button_addAI").GetComponent<Button>();
@@ -355,6 +362,9 @@ namespace Quest.Core.View{
 					SendMessage(evn.ToString());
 				}
 				LoadScene("Lobby");
+			}
+			public void OnUIDrop(){
+				Debug.Log("dropped");
 			}
 
 			public void On(string eventName, Action<JToken> handler) {

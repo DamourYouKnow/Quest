@@ -173,11 +173,13 @@ namespace Quest.Core.Cards{
         /// <param name="sponsor"></param>
         public void SponsorshipResponse(Player player, bool sponsor) {
             if (sponsor) {
+                this.match.Controller.Message(this.match, player.Username + " sponsored quest");
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
                 this.RequestParticipation();
             }
             else {
+                this.match.Controller.Message(this.match, player.Username + " did not sponsor");
                 this.match.Log("Quest not sponsored");
             }
         }
