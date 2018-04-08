@@ -97,6 +97,7 @@ namespace Quest.Core {
         }
 
         public void RunGame() {
+            this.controller.UpdatePlayers(this);
             this.Log("Running game...");
             this.NextTurn();
         }

@@ -16,11 +16,13 @@ namespace Quest.Utils.Networking {
         private Dictionary<string, Action<Player, JToken>> eventHandlers;
         private Dictionary<WebSocket, Player> socket_player;
         private Dictionary<Player, WebSocket> player_socket;
+        private Logger logger;
 
         public QuestMessageHandler(WebSocketConnectionManager connectionManager) : base(connectionManager) {
             socket_player = new Dictionary<WebSocket, Player>();
             player_socket = new Dictionary<Player, WebSocket>();
             eventHandlers = new Dictionary<string, Action<Player, JToken>>();
+            this.logger = new Logger("SocketEvents");
 
             if (!(this is NullQuestMessageHandler)) {
                 this.gc = new GameController(this);
@@ -30,6 +32,7 @@ namespace Quest.Utils.Networking {
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer) {
             string message = Encoding.UTF8.GetString(buffer);
             Console.WriteLine("Message received: " + message.TrimEnd('\0'));
+            this.logger.Log("Message received: " + message.TrimEnd('\0'));
             JObject jqe = JObject.Parse(message);
 
             string eventName = (string)jqe["event"];
@@ -51,6 +54,7 @@ namespace Quest.Utils.Networking {
         public virtual async Task SendToPlayerAsync(Player player, string message){
             if (this.player_socket.ContainsKey(player)) {
                 await this.SendMessageAsync(player_socket[player], message);
+                this.logger.Log("Message sent to " + player.Username + ": " + message);
             }
           
         }
