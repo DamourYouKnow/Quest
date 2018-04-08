@@ -4,8 +4,11 @@ using Quest.Core.Cards;
 
 namespace Quest.Core.Scenarios {
     public class ScenarioCreator {
-        public static QuestMatch EmptyGame() {
-			return new QuestMatch(logger:new Logger("Scenario"));
+        public static QuestMatch EmptyGame(GameController controller=null) {
+            QuestMatch game = new QuestMatch(logger: new Logger("DefaultGame"), 
+                                             controller:controller);
+            game.Setup();
+            return game;
         }
 
         public static QuestMatch GameNoDeal(int playerCount) {
@@ -31,8 +34,9 @@ namespace Quest.Core.Scenarios {
             return game;
         }
 
-        public static QuestMatch Scenario1() {
-			QuestMatch game = new QuestMatch(logger:new Logger("Scenario1"));
+        public static QuestMatch Scenario1(GameController controller=null) {
+			QuestMatch game = new QuestMatch(logger:new Logger("Scenario1"), 
+                                             controller:controller);
 
             Player player1 = new Player("Player 1", game);
             player1.Behaviour = new HumanPlayer();
@@ -72,8 +76,9 @@ namespace Quest.Core.Scenarios {
             return game;
         }
 
-        public static QuestMatch Scenario2() {
-			QuestMatch game = new QuestMatch(logger:new Logger("Scenario2"));
+        public static QuestMatch Scenario2(GameController controller=null) {
+			QuestMatch game = new QuestMatch(logger:new Logger("Scenario2"), 
+                                             controller:controller);
 
             Player player1 = new Player("Player 1", game);
             player1.Behaviour = new HumanPlayer();

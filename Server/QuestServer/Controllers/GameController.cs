@@ -56,16 +56,11 @@ namespace Quest.Core {
 
         private void OnCreateGame(Player player, JToken data) {
             QuestMatch match = ScenarioCreator.EmptyGame();
-            match.AttachLogger(new Logger("DefaultMatch"));
+
             int scenario = (int)data["scenario"];
-
-            if (scenario == 1) {
-                match = ScenarioCreator.Scenario1();
-            }
-            if (scenario == 2) {
-                match = ScenarioCreator.Scenario2();
-            }
-
+            if (scenario == 1) match = ScenarioCreator.Scenario1(this);
+            if (scenario == 2) match = ScenarioCreator.Scenario2(this);
+ 
             match.AddPlayer(player);
             this.matches.Add(player, match);
 
@@ -93,7 +88,7 @@ namespace Quest.Core {
         }
 
         private void OnStartGame(Player player, JToken data) {
-            this.matches[player].Setup(shuffleDecks:true);
+            this.matches[player].Setup(shuffleDecks:false);
             this.matches[player].RunGame();
         }
 
@@ -171,6 +166,12 @@ namespace Quest.Core {
 
         public async void UpdateOtherArea(QuestMatch match, List<Card> cards) {
             JObject data = new JObject();
+
+            string areaName = "other";
+            if (match.CurrentStory is QuestCard) areaName = "quest";
+            if (match.CurrentStory is TournamentCard) areaName = "tournament";
+            data["area_name"] = areaName;
+
             JArray cardArray = new JArray();
             cards.ForEach((c) => cardArray.Add(c.Converter.Json.ToJObject(c)));
             data["cards"] = cardArray;

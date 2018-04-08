@@ -109,7 +109,7 @@ namespace Quest.Core {
             Player nextPlayer = this.players[this.currentPlayer];
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
 			this.NextStory();
-			this.currentPlayer = (this.currentPlayer + 1)%this.players.Count;
+			this.currentPlayer = (this.currentPlayer + 1) % this.players.Count;
         }
 
         public void NextStory() {

@@ -24,6 +24,12 @@ namespace Quest.Utils {
             JObject jObj = new JObject();
             jObj["username"] = player.Username;
             jObj["card_count"] = player.Hand.Count;
+
+            JArray inPlay = new JArray();
+            player.BattleArea.Cards.ForEach((c) => inPlay.Add(c.Converter.Json.ToJObject(c)));
+            jObj["in_play"] = inPlay;
+
+            jObj["battle_points"] = player.BattlePointsInPlay();
             jObj["shields"] = player.Rank.Shields;
             jObj["rank_image"] = player.RankCard.ImageFilename;
 
