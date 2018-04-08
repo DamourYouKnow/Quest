@@ -17,6 +17,7 @@ namespace Quest.Core.View{
 	    private UnityWebSocket socket;
 			private GameObject gameCanvas;
 			private string sceneName;
+			private string prepScene;
 			private string userName;
 			private string serverAddress;
 			private bool isHost;
@@ -27,11 +28,10 @@ namespace Quest.Core.View{
 			private Dictionary<string, Action<JToken>> eventHandlers;
 			private int gameid;
 			private List<Player> players;
-			private string currentStoryName;
-			private string currentStoryImage;
-			private List<string> otherAreaCards;
-			private List<string> handAreaCards;
-			private List<string> selfAreaCards;
+			private Card currentStory;
+			private List<Card> otherAreaCards;
+			private List<Card> handAreaCards;
+			private List<Card> selfAreaCards;
 
 			private GameObject handArea;
 			private GameObject battleArea;
@@ -76,17 +76,22 @@ namespace Quest.Core.View{
     }
 
 		public void Update(){
-				if (this.gameCanvas == null){
-						GameObject gc = GameObject.Find ("GameCanvas");
-						if (gc != null) {
-								this.gameCanvas = gc;
-						}
-				}
-				if (this.isConnected){
-					UpdateOnline();
+				if(this.prepScene!=this.sceneName){
+						LoadScene(this.prepScene);
 				}
 				else{
-					UpdateOffline();
+						if (this.gameCanvas == null){
+								GameObject gc = GameObject.Find ("GameCanvas");
+								if (gc != null) {
+										this.gameCanvas = gc;
+								}
+						}
+						if (this.isConnected){
+								UpdateOnline();
+						}
+						else{
+								UpdateOffline();
+						}
 				}
 		}
 
@@ -134,7 +139,7 @@ namespace Quest.Core.View{
 			}
 		}
 		private void UpdateOnlineMatch(){
-			//Instantiate(Resources.Load("Prompt"))
+
 		}
 
 		private void UpdateOffline(){
@@ -157,6 +162,7 @@ namespace Quest.Core.View{
 
 		public void OnUISceneChanged(Scene lastScene, Scene nextScene){
 				this.sceneName = nextScene.name;
+				this.prepScene = this.sceneName;
 				switch(this.sceneName){
 					case "MainMenu":
 						InitMainMenu();
@@ -195,6 +201,11 @@ namespace Quest.Core.View{
 			currentStoryCard = GameObject.Find("StoryCard").GetComponent<Image>();
 
 			GameObject opponentsPanel = GameObject.Find("Opponents");
+			/*
+			foreach(Player p in this.players){
+				opponents.Add(p.username, Instantiate(Resources.Load("Opponent")));
+			}
+*/
 
 			//private Dictionary<string, GameObject> opponents;
 		}
@@ -261,17 +272,21 @@ namespace Quest.Core.View{
 			}
 			public void OnRCVUpdatePlayers(JToken data){
 				JArray arr = (JArray)data["players"];
-				this.players = arr.ToObject<List<Player>>();
+				List<Player> ps = arr.ToObject<List<Player>>();
+				foreach(Player p in this.players){
+					Player p2 = ps.Find(p3 => p3.username == p.username);
+					p2.CopyGameObjects(p);
+				}
+				this.players = ps;
 			}
 			public void OnRCVGameStart(JToken data){
-				LoadScene("Match");
+				this.prepScene = "Match";
 			}
 			public void OnRCVUpdateStory(JToken data){
 				if(sceneName!="Match"){
-					LoadScene("Match");
+					this.prepScene = "Match";
 				}
-				this.currentStoryName = (string)data["name"];
-				this.currentStoryImage = (string)data["image"];
+				this.currentStory = new Card((string)data["name"], (string)data["image"]);
 			}
 			public void OnRCVUpdatePlayerArea(JToken data){
 
