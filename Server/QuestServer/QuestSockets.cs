@@ -49,7 +49,10 @@ namespace Quest.Utils.Networking {
         }
 
         public virtual async Task SendToPlayerAsync(Player player, string message){
-            await this.SendMessageAsync(player_socket[player], message);
+            if (this.player_socket.ContainsKey(player)) {
+                await this.SendMessageAsync(player_socket[player], message);
+            }
+          
         }
 
         public virtual async Task SendToMatchAsync(QuestMatch match, string message) {

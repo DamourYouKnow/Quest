@@ -55,7 +55,7 @@ namespace Quest.Core {
         }
 
         private void OnCreateGame(Player player, JToken data) {
-            QuestMatch match = ScenarioCreator.EmptyGame();
+            QuestMatch match = ScenarioCreator.EmptyGame(this);
 
             int scenario = (int)data["scenario"];
             if (scenario == 1) match = ScenarioCreator.Scenario1(this);
