@@ -116,6 +116,8 @@ namespace Quest.Core {
             StoryCard story = (StoryCard)this.storyDeck.Draw();
             this.Log("Story " + story.ToString() + " drawn");
 			this.currentStory = story;
+            this.controller.UpdateStory(this);
+
 			try{
 				story.Run();
 			}

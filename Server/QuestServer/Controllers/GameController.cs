@@ -143,6 +143,13 @@ namespace Quest.Core {
             await this.messageHandler.SendToMatchAsync(match, evn.ToString());
         }
 
+        public async void UpdateStory(QuestMatch match) {
+            JObject data = new JObject();
+            data["card"] = match.CurrentStory.Converter.Json.ToJObject(match.CurrentStory);
+            EventData evn = new EventData("update_story", data);
+            await this.messageHandler.SendToMatchAsync(match, evn.ToString());
+        }
+
         public async void UpdateHand(Player player) {
             JObject data = new JObject();
             JArray cardArray = new JArray();
