@@ -13,6 +13,7 @@ namespace Quest.Core.View{
 	{
 	    public const string DEFAULT_SERVER_ADDRESS = "ws://localhost:3004/quest";
 			public const string DEFAULT_USERNAME = "Default";
+			public const string RESOURCES_CARDS = "Cards/";
 	}
 	public class PlayerView : MonoBehaviour {
 	    private UnityWebSocket socket;
@@ -38,8 +39,10 @@ namespace Quest.Core.View{
 			private GameObject battleArea;
 			private GameObject otherArea;
 			private Text otherAreaText;
+			private Text confirmationButtonText;
+			private Button confirmationButton;
 			private Image currentStoryCard;
-			private Dictionary<string, GameObject> opponents;
+			//private Dictionary<string, GameObject> opponents;
 
 			public int Gameid{
 				get {return this.gameid;}
@@ -67,6 +70,7 @@ namespace Quest.Core.View{
 			On("update_story", OnRCVUpdateStory);
 			On("update_player_area", OnRCVUpdatePlayerArea);
 			On("update_other_area", OnRCVUpdateOtherArea);
+			On("update_hand", OnRCVUpdateHand);
 
 			SceneManager.activeSceneChanged += OnUISceneChanged;
 
@@ -140,7 +144,27 @@ namespace Quest.Core.View{
 			}
 		}
 		private void UpdateOnlineMatch(){
+			foreach(Player p in this.players){
+				p.UpdateGameObjects();
+			}
 
+			foreach (Transform child in this.handArea.transform) {
+     		GameObject.Destroy(child.gameObject);
+ 			}
+			foreach(Card c in this.handAreaCards){
+				GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
+				dCard.transform.SetParent(this.handArea.transform, false);
+				Image im = dCard.GetComponent<Image>();
+				im.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + c.image);
+			}
+			currentStoryCard.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + currentStory.image);
+			confirmationButtonText.text = "End Turn";
+			/*
+			battleArea = GameObject.Find("BattleArea");
+			otherArea = GameObject.Find("OtherArea");
+			otherAreaText = GameObject.Find("OtherAreaText").GetComponent<Text>();
+			confirmationButton = GameObject.Find("ConfirmationButton").GetComponent<Button>();
+			*/
 		}
 
 		private void UpdateOffline(){
@@ -200,15 +224,17 @@ namespace Quest.Core.View{
 			otherArea = GameObject.Find("OtherArea");
 			otherAreaText = GameObject.Find("OtherAreaText").GetComponent<Text>();
 			currentStoryCard = GameObject.Find("StoryCard").GetComponent<Image>();
+			confirmationButton = GameObject.Find("ConfirmationButton").GetComponent<Button>();
+			confirmationButtonText = GameObject.Find("ConfirmationText").GetComponent<Text>();
 
 			GameObject opponentsPanel = GameObject.Find("Opponents");
 			foreach(Player p in this.players){
 				GameObject opp = (GameObject)Instantiate(Resources.Load("Opponent"));
 				opp.transform.SetParent(opponentsPanel.transform, false);
 				p.SetGameObjects(opp);
-				p.UpdateGameObjects();
 			}
 
+			confirmationButton.onClick.AddListener(OnUIConfirmation);
 			//private Dictionary<string, GameObject> opponents;
 		}
 
@@ -264,6 +290,11 @@ namespace Quest.Core.View{
 				GameObject.Find("Button_startGame").SetActive(false);
 				SendMessage(evn.ToString());
 			}
+			public void OnUIConfirmation(){
+				JObject data = new JObject();
+				EventData evn = new EventData("round_end", data);
+				SendMessage(evn.ToString());
+			}
 
 			public void On(string eventName, Action<JToken> handler) {
 					eventHandlers.Add(eventName, handler);
@@ -288,7 +319,7 @@ namespace Quest.Core.View{
 				if(sceneName!="Match"){
 					this.prepScene = "Match";
 				}
-				this.currentStory = new Card((string)data["name"], (string)data["image"]);
+				this.currentStory = data["card"].ToObject<Card>();//new Card((string)data["name"], (string)data["image"]);
 			}
 			public void OnRCVUpdatePlayerArea(JToken data){
 
@@ -296,7 +327,10 @@ namespace Quest.Core.View{
 			public void OnRCVUpdateOtherArea(JToken data){
 
 			}
-
+			public void OnRCVUpdateHand(JToken data){
+				JArray arr = (JArray)data["cards"];
+				this.handAreaCards = arr.ToObject<List<Card>>();
+			}
 			private void DisableObject(string objectName){
 				GameObject go = GameObject.Find(objectName);
 				if(go != null){

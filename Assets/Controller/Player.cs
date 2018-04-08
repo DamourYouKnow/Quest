@@ -54,7 +54,7 @@ public class Player {
     this.card_count_text.text = this.card_count.ToString();
     this.shields_text.text = this.shields.ToString();
     this.in_play_text.text = this.in_play.Count.ToString();
-    this.rank_image_image = (Image)Resources.Load(this.rank_image);
+    this.rank_image_image.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + this.rank_image);
   }
 }
 }
