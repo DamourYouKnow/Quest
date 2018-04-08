@@ -120,6 +120,7 @@ namespace Quest.Core {
 
 			try{
 				story.Run();
+                this.controller.UpdatePlayers(this);
 			}
 			catch(NotImplementedException){
 				this.Log ("Feature not implemented");
