@@ -68,11 +68,14 @@ namespace Quest.Core {
 
             match.AddPlayer(player);
             this.matches.Add(player, match);
+
+            this.UpdatePlayers(this.matches[player]);
         }
 
         private void OnJoinGame(Player player, JToken data) {
             int gameId = (int)data["game_id"];
             gameWithId(gameId).AddPlayer(player);
+            this.UpdatePlayers(this.matches[player]);
         }
 
         private void OnAddAI(Player player, JToken data) {
