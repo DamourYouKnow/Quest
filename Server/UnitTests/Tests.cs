@@ -534,7 +534,6 @@ namespace UnitTests
 			//hand: boar, thieves, test, blackknight, lance - enough bp
 			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
 			
-            /*
 			aiPlayer.Hand.Remove(boar);
 			aiPlayer.Hand.Remove(thieves);
             aiPlayer.Hand.Remove(lance);
@@ -542,7 +541,6 @@ namespace UnitTests
 			//hand: black knight, test, lance, dragon - enough bp
 			//(last stage dragon, 2nd stage test, first black knight (no lance))
 			Assert.IsTrue(aiPlayer.Behaviour.SponsorQuest(quest, aiPlayer.Hand));
-            */
         }
 
         [Test]
