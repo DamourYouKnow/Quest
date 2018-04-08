@@ -36,7 +36,7 @@ public class Player {
   public void SetGameObjects(GameObject parent){
     this.username_text = parent.GetComponent<Transform>().Find("StatsPanel/OpponentPlayerName").GetComponent<Text>();
     this.card_count_text = parent.GetComponent<Transform>().Find("StatsPanel/Cards/OpponentCardsValue").GetComponent<Text>();
-    this.shields_text = parent.GetComponent<Transform>().Find("StatsPanel/Shields/OpponentShieldsValue").GetComponent<Text>();
+    this.shields_text = parent.GetComponent<Transform>().Find("StatsPanel/Shields/OpponentShieldValue").GetComponent<Text>();
     this.in_play_text = parent.GetComponent<Transform>().Find("StatsPanel/InPlay/OpponentInPlayValue").GetComponent<Text>();
     this.rank_image_image = parent.GetComponent<Transform>().Find("OpponentRankImage").GetComponent<Image>();
   }
@@ -47,6 +47,14 @@ public class Player {
     this.shields_text = that.shields_text;
     this.in_play_text = that.in_play_text;
     this.rank_image_image = that.rank_image_image;
+  }
+
+  public void UpdateGameObjects(){
+    this.username_text.text = this.username;
+    this.card_count_text.text = this.card_count.ToString();
+    this.shields_text.text = this.shields.ToString();
+    this.in_play_text.text = this.in_play.Count.ToString();
+    this.rank_image_image = (Image)Resources.Load(this.rank_image);
   }
 }
 }

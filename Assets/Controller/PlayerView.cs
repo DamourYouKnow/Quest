@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -201,11 +202,12 @@ namespace Quest.Core.View{
 			currentStoryCard = GameObject.Find("StoryCard").GetComponent<Image>();
 
 			GameObject opponentsPanel = GameObject.Find("Opponents");
-			/*
 			foreach(Player p in this.players){
-				opponents.Add(p.username, Instantiate(Resources.Load("Opponent")));
+				GameObject opp = (GameObject)Instantiate(Resources.Load("Opponent"));
+				opp.transform.SetParent(opponentsPanel.transform, false);
+				p.SetGameObjects(opp);
+				p.UpdateGameObjects();
 			}
-*/
 
 			//private Dictionary<string, GameObject> opponents;
 		}
