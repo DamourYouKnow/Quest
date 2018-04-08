@@ -338,6 +338,7 @@ namespace Quest.Core.View{
 			}
 			public void OnUIScenarioOne(){
 				if(isConnected){
+					this.isHost = true;
 					JObject data = new JObject();
 					data["scenario"] = 1;
 					EventData evn = new EventData("create_game", data);
@@ -347,6 +348,7 @@ namespace Quest.Core.View{
 			}
 			public void OnUIScenarioTwo(){
 				if(isConnected){
+					this.isHost = true;
 					JObject data = new JObject();
 					data["scenario"] = 2;
 					EventData evn = new EventData("create_game", data);
@@ -395,6 +397,13 @@ namespace Quest.Core.View{
 				this.promptMessage = (string)data["message"];
 				this.promptImage = (string)data["image"];
 			}
+			/*
+			public void OnRCVRequestQuestSponsor(JToken data){
+				this.promptName = "SponsorQuestPrompt";
+				this.promptMessage = (string)data["message"];
+				this.promptImage = (string)data["image"];
+			}
+			*/
 
 			private void DisableObject(string objectName){
 				GameObject go = GameObject.Find(objectName);
