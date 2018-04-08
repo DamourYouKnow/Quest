@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using System.Collections.Generic;
 
+using Quest.Core.View;
+
 public class Prompt : MonoBehaviour {
     private GameObject promptObj;
     private Text messageText;
@@ -122,11 +124,11 @@ public class SponsorQuestPrompt : MonoBehaviour {
 	private GameObject card;
 	private Button yesButton;
 	private Button noButton;
-	//private Card quest;
+	private Card quest;
 
-	//public Card Quest{
-	//	set{this.quest = value;}
-	//}
+	public Card Quest{
+		set{this.quest = value;}
+	}
 	public string Message {
 		set { this.messageText.text = value; }
 	}
@@ -159,7 +161,7 @@ public class SponsorQuestPrompt : MonoBehaviour {
 		this.card = Instantiate (Resources.Load ("Card", typeof(GameObject))) as GameObject;
 		card.transform.SetParent (SponsorCard.transform, false);
 		card.transform.localScale = new Vector3 (1, 1, 1);
-		//card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + quest.ImageFilename);
+		card.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Cards/" + quest.image);
 	}
 
 	public void SetParent(Transform transform) {

@@ -34,6 +34,10 @@ namespace Quest.Core.View{
 			private List<Card> otherAreaCards;
 			private List<Card> handAreaCards;
 			private List<Card> selfAreaCards;
+			private bool prompting;
+			private string promptName;
+			private string promptMessage;
+			private string promptImage;
 
 			private GameObject handArea;
 			private GameObject battleArea;
@@ -63,6 +67,8 @@ namespace Quest.Core.View{
 			this.gameid = -1;
 			this.games = new List<string>();
 			this.players = new List<Player>();
+			this.promptName = "";
+			this.prompting = false;
 
 			this.eventHandlers = new Dictionary<string, Action<JToken>>();
 			On("update_games", OnRCVUpdateGames);
@@ -71,6 +77,7 @@ namespace Quest.Core.View{
 			On("update_player_area", OnRCVUpdatePlayerArea);
 			On("update_other_area", OnRCVUpdateOtherArea);
 			On("update_hand", OnRCVUpdateHand);
+			On("request_quest_sponsor", OnRCVRequestQuestSponsor);
 
 			SceneManager.activeSceneChanged += OnUISceneChanged;
 
@@ -90,6 +97,9 @@ namespace Quest.Core.View{
 								if (gc != null) {
 										this.gameCanvas = gc;
 								}
+						}
+						if(!prompting && promptName!=""){
+							UpdatePrompt();
 						}
 						if (this.isConnected){
 								UpdateOnline();
@@ -183,6 +193,37 @@ namespace Quest.Core.View{
 				EnableObject("Canvas_Server");
 				EnableObject("Button_Connect");
 			}
+		}
+		private void UpdatePrompt(){
+			switch(promptName){
+				case "SponsorQuestPrompt":
+					UpdateSponsorQuestPrompt();
+					break;
+			}
+			this.prompting = true;
+		}
+		private void UpdateSponsorQuestPrompt(){
+			GameObject promptObj = new GameObject("SponsorQuestPrompt");
+			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
+			prompt.Message = this.promptMessage;
+			prompt.Quest = this.currentStory;
+
+			prompt.OnNoClick = () => {
+				this.prompting = false;
+				this.promptName = "";
+				JObject data = new JObject();
+				data["sponsoring"] = false;
+				EventData evn = new EventData("quest_sponsor_response", data);
+				SendMessage(evn.ToString());
+			};
+			prompt.OnYesClick = () => {
+				this.prompting = false;
+				this.promptName = "";
+				JObject data = new JObject();
+				data["sponsoring"] = true;
+				EventData evn = new EventData("quest_sponsor_response", data);
+				SendMessage(evn.ToString());
+			};
 		}
 
 		public void OnUISceneChanged(Scene lastScene, Scene nextScene){
@@ -295,6 +336,24 @@ namespace Quest.Core.View{
 				EventData evn = new EventData("round_end", data);
 				SendMessage(evn.ToString());
 			}
+			public void OnUIScenarioOne(){
+				if(isConnected){
+					JObject data = new JObject();
+					data["scenario"] = 1;
+					EventData evn = new EventData("create_game", data);
+					SendMessage(evn.ToString());
+				}
+				LoadScene("Lobby");
+			}
+			public void OnUIScenarioTwo(){
+				if(isConnected){
+					JObject data = new JObject();
+					data["scenario"] = 2;
+					EventData evn = new EventData("create_game", data);
+					SendMessage(evn.ToString());
+				}
+				LoadScene("Lobby");
+			}
 
 			public void On(string eventName, Action<JToken> handler) {
 					eventHandlers.Add(eventName, handler);
@@ -331,6 +390,12 @@ namespace Quest.Core.View{
 				JArray arr = (JArray)data["cards"];
 				this.handAreaCards = arr.ToObject<List<Card>>();
 			}
+			public void OnRCVRequestQuestSponsor(JToken data){
+				this.promptName = "SponsorQuestPrompt";
+				this.promptMessage = (string)data["message"];
+				this.promptImage = (string)data["image"];
+			}
+
 			private void DisableObject(string objectName){
 				GameObject go = GameObject.Find(objectName);
 				if(go != null){
