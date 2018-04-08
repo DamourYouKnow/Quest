@@ -194,6 +194,13 @@ namespace Quest.Core {
             await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
         }
 
+        public async void Message(QuestMatch match, string message) {
+            JObject data = new JObject();
+            data["message"] = message;
+            EventData evn = new EventData("message", data);
+            await this.messageHandler.SendToMatchAsync(match, evn.ToString());
+        }
+
         private QuestMatch gameWithId(int id) {
             foreach (QuestMatch match in this.matches.Values) {
                 if (id == match.Id) return match;
