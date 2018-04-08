@@ -210,6 +210,7 @@ namespace Quest.Core.Players {
         public void Discard(Card card) {
             this.hand.Remove(card);
             this.match.DiscardPile.Push(card);
+            this.match.Controller.UpdateHand(this);
             this.match.Log(this.username + " discarded " + card.ToString());
         }
 
@@ -233,16 +234,22 @@ namespace Quest.Core.Players {
 		
 		public void Play(BattleCard card){
 			this.hand.Transfer(this.battleArea, card);
-            //will need to check if a card is playable or not
-            //(that might be handled elsewhere, not in this function (not sure))
+
+            this.match.Controller.UpdatePlayers(this.match);
+            this.match.Controller.UpdatePlayerArea(this);
+            this.match.Controller.UpdateHand(this);
 
             this.match.Log(this.username + " played " + card.ToString());
 		}
 
         public void Play(List<BattleCard> cards) {
             this.hand.Transfer(this.battleArea, cards.Cast<Card>().ToList());
+
+            // TODO: Just call play in a loop instead to avoid dupe code?
             this.match.Controller.UpdatePlayers(this.match);
             this.match.Controller.UpdatePlayerArea(this);
+            this.match.Controller.UpdateHand(this);
+
             this.match.Log(this.username + " played " + Utils.Stringify.CommaList(cards));
         }
 
