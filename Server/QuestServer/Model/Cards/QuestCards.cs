@@ -96,6 +96,9 @@ namespace Quest.Core.Cards{
 
         public override void RequestParticipation() {
             foreach (Player player in this.match.OtherPlayers) {
+                // Do not send to sponsor.
+                if (player == this.sponsor) continue;
+
                 if (player.Behaviour is HumanPlayer) {
                     // Send participation request to player through sockets.
                     this.match.Controller.PromptPlayer(player,
