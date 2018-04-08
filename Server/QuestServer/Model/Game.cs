@@ -16,6 +16,7 @@ namespace Quest.Core {
 
         private int id;
         private List<Player> players;
+        private List<Player> roundEnded;
         private int currentPlayer;
         private int promptingPlayer;
         private StoryDeck storyDeck;
@@ -28,6 +29,7 @@ namespace Quest.Core {
         public QuestMatch(Logger logger = null, GameController controller = null) {
             this.id = nextId++;
             this.players = new List<Player>();
+            this.roundEnded = new List<Player>();
             this.currentPlayer = 0;
             this.storyDeck = new StoryDeck(this);
             this.adventureDeck = new AdventureDeck(this);
@@ -96,17 +98,12 @@ namespace Quest.Core {
 
         public void RunGame() {
             this.Log("Running game...");
-
-			while (!this.hasWinner ()) {
-				this.NextTurn ();
-			}
-
-			List<Player> winner = this.getWinners ();
-			this.Log (Utils.Stringify.CommaList<Player> (winner) + " has won the game");
+            this.NextTurn();
         }
 
         public void NextTurn() {
             Player nextPlayer = this.players[this.currentPlayer];
+            this.roundEnded = new List<Player>();
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
 			this.NextStory();
 			this.currentPlayer = (this.currentPlayer + 1) % this.players.Count;
@@ -129,6 +126,28 @@ namespace Quest.Core {
 				this.Log (e.Message);
 				this.Log (e.StackTrace);
 			}
+
+            // Make sure AIs send their end turn responses.
+            foreach (Player player in this.players) {
+                if (player.Behaviour != null && !(player.Behaviour is HumanPlayer)) {
+                    this.RoundEndResponse(player);
+                }
+            }
+        }
+
+        public void RoundEndResponse(Player player) {
+            this.roundEnded.Add(player);
+            
+            if (this.players.Count == this.roundEnded.Count) {
+                // We can procede to the next turn once all players have ended.
+                if (!this.hasWinner()) {
+                    this.NextTurn();
+                }
+                else {
+                    List<Player> winner = this.getWinners();
+                    this.Log(Utils.Stringify.CommaList<Player>(winner) + " has won the game");
+                }
+            }
         }
 
         public void AddPlayer(Player player) {
