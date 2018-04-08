@@ -340,6 +340,10 @@ namespace Quest.Core {
 
             this.cards.Add(card);
 		}
+
+        public override void Remove(Card card) {
+            base.Remove(card);
+        }
     }
 
 	/// <summary>

@@ -159,6 +159,24 @@ namespace Quest.Core {
             await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
         }
 
+        public async void UpdatePlayerArea(Player player) {
+            JObject data = new JObject();
+            JArray cardArray = new JArray();
+            player.BattleArea.Cards.ForEach((c) => cardArray.Add(c.Converter.Json.ToJObject(c)));
+            data["cards"] = cardArray;
+            EventData evn = new EventData("update_player_area", data);
+            await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
+        }
+
+        public async void UpdateOtherArea(QuestMatch match, List<Card> cards) {
+            JObject data = new JObject();
+            JArray cardArray = new JArray();
+            cards.ForEach((c) => cardArray.Add(c.Converter.Json.ToJObject(c)));
+            data["cards"] = cardArray;
+            EventData evn = new EventData("update_other_area", data);
+            await this.messageHandler.SendToMatchAsync(match, evn.ToString());
+        }
+
         public async void PromptPlayer(Player player, string type, string message, string image=null) {
             JObject data = new JObject();
             data["message"] = message;

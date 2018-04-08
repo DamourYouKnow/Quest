@@ -241,6 +241,8 @@ namespace Quest.Core.Players {
 
         public void Play(List<BattleCard> cards) {
             this.hand.Transfer(this.battleArea, cards.Cast<Card>().ToList());
+            this.match.Controller.UpdatePlayers(this.match);
+            this.match.Controller.UpdatePlayerArea(this);
             this.match.Log(this.username + " played " + Utils.Stringify.CommaList(cards));
         }
 
