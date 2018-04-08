@@ -107,7 +107,6 @@ namespace Quest.Core {
             this.roundEnded = new List<Player>();
             this.Log("Starting " + nextPlayer.ToString() + "'s turn");
 			this.NextStory();
-			this.currentPlayer = (this.currentPlayer + 1) % this.players.Count;
         }
 
         public void NextStory() {
@@ -142,6 +141,7 @@ namespace Quest.Core {
             if (this.players.Count == this.roundEnded.Count) {
                 // We can procede to the next turn once all players have ended.
                 if (!this.hasWinner()) {
+                    this.currentPlayer = (this.currentPlayer + 1) % this.players.Count;
                     this.NextTurn();
                 }
                 else {
