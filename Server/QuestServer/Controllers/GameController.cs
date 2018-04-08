@@ -40,6 +40,7 @@ namespace Quest.Core {
             messageHandler.On("add_ai", OnAddAI);
             messageHandler.On("start_game", OnStartGame);
             messageHandler.On("request_players", OnRequestPlayers);
+            messageHandler.On("round_end", OnRoundEnd);
             messageHandler.On("play_cards", OnPlayCards);
             messageHandler.On("discard", OnDiscard);
             messageHandler.On("participation_response", OnParticipationResponse);
