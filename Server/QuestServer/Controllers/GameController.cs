@@ -39,6 +39,7 @@ namespace Quest.Core {
             messageHandler.On("join_game", OnJoinGame);
             messageHandler.On("add_ai", OnAddAI);
             messageHandler.On("start_game", OnStartGame);
+            messageHandler.On("request_players", OnRequestPlayers);
             messageHandler.On("play_cards", OnPlayCards);
             messageHandler.On("discard", OnDiscard);
             messageHandler.On("participation_response", OnParticipationResponse);
@@ -67,11 +68,14 @@ namespace Quest.Core {
 
             match.AddPlayer(player);
             this.matches.Add(player, match);
+
+            this.UpdatePlayers(this.matches[player]);
         }
 
         private void OnJoinGame(Player player, JToken data) {
             int gameId = (int)data["game_id"];
             gameWithId(gameId).AddPlayer(player);
+            this.UpdatePlayers(this.matches[player]);
         }
 
         private void OnAddAI(Player player, JToken data) {
@@ -89,6 +93,10 @@ namespace Quest.Core {
         private void OnStartGame(Player player, JToken data) {
             this.matches[player].Setup(shuffleDecks:true);
             this.matches[player].RunGame();
+        }
+
+        private void OnRequestPlayers(Player player, JToken data) {
+            this.UpdatePlayers(this.matches[player]);
         }
 
         private void OnPlayCards(Player player, JToken data) {

@@ -29,7 +29,7 @@ namespace Quest.Utils.Networking {
 
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer) {
             string message = Encoding.UTF8.GetString(buffer);
-            Console.WriteLine("Message received: " + message);
+            Console.WriteLine("Message received: " + message.TrimEnd('\0'));
             JObject jqe = JObject.Parse(message);
 
             string eventName = (string)jqe["event"];
