@@ -356,6 +356,9 @@ namespace Quest.Core.View{
 				}
 				LoadScene("Lobby");
 			}
+			public void OnUIDrop(){
+				Debug.Log("dropped");
+			}
 
 			public void On(string eventName, Action<JToken> handler) {
 					eventHandlers.Add(eventName, handler);
