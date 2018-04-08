@@ -61,7 +61,8 @@ namespace Quest.Core {
             int scenario = (int)data["scenario"];
             if (scenario == 1) match = ScenarioCreator.Scenario1(this);
             if (scenario == 2) match = ScenarioCreator.Scenario2(this);
- 
+
+            player.Behaviour = new HumanPlayer();
             match.AddPlayer(player);
             this.matches.Add(player, match);
 
@@ -70,6 +71,7 @@ namespace Quest.Core {
 
         private void OnJoinGame(Player player, JToken data) {
             QuestMatch game = this.gameWithId((int)data["game_id"]);
+            player.Behaviour = new HumanPlayer();
             game.AddPlayer(player);
             this.matches.Add(player, game);
             this.UpdatePlayers(this.matches[player]);
