@@ -26,6 +26,9 @@ namespace Quest.Core.View{
 			private int scenario;
 			private Dictionary<string, Action<JToken>> eventHandlers;
 			private int gameid;
+			private List<Player> players;
+			private string currentStory;
+			private string currentStoryImage;
 
 			public int Gameid{
 				get {return this.gameid;}
@@ -45,8 +48,10 @@ namespace Quest.Core.View{
 			this.scenario = 0;
 			this.gameid = -1;
 			this.games = new List<string>();
+			this.players = new List<Player>();
 			this.eventHandlers = new Dictionary<string, Action<JToken>>();
 			On("update_games", OnRCVUpdateGames);
+			On("update_players", OnRCVUpdatePlayers);
 			//messageHandler.On("player_join", OnPlayerJoined);
 			SceneManager.activeSceneChanged += OnUISceneChanged;
 			//messageHandler.On("player_join", OnPlayerJoined);
@@ -55,16 +60,6 @@ namespace Quest.Core.View{
 
     private void Start() {
     }
-
-		public void InitMainMenu(){
-			DisableObject("Canvas_NetworkGames");
-			DisableObject("Button_JoinGame");
-			DisableObject("Button_HostGame");
-		}
-
-		public void InitLobby(){
-
-		}
 
 		public void Update(){
 				if (this.gameCanvas == null){
@@ -85,6 +80,9 @@ namespace Quest.Core.View{
 			switch(this.sceneName){
 				case "MainMenu":
 					UpdateOnlineMainMenu();
+					break;
+				case "Lobby":
+					UpdateOnlineLobby();
 					break;
 			}
 		}
@@ -112,7 +110,12 @@ namespace Quest.Core.View{
 		}
 
 		private void UpdateOnlineLobby(){
-
+			GameObject list = GameObject.Find ("List_of_players");
+			Text t = list.GetComponent<Text> ();
+			t.text = "";
+			foreach(Player p in this.players){
+				t.text = t.text + p.username + "\n";
+			}
 		}
 
 		private void UpdateOffline(){
@@ -140,10 +143,37 @@ namespace Quest.Core.View{
 					case "MainMenu":
 						InitMainMenu();
 						break;
+					case "Lobby":
+						InitLobby();
+						break;
 				}
+		}
+		public void InitMainMenu(){
+			DisableObject("Canvas_NetworkGames");
+			DisableObject("Button_JoinGame");
+			DisableObject("Button_HostGame");
+		}
+		public void InitLobby(){
+			Button btnAddAI = GameObject.Find("Button_addAI").GetComponent<Button>();
+			Button btnStartGame = GameObject.Find("Button_startGame").GetComponent<Button>();
+
+			btnStartGame.onClick.AddListener(OnUIStartGame);
+			btnAddAI.onClick.AddListener(OnUIAddAI);
+
+			DisableObject("Button_addPlayer");
+			if(!this.isHost){
+				DisableObject("Canvas_AI");
+				DisableObject("Button_startGame");
+			}
 		}
 
 			//public void OnUpdateGames()
+			public void OnUIAddAI(){
+				JObject data = new JObject();
+				data["strategy"] = GameObject.Find("Dropdown_AIStrategy").GetComponent<Dropdown>().value+1;
+				EventData evn = new EventData("add_ai", data);
+				SendMessage(evn.ToString());
+			}
 			public void OnUIInputUsernameValueChanged(string userName){
 				if(userName == ""){
 					this.userName = Constants.DEFAULT_USERNAME;
@@ -183,6 +213,12 @@ namespace Quest.Core.View{
 				EventData evn = new EventData("request_games", data);
 				SendMessage(evn.ToString());
 			}
+			public void OnUIStartGame(){
+				JObject data = new JObject();
+				EventData evn = new EventData("start_game", data);
+				GameObject.Find("Button_startGame").SetActive(false);
+				SendMessage(evn.ToString());
+			}
 
 			public void On(string eventName, Action<JToken> handler) {
 					eventHandlers.Add(eventName, handler);
@@ -191,22 +227,19 @@ namespace Quest.Core.View{
 				JArray arr = (JArray)data["game_ids"];
 				this.games = arr.ToObject<List<string>>();
 			}
-			public void OnRCVPlayerUpdate(){
-					switch(this.sceneName){
-							case "Main Menu":
-									break;
-							case "Lobby":
-							/*
-									GameObject list = GameObject.Find ("List_of_players");
-									if (list != null) {
-										Text t = list.GetComponent<Text> ();
-										t.text = t.text + "\n" + this.numPlayers.ToString() + "Human";
-									}
-									*/
-									break;
-							case "Match":
-									break;
-					}
+			public void OnRCVUpdatePlayers(JToken data){
+				JArray arr = (JArray)data["players"];
+				this.players = arr.ToObject<List<Player>>();
+			}
+			public void OnRCVGameStart(JToken data){
+				LoadScene("Match");
+			}
+			public void OnRCVUpdateStory(JToken data){
+				if(sceneName!="Match"){
+					LoadScene("Match");
+				}
+				this.currentStory = (string)data["name"];
+				this.currentStoryImage = (string)data["image"];
 			}
 
 			private void DisableObject(string objectName){
