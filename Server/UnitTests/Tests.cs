@@ -727,6 +727,7 @@ namespace UnitTests
             aiPlayer.Play(played);
             //quest.ResolveStage(); FIXME
 			//3rd stage: a lance, battleAx, sword, kingPellinore
+            //is the quest not advancing stage?not sure
 			played = aiPlayer.Behaviour.PlayCardsInQuest(quest, aiPlayer.Hand);
 			Assert.AreEqual(4, played.Count);
 			Assert.IsTrue((played.Contains(lance) || played.Contains(lance2)));
@@ -973,6 +974,44 @@ namespace UnitTests
             Assert.AreEqual(2, stages[3].Count);
             Assert.IsTrue(stages[3].Contains(mordred));
             Assert.IsTrue(stages[3].Contains(sword));
+        }
+    }
+
+    [TestFixture]
+    public class Strategy3Tests
+    {
+        [Test]
+        public void TestQuestParticipation()
+        {
+            QuestMatch game = ScenarioCreator.GameNoDeal(2);
+            game.AttachLogger(new Quest.Core.Logger("TestQuestParticipation"));
+            Player aiPlayer = game.Players[0];
+            Player otherPlayer = game.Players[1];
+            aiPlayer.Behaviour = new Strategy3();
+
+            RescueTheFairMaiden quest = new RescueTheFairMaiden(game); // 3 stages.
+            game.CurrentStory = quest;
+
+            //some cards
+            Lance lance = new Lance(game);
+            Dagger dagger = new Dagger(game);
+            Sword sword = new Sword(game);
+            Thieves thieves = new Thieves(game);
+            SirGalahad sirGalahad = new SirGalahad(game);
+
+            aiPlayer.Hand.Add(lance);
+            otherPlayer.Hand.Add(dagger);
+            otherPlayer.Hand.Add(sword);
+            //other player has 2 cards, ai has 1, don't participate
+            Assert.IsFalse(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+
+            aiPlayer.Hand.Add(thieves);
+            //both players have 2 cards in hand, participate
+            Assert.IsTrue(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
+
+            aiPlayer.Hand.Add(sirGalahad);
+            //ai player has 3 cards, other has 2, participate
+            Assert.IsTrue(aiPlayer.Behaviour.ParticipateInQuest(quest, aiPlayer.Hand));
         }
     }
 }
