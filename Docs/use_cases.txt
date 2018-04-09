@@ -1,0 +1,5 @@
+***convert to word document later!!
+**some notes, delete these later
+events in GameController in server
+the one's in InitHandlers are event from the client sent to the server
+the public one's starting with On are the events from server to client
