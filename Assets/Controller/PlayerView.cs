@@ -28,6 +28,7 @@ namespace Quest.Core.View{
 			private Dictionary<string, GameObject> disabledObjects;
 			private int scenario;
 			private Dictionary<string, Action<JToken>> eventHandlers;
+			private Queue<Action> updateQueue;
 			private int gameid;
 			private List<Player> players;
 			private Card currentStory;
@@ -38,6 +39,7 @@ namespace Quest.Core.View{
 			private string promptName;
 			private string promptMessage;
 			private string promptImage;
+			private string newHistory;
 
 			private GameObject handArea;
 			private GameObject battleArea;
@@ -46,6 +48,10 @@ namespace Quest.Core.View{
 			private Text confirmationButtonText;
 			private Button confirmationButton;
 			private Image currentStoryCard;
+			private Text historyScrollText;
+			private GameObject historyScroll;
+			private Button historyButton;
+			private Text historyButtonText;
 			//private Dictionary<string, GameObject> opponents;
 
 			public int Gameid{
@@ -69,6 +75,8 @@ namespace Quest.Core.View{
 			this.players = new List<Player>();
 			this.promptName = "";
 			this.prompting = false;
+			this.updateQueue = new Queue<Action>();
+			this.newHistory = "";
 
 			this.eventHandlers = new Dictionary<string, Action<JToken>>();
 			On("update_games", OnRCVUpdateGames);
@@ -78,6 +86,7 @@ namespace Quest.Core.View{
 			On("update_other_area", OnRCVUpdateOtherArea);
 			On("update_hand", OnRCVUpdateHand);
 			On("request_quest_sponsor", OnRCVRequestQuestSponsor);
+			On("message", OnRCVMessage);
 
 			SceneManager.activeSceneChanged += OnUISceneChanged;
 
@@ -156,20 +165,13 @@ namespace Quest.Core.View{
 			}
 		}
 		private void UpdateOnlineMatch(){
-			foreach(Player p in this.players){
-				p.UpdateGameObjects();
+
+
+			while(this.updateQueue.Count>0){
+				Action next = this.updateQueue.Dequeue();
+				next();
 			}
 
-			foreach (Transform child in this.handArea.transform) {
-     		GameObject.Destroy(child.gameObject);
- 			}
-			foreach(Card c in this.handAreaCards){
-				GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
-				dCard.transform.SetParent(this.handArea.transform, false);
-				Image im = dCard.GetComponent<Image>();
-				im.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + c.image);
-			}
-			currentStoryCard.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + currentStory.image);
 			confirmationButtonText.text = "End Turn";
 			/*
 			battleArea = GameObject.Find("BattleArea");
@@ -229,7 +231,32 @@ namespace Quest.Core.View{
 				SendMessage(evn.ToString());
 			};
 		}
-
+		private void UpdateHand(){
+			foreach (Transform child in this.handArea.transform) {
+				GameObject.Destroy(child.gameObject);
+			}
+			foreach(Card c in this.handAreaCards){
+				GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
+				dCard.transform.SetParent(this.handArea.transform, false);
+				Image im = dCard.GetComponent<Image>();
+				im.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + c.image);
+			}
+		}
+		private void UpdatePlayers(){
+			foreach(Player p in this.players){
+				p.UpdateGameObjects();
+			}
+		}
+		private void UpdateStory(){
+			currentStoryCard.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + currentStory.image);
+		}
+		private void UpdateHistory(){
+			if(this.newHistory != ""){
+				this.historyButton.GetComponent<Image>().color = Color.yellow;
+			}
+			this.historyScrollText.text += this.newHistory;
+			this.newHistory = "";
+		}
 		public void OnUISceneChanged(Scene lastScene, Scene nextScene){
 				this.sceneName = nextScene.name;
 				this.prepScene = this.sceneName;
@@ -275,6 +302,13 @@ namespace Quest.Core.View{
 			confirmationButton = GameObject.Find("ConfirmationButton").GetComponent<Button>();
 			confirmationButtonText = GameObject.Find("ConfirmationText").GetComponent<Text>();
 
+			historyScrollText = GameObject.Find("HistoryScrollText").GetComponent<Text>();
+			historyScroll = GameObject.Find("HistoryScroll");
+			historyButton = GameObject.Find("HistoryButton").GetComponent<Button>();
+			historyButtonText = GameObject.Find("HistoryButtonText").GetComponent<Text>();
+
+			historyScroll.SetActive(false);
+
 			GameObject opponentsPanel = GameObject.Find("Opponents");
 			foreach(Player p in this.players){
 				GameObject opp = (GameObject)Instantiate(Resources.Load("Opponent"));
@@ -283,6 +317,7 @@ namespace Quest.Core.View{
 			}
 
 			confirmationButton.onClick.AddListener(OnUIConfirmation);
+			historyButton.onClick.AddListener(OnUIHistoryButton);
 			//private Dictionary<string, GameObject> opponents;
 		}
 
@@ -366,7 +401,17 @@ namespace Quest.Core.View{
 			public void OnUIDrop(){
 				Debug.Log("dropped");
 			}
-
+			public void OnUIHistoryButton(){
+				if(this.historyScroll.activeSelf){
+					this.historyScroll.SetActive(false);
+					this.historyButtonText.text = "<";
+				}
+				else{
+					this.historyScroll.SetActive(true);
+					this.historyButtonText.text = ">";
+				}
+				this.historyButton.GetComponent<Image>().color = Color.white;
+			}
 			public void On(string eventName, Action<JToken> handler) {
 					eventHandlers.Add(eventName, handler);
 			}
@@ -382,6 +427,7 @@ namespace Quest.Core.View{
 					p2.CopyGameObjects(p);
 				}
 				this.players = ps;
+				this.updateQueue.Enqueue(UpdatePlayers);
 			}
 			public void OnRCVGameStart(JToken data){
 				this.prepScene = "Match";
@@ -391,6 +437,7 @@ namespace Quest.Core.View{
 					this.prepScene = "Match";
 				}
 				this.currentStory = data["card"].ToObject<Card>();//new Card((string)data["name"], (string)data["image"]);
+				this.updateQueue.Enqueue(UpdateStory);
 			}
 			public void OnRCVUpdatePlayerArea(JToken data){
 
@@ -401,11 +448,17 @@ namespace Quest.Core.View{
 			public void OnRCVUpdateHand(JToken data){
 				JArray arr = (JArray)data["cards"];
 				this.handAreaCards = arr.ToObject<List<Card>>();
+				this.updateQueue.Enqueue(UpdateHand);
 			}
 			public void OnRCVRequestQuestSponsor(JToken data){
 				this.promptName = "SponsorQuestPrompt";
 				this.promptMessage = (string)data["message"];
 				this.promptImage = (string)data["image"];
+			}
+			public void OnRCVMessage(JToken data){
+				this.newHistory += data["message"];
+				this.newHistory += "\n";
+				this.updateQueue.Enqueue(UpdateHistory);
 			}
 			/*
 			public void OnRCVRequestQuestSponsor(JToken data){
