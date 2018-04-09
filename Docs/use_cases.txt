@@ -3,3 +3,19 @@
 events in GameController in server
 the one's in InitHandlers are event from the client sent to the server
 the public one's starting with On are the events from server to client
+**************
+
+Use Case: Add AI Player
+Description: Describes the steps of adding an AI Player to the match.
+External Actors: user, server(?)
+Related Use Cases: ? add later
+Precondition: Players in lobby, system waiting for request from user.
+Triggering Event: User requests to add an AI to the match
+1. User requests to add an AI player to the match
+2. System asks user which strategy the AI should use. User selects a strategy.
+3. System verifies that adding the AI player won't exceed the maximum number of players allowed in a match.
+4. System adds the corresponding AI player to the list of players in the match.
+Resulting events: An AI player is added to the match.
+Post condition: System waiting for request from user.
+Alternatives:
+	-If adding the AI player exceeds the maximum number of players allowed in a match, the request is denied.
