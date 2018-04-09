@@ -79,7 +79,7 @@ namespace Quest.Utils {
             List<T> retList = new List<T>();
 
             foreach (JToken arrayToken in array as JArray) {
-                retList.Add((T)(object)arrayToken);
+                retList.Add((T)((JValue)arrayToken).Value);
             }
 
             return retList;
