@@ -1,4 +1,5 @@
 ﻿using System;
+using Quest.Core.Players;
 
 namespace Quest.Core.Cards {
     public abstract class AllyCard : BattleCard {
@@ -56,6 +57,17 @@ namespace Quest.Core.Cards {
             this.imageFilename = "ally_sir_gawain";
             this.battlePoints = 10;
         }
+
+        public override int BattlePoints {
+            get {
+                if (this.match.CurrentStory is TestOfTheGreenKnight) {
+                    return 20;
+                }
+                else {
+                    return this.battlePoints;
+                }
+            }
+        }
     }
 
     public class SirLancelot : AllyCard {
@@ -63,6 +75,17 @@ namespace Quest.Core.Cards {
             this.name = "Sir Lancelot";
             this.imageFilename = "ally_sir_lancelot";
             this.battlePoints = 15;
+        }
+
+        public override int BattlePoints {
+            get {
+                if (this.match.CurrentStory is DefendTheQueensHonor) {
+                    return 25;
+                }
+                else {
+                    return this.battlePoints;
+                }
+            }
         }
     }
 
@@ -72,6 +95,16 @@ namespace Quest.Core.Cards {
             this.imageFilename = "ally_sir_percival";
             this.battlePoints = 5;
         }
+
+        public override int BattlePoints {
+            get {
+                if (this.match.CurrentStory is SearchForTheHolyGrail) {
+                    return 20;
+                } else {
+                    return this.battlePoints;
+                }
+            }
+        }
     }
 
     public class SirTristan : AllyCard {
@@ -79,6 +112,20 @@ namespace Quest.Core.Cards {
             this.name = "Sir Tristan";
             this.imageFilename = "ally_sir_tristan";
             this.battlePoints = 10;
+        }
+
+        public override int BattlePoints {
+            get {
+                Player player = this.match.PlayerWithCardOnBoard(this);
+
+                if (player != null) {
+                    if (player.BattleArea.Cards.FindAll((x) => x is QueenIseult).Count > 0) {
+                        20;
+                    }
+                }
+
+                return this.battlePoints;
+            }
         }
     }
 }

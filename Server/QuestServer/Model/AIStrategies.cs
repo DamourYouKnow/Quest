@@ -63,7 +63,7 @@ namespace Quest.Core.Players {
 			List<BattleCard> weapons = new List<BattleCard>();
 
 			//sort in descending order (highest bp first)
-			yourCards.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints));
+			yourCards.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints));
 
 			//filter your cards into amour/ally/weapon
 			foreach(BattleCard card in yourCards){
@@ -672,7 +672,16 @@ namespace Quest.Core.Players {
         }
 
         public override List<Card> DiscardExcessCards(Hand hand) {
-            throw new NotImplementedException();
+            List<Card> discards = new List<Card>();
+            int discarded = 0;
+            while (hand.Count - discarded >= 12)
+            {
+                discards.Add(hand.Cards[discarded]);
+                discarded++;
+            }
+
+            hand.Player.Match.Log(hand.Player.Username + " has discarded " + Utils.Stringify.CommaList<Card>(discards));
+            return discards;
         }
 
         public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
@@ -680,7 +689,15 @@ namespace Quest.Core.Players {
         }
 
         public override bool ParticipateInQuest(QuestCard questCard, Hand hand) {
-            throw new NotImplementedException();
+            foreach (Player player in questCard.Match.Players)
+            {
+                if((player != hand.Player) && (player.Hand.Count > hand.Count))
+                {
+                    //if you don't have the most cards (or tied for most), don't join
+                    return false;
+                }
+            }
+            return true;
         }
 
         public override bool ParticipateInTournament(TournamentCard tournamentCard) {
