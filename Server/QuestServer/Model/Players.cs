@@ -205,6 +205,10 @@ namespace Quest.Core.Players {
             }
 
             this.match.Controller.UpdateHand(this);
+
+            if (this.Hand.Count > 12) {
+                this.match.Controller.RequestDiscard(this);
+            }
         }
 
         public void Discard(Card card) {

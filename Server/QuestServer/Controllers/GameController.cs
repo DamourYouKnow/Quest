@@ -186,6 +186,11 @@ namespace Quest.Core {
             await this.messageHandler.SendToMatchAsync(match, evn.ToString());
         }
 
+        public async void RequestDiscard(Player player) {
+            EventData evn = new EventData("request_discard", new JObject());
+            await this.messageHandler.SendToPlayerAsync(player, evn.ToString()); ;
+        }
+
         public async void PromptPlayer(Player player, string type, string message, string image=null) {
             JObject data = new JObject();
             data["message"] = message;
