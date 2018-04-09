@@ -211,6 +211,7 @@ namespace Quest.Core.Players {
             this.hand.Remove(card);
             this.match.DiscardPile.Push(card);
             this.match.Controller.UpdateHand(this);
+            this.match.Controller.UpdatePlayerArea(this);
             this.match.Log(this.username + " discarded " + card.ToString());
         }
 
