@@ -111,6 +111,33 @@ namespace Quest.Core.Cards{
             }
         }
 
+        public override void ParticipationResponse(Player player, bool participating) {
+            this.responded.Add(player);
+            if (participating) {
+                this.match.Controller.Message(this.match, player.Username + " participating");
+                this.participants.Add(player);
+            }
+            else {
+                this.match.Controller.Message(this.match, player.Username + " not participating");
+            }
+
+            if (this.responded.Count == this.match.Players.Count) {
+                this.RequestStage();
+            }
+        }
+
+        public void RequestStage() {
+            this.match.Controller.RequestStage(this.sponsor);
+        }
+
+        public void StageResponse() {
+            if (this.stages.Count == this.StageCount) {
+                this.RequestParticipation();
+            } else {
+                this.RequestPlays();
+            }
+        }
+
         public override void RequestPlays() {
             // FIXME: Does this require adding the main card to the list?
             this.match.Controller.UpdateOtherArea(this.match, this.stages[this.currentStage - 1].Cards);

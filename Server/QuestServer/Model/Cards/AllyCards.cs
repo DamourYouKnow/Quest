@@ -120,7 +120,7 @@ namespace Quest.Core.Cards {
 
                 if (player != null) {
                     if (player.BattleArea.Cards.FindAll((x) => x is QueenIseult).Count > 0) {
-                        20;
+                        return 20;
                     }
                 }
 

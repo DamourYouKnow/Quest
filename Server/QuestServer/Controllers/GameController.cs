@@ -42,6 +42,7 @@ namespace Quest.Core {
             messageHandler.On("request_players", OnRequestPlayers);
             messageHandler.On("round_end", OnRoundEnd);
             messageHandler.On("play_cards", OnPlayCards);
+            messageHandler.On("setup_stage", OnSetupStage);
             messageHandler.On("discard", OnDiscard);
             messageHandler.On("participation_response", OnParticipationResponse);
             messageHandler.On("quest_sponsor_response", OnQuestSponsorResponse);
@@ -108,6 +109,24 @@ namespace Quest.Core {
             player.Play(player.Hand.GetCards<BattleCard>(cardNames));
         }
 
+        private void OnSetupStage(Player player, JToken data) {
+            QuestCard quest = player.Match.CurrentStory as QuestCard;
+
+            List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
+
+            List<FoeCard> foe = player.Hand.GetCards<FoeCard>(cardNames);
+            List<WeaponCard> weapons = player.Hand.GetCards<WeaponCard>(cardNames);
+            List<TestCard> test = player.Hand.GetCards<TestCard>(cardNames);
+
+            if (test.Count > 0) {
+                quest.AddTestStage(test[0]);
+            } else {
+                if (test.Count > 0) {
+                    quest.AddFoeStage(foe[0], weapons);
+                }
+            }
+        }
+
         private void OnDiscard(Player player, JToken data) {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Discard(player.Hand.GetCards<Card>(cardNames));
@@ -122,8 +141,6 @@ namespace Quest.Core {
             QuestCard quest = this.matches[player].CurrentStory as QuestCard;
             quest.SponsorshipResponse(player, (bool)data["sponsoring"]);
         }
-
-
 
         public async void UpdateGames(Player player) {
             List<int> ids = new List<int>();
@@ -184,6 +201,16 @@ namespace Quest.Core {
             data["cards"] = cardArray;
             EventData evn = new EventData("update_other_area", data);
             await this.messageHandler.SendToMatchAsync(match, evn.ToString());
+        }
+
+        public async void RequestDiscard(Player player) {
+            EventData evn = new EventData("request_discard", new JObject());
+            await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
+        }
+
+        public async void RequestStage(Player player) {
+            EventData evn = new EventData("request_stage", new JObject());
+            await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
         }
 
         public async void PromptPlayer(Player player, string type, string message, string image=null) {
