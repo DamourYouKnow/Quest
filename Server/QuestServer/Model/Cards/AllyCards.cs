@@ -1,4 +1,5 @@
 ﻿using System;
+using Quest.Core.Players;
 
 namespace Quest.Core.Cards {
     public abstract class AllyCard : BattleCard {
@@ -79,6 +80,20 @@ namespace Quest.Core.Cards {
             this.name = "Sir Tristan";
             this.imageFilename = "ally_sir_tristan";
             this.battlePoints = 10;
+        }
+
+        public override int BattlePoints {
+            get {
+                Player player = this.match.PlayerWithCardOnBoard(this);
+
+                if (player != null) {
+                    if (player.BattleArea.Cards.FindAll((x) => x is QueenIseult).Count > 0) {
+                        return this.battlePoints + 20;
+                    }
+                }
+
+                return this.battlePoints;
+            }
         }
     }
 }

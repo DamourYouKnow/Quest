@@ -162,7 +162,8 @@ namespace Quest.Core.View{
      		GameObject.Destroy(child.gameObject);
  			}
 			foreach(Card c in this.handAreaCards){
-				GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
+                GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
+                dCard.GetComponent<Draggable>();
 				dCard.transform.SetParent(this.handArea.transform, false);
 				Image im = dCard.GetComponent<Image>();
 				im.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + c.image);
