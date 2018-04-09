@@ -111,6 +111,18 @@ namespace Quest.Core.Cards{
             }
         }
 
+        public void RequestStage() {
+            this.match.Controller.RequestStage(this.sponsor);
+        }
+
+        public void StageResponse() {
+            if (this.stages.Count == this.StageCount) {
+                this.RequestParticipation();
+            } else {
+                this.RequestStage();
+            }
+        }
+
         public override void RequestPlays() {
             // FIXME: Does this require adding the main card to the list?
             this.match.Controller.UpdateOtherArea(this.match, this.stages[this.currentStage - 1].Cards);
@@ -176,7 +188,7 @@ namespace Quest.Core.Cards{
                 this.match.Controller.Message(this.match, player.Username + " sponsored quest");
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
-                this.RequestParticipation();
+                this.RequestStage();
             }
             else {
                 this.match.Controller.Message(this.match, player.Username + " did not sponsor");
