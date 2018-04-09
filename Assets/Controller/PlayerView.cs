@@ -237,6 +237,7 @@ namespace Quest.Core.View{
 			}
 			foreach(Card c in this.handAreaCards){
 				GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
+    		dCard.GetComponent<GameCard> ().Card = c;
 				dCard.transform.SetParent(this.handArea.transform, false);
 				Image im = dCard.GetComponent<Image>();
 				im.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + c.image);
@@ -254,7 +255,7 @@ namespace Quest.Core.View{
 			if(this.newHistory != ""){
 				this.historyButton.GetComponent<Image>().color = Color.yellow;
 			}
-			this.historyScrollText.text += this.newHistory;
+			this.historyScrollText.text = this.newHistory + this.historyScrollText.text;
 			this.newHistory = "";
 		}
 		public void OnUISceneChanged(Scene lastScene, Scene nextScene){
@@ -398,8 +399,18 @@ namespace Quest.Core.View{
 				}
 				LoadScene("Lobby");
 			}
-			public void OnUIDrop(){
-				Debug.Log("dropped");
+			public void OnUIDrop(string areaName, string cardName){
+				if(areaName == "BattleArea" || areaName == "QuestSetupArea"){
+					JObject data = new JObject();
+					JArray cards = new JArray();
+					cards.Add(cardName);
+					data["cards"] = cards;
+					EventData evn = new EventData("play_cards", data);
+					SendMessage(evn.ToString());
+				}
+				else if(areaName == "DiscardArea"){
+
+				}
 			}
 			public void OnUIHistoryButton(){
 				if(this.historyScroll.activeSelf){

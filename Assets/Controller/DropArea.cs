@@ -5,7 +5,8 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using Quest.Core.View;
 
-class DropArea : MonoBehaviour, IDropHandler {
+public class DropArea : MonoBehaviour, IDropHandler {
+  public string name;
     private const int defaultOffset = 3;
 
 	void Update() {
@@ -17,7 +18,7 @@ class DropArea : MonoBehaviour, IDropHandler {
         if (draggable != null) {
     			Card c = draggable.gameObject.GetComponent<GameCard> ().Card;
     			if (c != null) {
-            GameObject.Find("PlayerView").GetComponent<PlayerView>().OnUIDrop();
+            GameObject.Find("PlayerView").GetComponent<PlayerView>().OnUIDrop(this.name, c.name);
           }
         }
     }
