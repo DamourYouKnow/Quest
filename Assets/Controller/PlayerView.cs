@@ -34,12 +34,13 @@ namespace Quest.Core.View{
 			private Card currentStory;
 			private List<Card> otherAreaCards;
 			private List<Card> handAreaCards;
-			private List<Card> selfAreaCards;
+			private List<Card> playerAreaCards;
 			private bool prompting;
 			private string promptName;
 			private string promptMessage;
 			private string promptImage;
 			private string newHistory;
+			private string otherAreaName;
 
 			private GameObject handArea;
 			private GameObject battleArea;
@@ -86,7 +87,9 @@ namespace Quest.Core.View{
 			On("update_other_area", OnRCVUpdateOtherArea);
 			On("update_hand", OnRCVUpdateHand);
 			On("request_quest_sponsor", OnRCVRequestQuestSponsor);
+			On("request_quest_participation", OnRCVRequestQuestParticipation);
 			On("message", OnRCVMessage);
+			On("request_discard", OnRCVRequestDiscard);
 
 			SceneManager.activeSceneChanged += OnUISceneChanged;
 
@@ -205,6 +208,9 @@ namespace Quest.Core.View{
 				case "SponsorQuestPrompt":
 					UpdateSponsorQuestPrompt();
 					break;
+				case "RequestQuestParticipationPrompt":
+					UpdateRequestQuestParticipationPrompt();
+					break;
 			}
 			this.prompting = true;
 		}
@@ -231,6 +237,29 @@ namespace Quest.Core.View{
 				SendMessage(evn.ToString());
 			};
 		}
+		private void UpdateRequestQuestParticipationPrompt(){
+			GameObject promptObj = new GameObject("SponsorQuestPrompt");
+			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
+			prompt.Message = this.promptMessage;
+			prompt.Quest = this.currentStory;
+
+			prompt.OnNoClick = () => {
+				this.prompting = false;
+				this.promptName = "";
+				JObject data = new JObject();
+				data["participating"] = false;
+				EventData evn = new EventData("participation_response", data);
+				SendMessage(evn.ToString());
+			};
+			prompt.OnYesClick = () => {
+				this.prompting = false;
+				this.promptName = "";
+				JObject data = new JObject();
+				data["participating"] = true;
+				EventData evn = new EventData("participation_response", data);
+				SendMessage(evn.ToString());
+			};
+		}
 		private void UpdateHand(){
 			foreach (Transform child in this.handArea.transform) {
 				GameObject.Destroy(child.gameObject);
@@ -239,6 +268,30 @@ namespace Quest.Core.View{
 				GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
     		dCard.GetComponent<GameCard> ().Card = c;
 				dCard.transform.SetParent(this.handArea.transform, false);
+				Image im = dCard.GetComponent<Image>();
+				im.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + c.image);
+			}
+		}
+		private void UpdatePlayerArea(){
+			foreach (Transform child in this.battleArea.transform) {
+				GameObject.Destroy(child.gameObject);
+			}
+			foreach(Card c in this.playerAreaCards){
+				GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
+    		dCard.GetComponent<GameCard> ().Card = c;
+				dCard.transform.SetParent(this.battleArea.transform, false);
+				Image im = dCard.GetComponent<Image>();
+				im.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + c.image);
+			}
+		}
+		private void UpdateOtherArea(){
+			foreach (Transform child in this.otherArea.transform) {
+				GameObject.Destroy(child.gameObject);
+			}
+			foreach(Card c in this.otherAreaCards){
+				GameObject dCard = (GameObject)Instantiate(Resources.Load("DraggableCard"));
+    		dCard.GetComponent<GameCard> ().Card = c;
+				dCard.transform.SetParent(this.otherArea.transform, false);
 				Image im = dCard.GetComponent<Image>();
 				im.sprite = (Sprite)Resources.Load<Sprite>(Constants.RESOURCES_CARDS + c.image);
 			}
@@ -257,6 +310,10 @@ namespace Quest.Core.View{
 			}
 			this.historyScrollText.text = this.newHistory + this.historyScrollText.text;
 			this.newHistory = "";
+		}
+		private void UpdateOtherAreaNames(){
+			this.otherAreaText.text = "Discard Area";
+			this.otherArea.GetComponent<DropArea>().name = "Discard Area";
 		}
 		public void OnUISceneChanged(Scene lastScene, Scene nextScene){
 				this.sceneName = nextScene.name;
@@ -400,7 +457,7 @@ namespace Quest.Core.View{
 				LoadScene("Lobby");
 			}
 			public void OnUIDrop(string areaName, string cardName){
-				if(areaName == "BattleArea" || areaName == "QuestSetupArea"){
+				if(areaName == "Battle Area" || areaName == "Quest Area"){
 					JObject data = new JObject();
 					JArray cards = new JArray();
 					cards.Add(cardName);
@@ -408,8 +465,13 @@ namespace Quest.Core.View{
 					EventData evn = new EventData("play_cards", data);
 					SendMessage(evn.ToString());
 				}
-				else if(areaName == "DiscardArea"){
-
+				else if(areaName == "Discard Area"){
+					JObject data = new JObject();
+					JArray cards = new JArray();
+					cards.Add(cardName);
+					data["cards"] = cards;
+					EventData evn = new EventData("discard", data);
+					SendMessage(evn.ToString());
 				}
 			}
 			public void OnUIHistoryButton(){
@@ -451,10 +513,14 @@ namespace Quest.Core.View{
 				this.updateQueue.Enqueue(UpdateStory);
 			}
 			public void OnRCVUpdatePlayerArea(JToken data){
-
+				JArray arr = (JArray)data["cards"];
+				this.playerAreaCards = arr.ToObject<List<Card>>();
+				this.updateQueue.Enqueue(UpdatePlayerArea);
 			}
 			public void OnRCVUpdateOtherArea(JToken data){
-
+				JArray arr = (JArray)data["cards"];
+				this.otherAreaCards = arr.ToObject<List<Card>>();
+				this.updateQueue.Enqueue(UpdateOtherArea);
 			}
 			public void OnRCVUpdateHand(JToken data){
 				JArray arr = (JArray)data["cards"];
@@ -466,10 +532,18 @@ namespace Quest.Core.View{
 				this.promptMessage = (string)data["message"];
 				this.promptImage = (string)data["image"];
 			}
+			public void OnRCVRequestQuestParticipation(JToken data){
+				this.promptName = "RequestQuestParticipationPrompt";
+				this.promptMessage = (string)data["message"];
+				this.promptImage = (string)data["image"];
+			}
 			public void OnRCVMessage(JToken data){
-				this.newHistory += data["message"];
-				this.newHistory += "\n";
+				this.newHistory = data["message"] + "\n" + this.newHistory;
 				this.updateQueue.Enqueue(UpdateHistory);
+			}
+			public void OnRCVRequestDiscard(JToken data){
+				otherAreaName = "Discard Area";
+				this.updateQueue.Enqueue(UpdateOtherAreaNames);
 			}
 			/*
 			public void OnRCVRequestQuestSponsor(JToken data){

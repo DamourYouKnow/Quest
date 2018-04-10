@@ -324,7 +324,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 40
+    m_MaxSize: 18
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -2348,7 +2348,7 @@ Prefab:
     - target: {fileID: 114534715636406772, guid: cbd5acd70be9c6d4a90aa1face05f8c1,
         type: 2}
       propertyPath: name
-      value: BattleArea
+      value: Battle Area
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cbd5acd70be9c6d4a90aa1face05f8c1, type: 2}
