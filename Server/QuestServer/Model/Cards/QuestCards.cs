@@ -12,6 +12,7 @@ namespace Quest.Core.Cards{
         protected QuestArea stageBuilder;
 		protected List<Type> questFoes;
         protected Dictionary<Player, Stack<List<BattleCard>>> battleHistory;
+        private int nextParticipant = 0;
 
         public QuestCard(QuestMatch match) : base(match) {
             this.questFoes = new List<Type>();
@@ -104,20 +105,26 @@ namespace Quest.Core.Cards{
             this.currentStage = stageNumber;
         }
 
-        public override void RequestParticipation() {
-            foreach (Player player in this.match.OtherPlayers) {
-                if (player.Behaviour is HumanPlayer) {
-                    // Send participation request to player through sockets.
-                    this.match.Controller.PromptPlayer(player,
-                                                       "request_quest_participation",
-                                                       "Would you like to participate in " + this.name,
-                                                       image: this.imageFilename);
-                } 
-                else if (player.Behaviour != null) {
-                    // Use strategies to determine player participation.
-                    this.ParticipationResponse(player, 
-                                     player.Behaviour.ParticipateInQuest(this, player.Hand));
-                }
+        public override void RequestNextParticipant() {
+            Player player = this.match.Players[this.nextParticipant];
+            this.nextParticipant++;
+
+            if (player == this.sponsor) {
+                this.RequestNextParticipant();
+                return;
+            }
+            
+            if (player.Behaviour is HumanPlayer) {
+                // Send participation request to player through sockets.
+                this.match.Controller.PromptPlayer(player,
+                                                   "request_quest_participation",
+                                                   "Would you like to participate in " + this.name,
+                                                   image: this.imageFilename);
+            }
+            else if (player.Behaviour != null) {
+                // Use strategies to determine player participation.
+                this.ParticipationResponse(player,
+                                 player.Behaviour.ParticipateInQuest(this, player.Hand));
             }
         }
 
@@ -135,6 +142,8 @@ namespace Quest.Core.Cards{
 
             if (this.responded.Count == this.match.Players.Count) {
                 this.RequestPlays();
+            } else {
+                this.RequestNextParticipant();
             }
         }
 
@@ -145,7 +154,7 @@ namespace Quest.Core.Cards{
 
         public void StageResponse() {
             if (this.stages.Count == this.StageCount) {
-                this.RequestParticipation();
+                this.RequestNextParticipant();
             } else {
                 this.RequestStage();
             }
@@ -157,6 +166,7 @@ namespace Quest.Core.Cards{
 
             if (this.participants.Count == 0) {
                 this.Resolve();
+                return;
             }
 
             foreach (Player participant in this.participants) {

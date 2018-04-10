@@ -83,13 +83,13 @@ namespace Quest.Core.Cards {
         }
 
         public override void Run() {
-            this.RequestParticipation();
+            this.RequestNextParticipant();
         }
 
         /// <summary>
         /// Send prompts to players requesting their participation.
         /// </summary>
-        public abstract void RequestParticipation();
+        public abstract void RequestNextParticipant();
 
         /// <summary>
         /// Send prompts to players requesting their plays.
