@@ -42,6 +42,7 @@ namespace Quest.Core {
             messageHandler.On("request_players", OnRequestPlayers);
             messageHandler.On("round_end", OnRoundEnd);
             messageHandler.On("play_cards", OnPlayCards);
+            messageHandler.On("confirm_cards", OnConfirmCards);
             messageHandler.On("setup_stage", OnSetupStage);
             messageHandler.On("discard", OnDiscard);
             messageHandler.On("participation_response", OnParticipationResponse);
@@ -107,6 +108,11 @@ namespace Quest.Core {
         private void OnPlayCards(Player player, JToken data) {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Play(player.Hand.GetCards<BattleCard>(cardNames));
+        }
+
+        private void OnConfirmCards(Player player, JToken data) {
+            InteractiveStoryCard story = this.matches[player].CurrentStory as InteractiveStoryCard;
+            story.AddPlayed(player);
         }
 
         private void OnSetupStage(Player player, JToken data) {
