@@ -143,9 +143,17 @@ namespace Quest.Core {
             }
         }
 
+        private void DiscardCards(Player player, JToken data) {
+
+        }
+
         private void OnDiscard(Player player, JToken data) {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Discard(player.Hand.GetCards<Card>(cardNames));
+
+            if (player.Hand.Count > 12) {
+                this.RequestDiscard(player);
+            }
         }
 
         private void OnParticipationResponse(Player player, JToken data) {

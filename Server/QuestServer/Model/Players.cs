@@ -207,7 +207,12 @@ namespace Quest.Core.Players {
             this.match.Controller.UpdateHand(this);
 
             if (this.Hand.Count > 12) {
-                this.match.Controller.RequestDiscard(this);
+                if (this.behaviour is HumanPlayer) {
+                    this.match.Controller.RequestDiscard(this);
+                }
+                else if (this.behaviour != null) {
+                    this.Discard(this.behaviour.DiscardExcessCards(this.Hand));
+                }
             }
         }
 
