@@ -194,6 +194,11 @@ namespace Quest.Core {
             await this.messageHandler.SendToMatchAsync(match, evn.ToString());
         }
 
+        public async void EndStory(QuestMatch match) {
+            EventData evn = new EventData("end_story", new JObject());
+            await this.messageHandler.SendToMatchAsync(match, evn.ToString());
+        }
+
         public async void UpdateHand(Player player) {
             JObject data = new JObject();
             JArray cardArray = new JArray();
