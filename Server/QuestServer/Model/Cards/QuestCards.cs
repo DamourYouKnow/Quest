@@ -78,6 +78,7 @@ namespace Quest.Core.Cards{
         public void AddStage(QuestArea area) { 
             if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
             this.stages.Add(area);
+            this.match.Log(this.sponsor.Username + " adding stage with " + Utils.Stringify.CommaList(area.Cards));
         }
 
         public QuestArea GetStage(int stageNumber) {
@@ -141,22 +142,22 @@ namespace Quest.Core.Cards{
             }
 
             if (this.responded.Count == this.match.Players.Count) {
-                this.RequestPlays();
+                this.SetupNextStage();
             } else {
                 this.RequestNextParticipant();
             }
         }
 
-        public void RequestStage() {
+        public void SetupNextStage() {
             this.stageBuilder = new QuestArea();
             this.match.Controller.RequestStage(this.sponsor);
         }
 
         public void StageResponse() {
             if (this.stages.Count == this.StageCount) {
-                this.RequestNextParticipant();
+                this.RequestPlays();
             } else {
-                this.RequestStage();
+                this.SetupNextStage();
             }
         }
 
@@ -231,7 +232,7 @@ namespace Quest.Core.Cards{
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
                 this.responded.Add(player);
-                this.RequestStage();
+                this.RequestNextParticipant();
             }
             else {
                 this.match.Controller.Message(this.match, player.Username + " did not sponsor " + this.name);
