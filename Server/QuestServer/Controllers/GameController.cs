@@ -44,7 +44,8 @@ namespace Quest.Core {
             messageHandler.On("round_end", OnRoundEnd);
             messageHandler.On("play_cards", OnPlayCards);
             messageHandler.On("confirm_cards", OnConfirmCards);
-            messageHandler.On("setup_stage", OnSetupStage);
+            messageHandler.On("play_cards_stage", OnPlayCardStage);
+            messageHandler.On("confirm_stage", OnConfirmStage);
             messageHandler.On("discard", OnDiscard);
             messageHandler.On("participation_response", OnParticipationResponse);
             messageHandler.On("quest_sponsor_response", OnQuestSponsorResponse);
