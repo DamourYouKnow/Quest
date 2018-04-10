@@ -59,6 +59,7 @@ namespace Quest.Core {
 			using (StreamWriter sw = File.AppendText (LogPath)){
 				sw.WriteLine("LOG " + timestamp () + " | " + message);
 			}
+            Console.WriteLine(message);
 		}
 
 		public void Error(string message) {

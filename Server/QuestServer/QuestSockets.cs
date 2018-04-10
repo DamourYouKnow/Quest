@@ -31,7 +31,6 @@ namespace Quest.Utils.Networking {
 
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer) {
             string message = Encoding.UTF8.GetString(buffer);
-            Console.WriteLine("Message received: " + message.TrimEnd('\0'));
             this.logger.Log("Message received: " + message.TrimEnd('\0'));
             JObject jqe = JObject.Parse(message);
 
