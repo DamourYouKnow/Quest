@@ -1,3 +1,8 @@
+/*
+UNUSED FILE
+Saved in case needed.
+
+
 ﻿//"connected" to the GameController game object
 using System;
 using System.Collections;
@@ -74,7 +79,7 @@ namespace Quest.Core {
 			else {
                 //logger = new Logger();
                 //gm = new QuestMatch(this, logger);
-     
+
   				sceneSet = false;
 				waiting = false;
 				//this.discardingPlayer = null;
@@ -100,7 +105,7 @@ namespace Quest.Core {
             //prompt.OnNoClick = () => { Debug.Log("No clicked"); };
             //prompt.OnYesClick = () => { Debug.Log("Yes clicked"); };
         }
-		
+
 		// Update is called once per frame
 		void Update () {
 			if (sceneSet) {
@@ -364,7 +369,7 @@ namespace Quest.Core {
 			SceneManager.LoadScene(sceneName);
 			sceneSet = false;
 		}
-		
+
         public void LoadLocalGameScene(string sceneName) {
 			this.scenario = Scenario.LocalGame;
             this.LoadScene(sceneName);
@@ -636,7 +641,7 @@ namespace Quest.Core {
 			//	this.waiting = false;
 			//}
 		}
-			
+
 		public void RequestParticipationTournament(){
 			GameObject promptObj = new GameObject ("ParticipateInTournament");
 			Prompt prompt = promptObj.AddComponent<Prompt>();
@@ -695,7 +700,7 @@ namespace Quest.Core {
 			//	}
 			//}
 		}
-			
+
 
 		public void ParticipateYes(){
 			//QuestCard qc = this.gm.CurrentStory as QuestCard;
@@ -876,7 +881,7 @@ namespace Quest.Core {
 		//	prompt.OnYesClick = () => {p.Behaviour = new Strategy1();};
 		//	prompt.OnNoClick = () => {p.Behaviour = new Strategy2();};
 		//}
-			
+
 	}
 	public class OpponentState{
 		GameController gc;
@@ -934,3 +939,4 @@ namespace Quest.Core {
 		}
 	}
 }
+*/

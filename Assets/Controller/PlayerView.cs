@@ -33,14 +33,14 @@ namespace Quest.Core.View{
 			private string serverAddress;
 			private string promptName;
 			private string promptMessage;
-			private string promptImage;
+			//TODO: receiving image is redundant for all current prompts.
+			//private string promptImage;
 			private string newHistory;
 			private string otherAreaName;
 			private string confirmationMessage;
 			private bool isHost;
 			private bool isConnected;
 			private bool prompting;
-			private int scenario;
 			private int gameid;
 
 			private GameObject gameCanvas;
@@ -75,7 +75,6 @@ namespace Quest.Core.View{
 			this.userName = Constants.DEFAULT_USERNAME;
 			this.isHost = false;
 			this.isConnected = false;
-			this.scenario = 0;
 			this.gameid = -1;
 			this.games = new List<string>();
 			this.players = new List<Player>();
@@ -246,7 +245,7 @@ namespace Quest.Core.View{
 				JObject data = new JObject();
 				data["sponsoring"] = false;
 				EventData evn = new EventData("quest_sponsor_response", data);
-				SendMessage(evn.ToString());
+				SendSocketMessage(evn.ToString());
 			};
 			prompt.OnYesClick = () => {
 				this.prompting = false;
@@ -254,7 +253,7 @@ namespace Quest.Core.View{
 				JObject data = new JObject();
 				data["sponsoring"] = true;
 				EventData evn = new EventData("quest_sponsor_response", data);
-				SendMessage(evn.ToString());
+				SendSocketMessage(evn.ToString());
 			};
 		}
 		private void UpdateRequestQuestParticipationPrompt(){
@@ -269,7 +268,7 @@ namespace Quest.Core.View{
 				JObject data = new JObject();
 				data["participating"] = false;
 				EventData evn = new EventData("participation_response", data);
-				SendMessage(evn.ToString());
+				SendSocketMessage(evn.ToString());
 			};
 			prompt.OnYesClick = () => {
 				this.prompting = false;
@@ -277,7 +276,7 @@ namespace Quest.Core.View{
 				JObject data = new JObject();
 				data["participating"] = true;
 				EventData evn = new EventData("participation_response", data);
-				SendMessage(evn.ToString());
+				SendSocketMessage(evn.ToString());
 			};
 		}
 
@@ -338,7 +337,7 @@ namespace Quest.Core.View{
 		}
 		private void UpdateOtherAreaNames(){
 			this.otherAreaText.text = this.otherAreaName;
-			this.otherArea.GetComponent<DropArea>().name = this.otherAreaName;
+			this.otherArea.GetComponent<DropArea>().areaName = this.otherAreaName;
 		}
 		private void UpdateEndStory(){
 			this.confirmationButton.gameObject.SetActive(true);
@@ -433,7 +432,7 @@ namespace Quest.Core.View{
 				JObject data = new JObject();
 				data["strategy"] = GameObject.Find("Dropdown_AIStrategy").GetComponent<Dropdown>().value+1;
 				EventData evn = new EventData("add_ai", data);
-				SendMessage(evn.ToString());
+				SendSocketMessage(evn.ToString());
 			}
 			public void OnUIInputUsernameValueChanged(string userName){
 				if(userName == ""){
@@ -457,7 +456,7 @@ namespace Quest.Core.View{
 					JObject data = new JObject();
 					data["game_id"] = this.gameid;
 					EventData evn = new EventData("join_game", data);
-					SendMessage(evn.ToString());
+					SendSocketMessage(evn.ToString());
 					LoadScene("Lobby");
 				}
 			}
@@ -466,25 +465,25 @@ namespace Quest.Core.View{
 				JObject data = new JObject();
 				data["scenario"] = 0;
 				EventData evn = new EventData("create_game", data);
-				SendMessage(evn.ToString());
+				SendSocketMessage(evn.ToString());
 				LoadScene("Lobby");
 			}
 			public void OnUIRefreshGames(){
 				JObject data = new JObject();
 				EventData evn = new EventData("request_games", data);
-				SendMessage(evn.ToString());
+				SendSocketMessage(evn.ToString());
 			}
 			public void OnUIStartGame(){
 				JObject data = new JObject();
 				EventData evn = new EventData("start_game", data);
 				GameObject.Find("Button_startGame").SetActive(false);
-				SendMessage(evn.ToString());
+				SendSocketMessage(evn.ToString());
 			}
 			public void OnUIConfirmation(){
 				if(this.confirmationMessage != ""){
 					JObject data = new JObject();
 					EventData evn = new EventData(this.confirmationMessage, data);
-					SendMessage(evn.ToString());
+					SendSocketMessage(evn.ToString());
 				}
 			}
 			public void OnUIScenarioOne(){
@@ -493,7 +492,7 @@ namespace Quest.Core.View{
 					JObject data = new JObject();
 					data["scenario"] = 1;
 					EventData evn = new EventData("create_game", data);
-					SendMessage(evn.ToString());
+					SendSocketMessage(evn.ToString());
 				}
 				LoadScene("Lobby");
 			}
@@ -503,18 +502,19 @@ namespace Quest.Core.View{
 					JObject data = new JObject();
 					data["scenario"] = 2;
 					EventData evn = new EventData("create_game", data);
-					SendMessage(evn.ToString());
+					SendSocketMessage(evn.ToString());
 				}
 				LoadScene("Lobby");
 			}
 			public void OnUIDrop(string areaName, string cardName){
+				Debug.Log(areaName);
 				if(areaName == "Battle Area"){
 					JObject data = new JObject();
 					JArray cards = new JArray();
 					cards.Add(cardName);
 					data["cards"] = cards;
 					EventData evn = new EventData("play_cards", data);
-					SendMessage(evn.ToString());
+					SendSocketMessage(evn.ToString());
 				}
 				else if(areaName == "Quest Area"){
 					JObject data = new JObject();
@@ -522,7 +522,7 @@ namespace Quest.Core.View{
 					cards.Add(cardName);
 					data["cards"] = cards;
 					EventData evn = new EventData("play_cards_stage", data);
-					SendMessage(evn.ToString());
+					SendSocketMessage(evn.ToString());
 				}
 				else if(areaName == "Discard Area"){
 					JObject data = new JObject();
@@ -530,7 +530,7 @@ namespace Quest.Core.View{
 					cards.Add(cardName);
 					data["cards"] = cards;
 					EventData evn = new EventData("discard", data);
-					SendMessage(evn.ToString());
+					SendSocketMessage(evn.ToString());
 				}
 			}
 			public void OnUIHistoryButton(){
@@ -590,12 +590,14 @@ namespace Quest.Core.View{
 			public void OnRCVRequestQuestSponsor(JToken data){
 				this.promptName = "SponsorQuestPrompt";
 				this.promptMessage = (string)data["message"];
-				this.promptImage = (string)data["image"];
+				//TODO: receiving image is redundant for all current prompts.
+				//this.promptImage = (string)data["image"];
 			}
 			public void OnRCVRequestQuestParticipation(JToken data){
 				this.promptName = "RequestQuestParticipationPrompt";
 				this.promptMessage = (string)data["message"];
-				this.promptImage = (string)data["image"];
+				//TODO: receiving image is redundant for all current prompts.
+				//this.promptImage = (string)data["image"];
 			}
 			public void OnRCVMessage(JToken data){
 				this.newHistory = data["message"] + "\n" + this.newHistory;
@@ -640,7 +642,7 @@ namespace Quest.Core.View{
 				this.socket.OnMessage += this.OnMessage;
 				this.socket.OnError += this.OnError;
 			}
-	    public void SendMessage(string message) {
+	    public void SendSocketMessage(string message) {
 				if(this.socket==null){
 					Debug.Log("ERR: No socket connection.");
 					return;
@@ -661,7 +663,7 @@ namespace Quest.Core.View{
 				JObject data = new JObject();
 				data["username"] = this.userName;
 				EventData evn = new EventData("player_join", data);
-				this.SendMessage(evn.ToString());
+				this.SendSocketMessage(evn.ToString());
 				this.isConnected = true;
 			}
 			public void OnMessage(UnityWebSocket sender, byte[] data) {
@@ -714,6 +716,9 @@ namespace Quest.Core.View{
 			}
 	}
 
+	/*
+		Class for handling incoming socket messages.
+	*/
 	public class EventData {
 			private string eventName;
 			private JObject data;
@@ -723,7 +728,6 @@ namespace Quest.Core.View{
 					this.eventName = (string)eventJson["event"];
 					this.data = (JObject)eventJson["data"];
 			}
-
 			public EventData(string eventName, JObject data) {
 					this.eventName = eventName;
 					this.data = data;
