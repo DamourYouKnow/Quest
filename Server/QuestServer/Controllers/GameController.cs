@@ -130,6 +130,7 @@ namespace Quest.Core {
             player.Hand.Transfer(area, foe.Cast<Card>().ToList());
             player.Hand.Transfer(area, weapons.Cast<Card>().ToList());
 
+            this.UpdateHand(player);
             this.UpdateOtherArea(player, area.Cards);
         }
 
@@ -141,6 +142,8 @@ namespace Quest.Core {
                 quest.AddStage(area);
                 quest.StageResponse();
             }
+
+            this.UpdateOtherArea(player, new List<Card>());
         }
 
         private void OnDiscard(Player player, JToken data) {

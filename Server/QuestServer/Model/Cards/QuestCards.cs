@@ -126,13 +126,16 @@ namespace Quest.Core.Cards{
             if (participating) {
                 this.match.Controller.Message(this.match, player.Username + " participating in " + this.name);
                 this.participants.Add(player);
+
+                // Add history.
+                this.battleHistory.Add(player, new Stack<List<BattleCard>>());
             }
             else {
                 this.match.Controller.Message(this.match, player.Username + " not participating in" + this.name);
             }
 
             if (this.responded.Count == this.match.Players.Count) {
-                this.RequestStage();
+                this.RequestPlays();
             }
         }
 
@@ -145,7 +148,7 @@ namespace Quest.Core.Cards{
             if (this.stages.Count == this.StageCount) {
                 this.RequestParticipation();
             } else {
-                this.RequestPlays();
+                this.RequestStage();
             }
         }
 
@@ -214,6 +217,7 @@ namespace Quest.Core.Cards{
                 this.match.Controller.Message(this.match, player.Username + " sponsored " + this.name);
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
+                this.responded.Add(player);
                 this.RequestStage();
             }
             else {
