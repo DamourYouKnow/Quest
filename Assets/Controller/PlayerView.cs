@@ -79,6 +79,7 @@ namespace Quest.Core.View{
 			this.prompting = false;
 			this.updateQueue = new Queue<Action>();
 			this.newHistory = "";
+			this.confirmationMessage = "";
 
 			this.eventHandlers = new Dictionary<string, Action<JToken>>();
 			On("update_games", OnRCVUpdateGames);
@@ -93,6 +94,7 @@ namespace Quest.Core.View{
 			On("request_discard", OnRCVRequestDiscard);
 			On("request_stage", OnRCVRequestStage);
 			On("request_play_cards", OnRCVRequestPlayCards);
+			On("end_story", OnRCVEndStory);
 			/*
 			>request_quest_sponsor
 			<quest_sponsor_response
@@ -388,7 +390,6 @@ namespace Quest.Core.View{
 			}
 
 			confirmationButton.onClick.AddListener(OnUIConfirmation);
-			confirmationMessage = "";
 
 			historyButton.onClick.AddListener(OnUIHistoryButton);
 			//private Dictionary<string, GameObject> opponents;
@@ -580,6 +581,9 @@ namespace Quest.Core.View{
 				this.otherAreaName = "Stage";
 				this.updateQueue.Enqueue(UpdateOtherAreaNames);
 				this.confirmationMessage = "confirm_cards";
+			}
+			public void OnRCVEndStory(JToken data){
+				this.confirmationMessage = "round_end";
 			}
 			/*
 			public void OnRCVRequestQuestSponsor(JToken data){
