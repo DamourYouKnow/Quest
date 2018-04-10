@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
@@ -115,21 +116,29 @@ namespace Quest.Core {
             story.AddPlayed(player);
         }
 
-        private void OnSetupStage(Player player, JToken data) {
-            QuestCard quest = player.Match.CurrentStory as QuestCard;
+        private void OnPlayCardStage(Player player, JToken data) {
+            QuestCard quest = this.matches[player].CurrentStory as QuestCard;
+            QuestArea area = quest.StageBuilder;
 
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
-
             List<FoeCard> foe = player.Hand.GetCards<FoeCard>(cardNames);
             List<WeaponCard> weapons = player.Hand.GetCards<WeaponCard>(cardNames);
             List<TestCard> test = player.Hand.GetCards<TestCard>(cardNames);
 
-            if (test.Count > 0) {
-                quest.AddTestStage(test[0]);
-            } else {
-                if (test.Count > 0) {
-                    quest.AddFoeStage(foe[0], weapons);
-                }
+            player.Hand.Transfer(area, test.Cast<Card>().ToList());
+            player.Hand.Transfer(area, foe.Cast<Card>().ToList());
+            player.Hand.Transfer(area, weapons.Cast<Card>().ToList());
+
+            this.UpdateOtherArea(player, area.Cards);
+        }
+
+        private void OnConfirmStage(Player player, JToken data) {
+            QuestCard quest = this.matches[player].CurrentStory as QuestCard;
+            QuestArea area = quest.StageBuilder;
+
+            if (area.MainCard != null) {
+                quest.AddStage(area);
+                quest.StageResponse();
             }
         }
 
@@ -195,19 +204,25 @@ namespace Quest.Core {
             await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
         }
 
-        public async void UpdateOtherArea(QuestMatch match, List<Card> cards) {
+        public async void UpdateOtherArea(Player player, List<Card> cards) {
             JObject data = new JObject();
 
             string areaName = "other";
-            if (match.CurrentStory is QuestCard) areaName = "quest";
-            if (match.CurrentStory is TournamentCard) areaName = "tournament";
+            if (matches[player].CurrentStory is QuestCard) areaName = "quest";
+            if (matches[player].CurrentStory is TournamentCard) areaName = "tournament";
             data["area_name"] = areaName;
 
             JArray cardArray = new JArray();
             cards.ForEach((c) => cardArray.Add(c.Converter.Json.ToJObject(c)));
             data["cards"] = cardArray;
             EventData evn = new EventData("update_other_area", data);
-            await this.messageHandler.SendToMatchAsync(match, evn.ToString());
+            await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
+        } 
+
+        public async void UpdateOtherArea(QuestMatch match, List<Card> cards) {
+            foreach (Player player in match.Players) {
+                this.UpdateOtherArea(player, cards);
+            }
         }
 
         public async void RequestDiscard(Player player) {

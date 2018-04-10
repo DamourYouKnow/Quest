@@ -9,6 +9,7 @@ namespace Quest.Core.Cards{
 		protected int currentStage;
 		protected Player sponsor;
 		protected List<QuestArea> stages;
+        protected QuestArea stageBuilder;
 		protected List<Type> questFoes;
         protected Dictionary<Player, Stack<List<BattleCard>>> battleHistory;
 
@@ -42,6 +43,10 @@ namespace Quest.Core.Cards{
 			get { return this.questFoes; }
 		}
 
+        public QuestArea StageBuilder {
+            get { return this.stageBuilder; }
+        }
+
         public void AddFoeStage(FoeCard foe, List<WeaponCard> weapons = null) {
             if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
 
@@ -67,6 +72,11 @@ namespace Quest.Core.Cards{
             this.sponsor.Hand.Transfer(area, test);
             this.stages.Add(area);
             this.match.Log(this.sponsor.Username + " adding stage " + test.ToString() + " to " + this.name);
+        }
+
+        public void AddStage(QuestArea area) { 
+            if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
+            this.stages.Add(area);
         }
 
         public QuestArea GetStage(int stageNumber) {
@@ -127,6 +137,7 @@ namespace Quest.Core.Cards{
         }
 
         public void RequestStage() {
+            this.stageBuilder = new QuestArea();
             this.match.Controller.RequestStage(this.sponsor);
         }
 
