@@ -83,7 +83,7 @@ namespace Quest.Core {
             int strat = (int)data["strategy"];
             QuestMatch match = this.matches[player];
 
-            Player aiPlayer = new Player("player " + match.Players.Count);
+            Player aiPlayer = new Player("AI Player " + match.Players.Count);
             if (strat == 1) aiPlayer.Behaviour = new Strategy1();
             if (strat == 2) aiPlayer.Behaviour = new Strategy2();
             if (strat == 3) aiPlayer.Behaviour = new Strategy3();
@@ -190,6 +190,7 @@ namespace Quest.Core {
             JArray cardArray = new JArray();
             player.BattleArea.Cards.ForEach((c) => cardArray.Add(c.Converter.Json.ToJObject(c)));
             data["cards"] = cardArray;
+            data["battle_points"] = player.BattleArea.BattlePoints();
             EventData evn = new EventData("update_player_area", data);
             await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
         }

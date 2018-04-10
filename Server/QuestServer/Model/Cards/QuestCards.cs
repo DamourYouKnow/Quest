@@ -114,11 +114,11 @@ namespace Quest.Core.Cards{
         public override void ParticipationResponse(Player player, bool participating) {
             this.responded.Add(player);
             if (participating) {
-                this.match.Controller.Message(this.match, player.Username + " participating");
+                this.match.Controller.Message(this.match, player.Username + " participating in " + this.name);
                 this.participants.Add(player);
             }
             else {
-                this.match.Controller.Message(this.match, player.Username + " not participating");
+                this.match.Controller.Message(this.match, player.Username + " not participating in" + this.name);
             }
 
             if (this.responded.Count == this.match.Players.Count) {
@@ -200,14 +200,15 @@ namespace Quest.Core.Cards{
         /// <param name="sponsor"></param>
         public void SponsorshipResponse(Player player, bool sponsor) {
             if (sponsor) {
-                this.match.Controller.Message(this.match, player.Username + " sponsored quest");
+                this.match.Controller.Message(this.match, player.Username + " sponsored " + this.name);
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
                 this.RequestParticipation();
             }
             else {
-                this.match.Controller.Message(this.match, player.Username + " did not sponsor");
+                this.match.Controller.Message(this.match, player.Username + " did not sponsor " + this.name);
                 this.match.Log("Quest not sponsored");
+                this.match.RoundEndResponse(player);
             }
         }
 

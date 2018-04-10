@@ -110,10 +110,10 @@ namespace Quest.Core.Cards {
         public virtual void ParticipationResponse(Player player, bool participating) {
             this.responded.Add(player);
             if (participating) {
-                this.match.Controller.Message(this.match, player.Username + " participating");
+                this.match.Controller.Message(this.match, player.Username + " participating in " + this.name);
                 this.participants.Add(player);
             } else {
-                this.match.Controller.Message(this.match, player.Username + " not participating");
+                this.match.Controller.Message(this.match, player.Username + " not participating in " + this.name);
             }
 
             if (this.responded.Count == this.match.Players.Count) {
