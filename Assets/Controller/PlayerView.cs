@@ -16,45 +16,45 @@ namespace Quest.Core.View{
 			public const string RESOURCES_CARDS = "Cards/";
 	}
 	public class PlayerView : MonoBehaviour {
+			private Dictionary<string, Action<JToken>> eventHandlers;
+			private Dictionary<string, GameObject> disabledObjects;
+			private Queue<Action> updateQueue;
+			private List<string> games;
+			private List<Player> players;
+			private List<Card> otherAreaCards;
+			private List<Card> handAreaCards;
+			private List<Card> playerAreaCards;
+
 	    private UnityWebSocket socket;
-			private GameObject gameCanvas;
+			private Card currentStory;
 			private string sceneName;
 			private string prepScene;
 			private string userName;
 			private string serverAddress;
-			private bool isHost;
-			private bool isConnected;
-			private List<string> games;
-			private Dictionary<string, GameObject> disabledObjects;
-			private int scenario;
-			private Dictionary<string, Action<JToken>> eventHandlers;
-			private Queue<Action> updateQueue;
-			private int gameid;
-			private List<Player> players;
-			private Card currentStory;
-			private List<Card> otherAreaCards;
-			private List<Card> handAreaCards;
-			private List<Card> playerAreaCards;
-			private bool prompting;
 			private string promptName;
 			private string promptMessage;
 			private string promptImage;
 			private string newHistory;
 			private string otherAreaName;
+			private string confirmationMessage;
+			private bool isHost;
+			private bool isConnected;
+			private bool prompting;
+			private int scenario;
+			private int gameid;
 
+			private GameObject gameCanvas;
 			private GameObject handArea;
 			private GameObject battleArea;
 			private GameObject otherArea;
-			private Text otherAreaText;
-			private Text confirmationButtonText;
-			private Button confirmationButton;
-			private string confirmationMessage;
-			private Image currentStoryCard;
-			private Text historyScrollText;
 			private GameObject historyScroll;
 			private Button historyButton;
+			private Button confirmationButton;
+			private Image currentStoryCard;
+			private Text otherAreaText;
+			private Text confirmationButtonText;
+			private Text historyScrollText;
 			private Text historyButtonText;
-			//private Dictionary<string, GameObject> opponents;
 
 			public int Gameid{
 				get {return this.gameid;}
@@ -65,7 +65,11 @@ namespace Quest.Core.View{
 				set {this.gameCanvas = value;}
 			}
 
+		/*
+			Initial PlayerView setup.
+		*/
 		private void Awake(){
+			//Variable and collections
 			this.disabledObjects = new Dictionary<string, GameObject>();
 			this.serverAddress = Constants.DEFAULT_SERVER_ADDRESS;
 			this.userName = Constants.DEFAULT_USERNAME;
@@ -80,8 +84,9 @@ namespace Quest.Core.View{
 			this.updateQueue = new Queue<Action>();
 			this.newHistory = "";
 			this.confirmationMessage = "";
-
 			this.eventHandlers = new Dictionary<string, Action<JToken>>();
+
+			//Socket events
 			On("update_games", OnRCVUpdateGames);
 			On("update_players", OnRCVUpdatePlayers);
 			On("update_story", OnRCVUpdateStory);
@@ -95,25 +100,22 @@ namespace Quest.Core.View{
 			On("request_stage", OnRCVRequestStage);
 			On("request_play_cards", OnRCVRequestPlayCards);
 			On("end_story", OnRCVEndStory);
-			/*
-			>request_quest_sponsor
-			<quest_sponsor_response
-			>request_stage
-			<play_cards, play_cards........
-			<setup_stage
-			>request_play_cards
-			<play_cards, play_cards........
-			<confirm_cards
-			*/
 
+			//Unity events
 			SceneManager.activeSceneChanged += OnUISceneChanged;
 
 			DontDestroyOnLoad (this);
 		}
-
+		/*
+			More PlayerView setup if dependent on other objects.
+		*/
     private void Start() {
     }
 
+		/*
+			Runs UpdateOnline function if connected to server,
+			UpdateOffline otherwise.
+		*/
 		public void Update(){
 				if(this.prepScene!=this.sceneName){
 						LoadScene(this.prepScene);
@@ -137,6 +139,9 @@ namespace Quest.Core.View{
 				}
 		}
 
+		/*
+			UpdateOnline calls specific scene UpdateOnline function
+		*/
 		private void UpdateOnline(){
 			switch(this.sceneName){
 				case "MainMenu":
@@ -150,7 +155,6 @@ namespace Quest.Core.View{
 					break;
 			}
 		}
-
 		private void UpdateOnlineMainMenu(){
 			if(!this.disabledObjects.ContainsKey("Button_Connect")){
 				EnableObject("Canvas_NetworkGames");
@@ -183,22 +187,19 @@ namespace Quest.Core.View{
 			}
 		}
 		private void UpdateOnlineMatch(){
-
-
 			while(this.updateQueue.Count>0){
 				Action next = this.updateQueue.Dequeue();
 				next();
 			}
 
 			confirmationButtonText.text = "End Turn";
-			/*
-			battleArea = GameObject.Find("BattleArea");
-			otherArea = GameObject.Find("OtherArea");
-			otherAreaText = GameObject.Find("OtherAreaText").GetComponent<Text>();
-			confirmationButton = GameObject.Find("ConfirmationButton").GetComponent<Button>();
-			*/
 		}
 
+		/*
+			UpdateOffline calls specific scene UpdateOffline function.
+			Is generally unused except to update main menu at start.
+			TODO: Could run offline game here
+		*/
 		private void UpdateOffline(){
 			switch(this.sceneName){
 				case "MainMenu":
@@ -218,6 +219,10 @@ namespace Quest.Core.View{
 				EnableObject("Button_Connect");
 			}
 		}
+
+		/*
+			Prompt specific updates.
+		*/
 		private void UpdatePrompt(){
 			switch(promptName){
 				case "SponsorQuestPrompt":
@@ -275,6 +280,11 @@ namespace Quest.Core.View{
 				SendMessage(evn.ToString());
 			};
 		}
+
+		/*
+			Update functions added to updateQueue from other threads because they
+			interact with UnityEngine and must be run from main thread.
+		*/
 		private void UpdateHand(){
 			foreach (Transform child in this.handArea.transform) {
 				GameObject.Destroy(child.gameObject);
@@ -330,6 +340,31 @@ namespace Quest.Core.View{
 			this.otherAreaText.text = this.otherAreaName;
 			this.otherArea.GetComponent<DropArea>().name = this.otherAreaName;
 		}
+		private void UpdateEndStory(){
+			this.confirmationButton.gameObject.SetActive(true);
+			this.confirmationButtonText.text = "End Turn";
+			this.confirmationMessage = "round_end";
+		}
+		private void UpdateRequestPlayCards(){
+			this.confirmationButton.gameObject.SetActive(true);
+			this.confirmationButtonText.text = "Confirm Cards";
+			this.confirmationMessage = "confirm_cards";
+		}
+		private void UpdateRequestStage(){
+			this.confirmationButton.gameObject.SetActive(true);
+			this.confirmationButtonText.text = "Confirm Cards";
+			this.confirmationMessage = "confirm_stage";
+		}
+		private void UpdateRequestDiscard(){
+			this.confirmationButton.gameObject.SetActive(false);
+			this.confirmationButtonText.text = "";
+			this.confirmationMessage = "";
+		}
+
+		/*
+			Called on new scene.
+			Calls Init for specific scene.
+		*/
 		public void OnUISceneChanged(Scene lastScene, Scene nextScene){
 				this.sceneName = nextScene.name;
 				this.prepScene = this.sceneName;
@@ -374,12 +409,10 @@ namespace Quest.Core.View{
 			currentStoryCard = GameObject.Find("StoryCard").GetComponent<Image>();
 			confirmationButton = GameObject.Find("ConfirmationButton").GetComponent<Button>();
 			confirmationButtonText = GameObject.Find("ConfirmationText").GetComponent<Text>();
-
 			historyScrollText = GameObject.Find("HistoryScrollText").GetComponent<Text>();
 			historyScroll = GameObject.Find("HistoryScroll");
 			historyButton = GameObject.Find("HistoryButton").GetComponent<Button>();
 			historyButtonText = GameObject.Find("HistoryButtonText").GetComponent<Text>();
-
 			historyScroll.SetActive(false);
 
 			GameObject opponentsPanel = GameObject.Find("Opponents");
@@ -390,12 +423,12 @@ namespace Quest.Core.View{
 			}
 
 			confirmationButton.onClick.AddListener(OnUIConfirmation);
-
 			historyButton.onClick.AddListener(OnUIHistoryButton);
-			//private Dictionary<string, GameObject> opponents;
 		}
 
-			//public void OnUpdateGames()
+			/*
+				UI triggered Event functions.
+			*/
 			public void OnUIAddAI(){
 				JObject data = new JObject();
 				data["strategy"] = GameObject.Find("Dropdown_AIStrategy").GetComponent<Dropdown>().value+1;
@@ -511,9 +544,10 @@ namespace Quest.Core.View{
 				}
 				this.historyButton.GetComponent<Image>().color = Color.white;
 			}
-			public void On(string eventName, Action<JToken> handler) {
-					eventHandlers.Add(eventName, handler);
-			}
+
+			/*
+				Message received Event functions.
+			*/
 			public void OnRCVUpdateGames(JToken data){
 				JArray arr = (JArray)data["game_ids"];
 				this.games = arr.ToObject<List<string>>();
@@ -570,47 +604,28 @@ namespace Quest.Core.View{
 			public void OnRCVRequestDiscard(JToken data){
 				this.otherAreaName = "Discard Area";
 				this.updateQueue.Enqueue(UpdateOtherAreaNames);
+				this.updateQueue.Enqueue(UpdateRequestDiscard);
 				//TODO:this.confirmationMessage = ".....";
 			}
 			public void OnRCVRequestStage(JToken data){
 				this.otherAreaName = "Quest Area";
 				this.updateQueue.Enqueue(UpdateOtherAreaNames);
-				this.confirmationMessage = "confirm_stage";
+				this.updateQueue.Enqueue(UpdateRequestStage);
 			}
 			public void OnRCVRequestPlayCards(JToken data){
 				this.otherAreaName = "Stage";
 				this.updateQueue.Enqueue(UpdateOtherAreaNames);
-				this.confirmationMessage = "confirm_cards";
+				this.updateQueue.Enqueue(UpdateRequestPlayCards);
 			}
 			public void OnRCVEndStory(JToken data){
-				this.confirmationMessage = "round_end";
+				this.otherAreaName = "";
+				this.updateQueue.Enqueue(UpdateOtherAreaNames);
+				this.updateQueue.Enqueue(UpdateEndStory);
 			}
+
 			/*
-			public void OnRCVRequestQuestSponsor(JToken data){
-				this.promptName = "SponsorQuestPrompt";
-				this.promptMessage = (string)data["message"];
-				this.promptImage = (string)data["image"];
-			}
+				Socket functions.
 			*/
-
-			private void DisableObject(string objectName){
-				GameObject go = GameObject.Find(objectName);
-				if(go != null){
-					go.SetActive(false);
-					disabledObjects.Add(objectName, go);
-				}
-			}
-			private void EnableObject(string objectName){
-				if(disabledObjects.ContainsKey(objectName)){
-					GameObject go = disabledObjects[objectName];
-					disabledObjects.Remove(objectName);
-					go.SetActive(true);
-				}
-			}
-			public void LoadScene(string scene_name){
-				SceneManager.LoadScene (scene_name);
-			}
-
 			private void Connect(string uri=Constants.DEFAULT_SERVER_ADDRESS){
 				if(uri == ""){
 					uri = this.serverAddress;
@@ -634,7 +649,9 @@ namespace Quest.Core.View{
         byte[] data = Encoding.UTF8.GetBytes(message);
         this.socket.SendAsync(data);
 	    }
-
+			/*
+				Socket events.
+			*/
 			public void OnClose(UnityWebSocket sender, int code, string reason) {
 				Debug.Log("Connection closed: " + reason);
 				this.isConnected = false;
@@ -659,6 +676,42 @@ namespace Quest.Core.View{
 	    private void OnError(UnityWebSocket sender, string message) {
 	        Debug.Log("Error: " + message);
 	    }
+			/*
+				Add new action to messageHandler.
+			*/
+			public void On(string eventName, Action<JToken> handler) {
+					eventHandlers.Add(eventName, handler);
+			}
+
+			/*
+				Disable a game object.
+				Must be called from main thread.
+			*/
+			private void DisableObject(string objectName){
+				GameObject go = GameObject.Find(objectName);
+				if(go != null){
+					go.SetActive(false);
+					disabledObjects.Add(objectName, go);
+				}
+			}
+			/*
+				Enable a game object.
+				Must be called from main thread.
+			*/
+			private void EnableObject(string objectName){
+				if(disabledObjects.ContainsKey(objectName)){
+					GameObject go = disabledObjects[objectName];
+					disabledObjects.Remove(objectName);
+					go.SetActive(true);
+				}
+			}
+			/*
+				Load scene specified by scene_name.
+				Must be called from main thread.
+			*/
+			public void LoadScene(string scene_name){
+				SceneManager.LoadScene (scene_name);
+			}
 	}
 
 	public class EventData {
