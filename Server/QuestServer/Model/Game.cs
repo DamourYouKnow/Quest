@@ -127,8 +127,6 @@ namespace Quest.Core {
 				this.Log (e.StackTrace);
 			}
 
-            this.controller.EndStory(this);
-
             // Make sure AIs send their end turn responses.
             foreach (Player player in this.players) {
                 if (player.Behaviour != null && !(player.Behaviour is HumanPlayer)) {

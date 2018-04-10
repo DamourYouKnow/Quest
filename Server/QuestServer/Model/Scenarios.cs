@@ -48,9 +48,15 @@ namespace Quest.Core.Scenarios {
         }
 
         public static QuestMatch Scenario2(GameController controller=null) {
-			QuestMatch game = new QuestMatch(logger:new Logger("Scenario2"), 
-                                             controller:controller);
-            game.Setup(shuffleDecks:true);
+            QuestMatch game = new QuestMatch(logger: new Logger("Scenario1"),
+                                             controller: controller);
+
+            game.Setup(shuffleDecks: true);
+
+            game.StoryDeck.Push(new ProsperityEvent(game));
+            game.StoryDeck.Push(new ChivalrousDeedEvent(game));
+            game.StoryDeck.Push(new SearchForTheHolyGrail(game));
+
             return game;
         }
     }

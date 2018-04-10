@@ -126,8 +126,7 @@ namespace Quest.Core.Cards{
             if (participating) {
                 this.match.Controller.Message(this.match, player.Username + " participating in " + this.name);
                 this.participants.Add(player);
-
-                // Add history.
+                player.Draw(this.match.AdventureDeck);
                 this.battleHistory.Add(player, new Stack<List<BattleCard>>());
             }
             else {
@@ -155,6 +154,10 @@ namespace Quest.Core.Cards{
         public override void RequestPlays() {
             // FIXME: Does this require adding the main card to the list?
             this.match.Controller.UpdateOtherArea(this.match, this.stages[this.currentStage - 1].Cards);
+
+            if (this.participants.Count == 0) {
+                this.Resolve();
+            }
 
             foreach (Player participant in this.participants) {
                 if (participant.Behaviour is HumanPlayer) {
@@ -273,7 +276,8 @@ namespace Quest.Core.Cards{
 				}
 				numDraw += this.numStages;
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
-			}
+                this.match.Controller.EndStory(this.match);
+            }
 			else {
 				foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
 					p.Draw (this.match.AdventureDeck);
