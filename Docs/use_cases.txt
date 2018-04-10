@@ -3,19 +3,73 @@
 events in GameController in server
 the one's in InitHandlers are event from the client sent to the server
 the public one's starting with On are the events from server to client
+
 **************
+
+Use Case: Join game
+Description: Describes the steps of a human player joining a match.
+External Actors: player, game system
+Related Use Cases: Add AI Player
+Precondition: Pre existing game lobby must exist, along with the host/game creator
+Triggering Event: player requests to join the match.
+1. Player requests to join the match.
+2. Game system verifies that adding the human player won't exceed the maximum number of players allowed in a match.
+3. Game system adds the requesting player to the list of players in the match.
+Resulting events: A new player is added to the match.
+Post condition: Game system waiting for request from player(s).
+Alternatives:
+	-If adding the AI player exceeds the maximum number of players allowed in a match, the request is denied.
+
+------------------------------------------------------------------
 
 Use Case: Add AI Player
 Description: Describes the steps of adding an AI Player to the match.
-External Actors: user, server(?)
-Related Use Cases: ? add later
-Precondition: Players in lobby, system waiting for request from user.
-Triggering Event: User requests to add an AI to the match
-1. User requests to add an AI player to the match
-2. System asks user which strategy the AI should use. User selects a strategy.
-3. System verifies that adding the AI player won't exceed the maximum number of players allowed in a match.
-4. System adds the corresponding AI player to the list of players in the match.
+External Actors: player, game system
+Related Use Cases: Add human player
+Precondition: Players in lobby, game system waiting for request from player(s).
+Triggering Event: player requests to add an AI to the match
+1. player requests to add an AI player to the match
+2. Game system asks player which strategy the AI should use. Player selects a strategy.
+3. Game system verifies that adding the AI player won't exceed the maximum number of players allowed in a match.
+4. Game system adds the corresponding AI player to the list of players in the match.
 Resulting events: An AI player is added to the match.
-Post condition: System waiting for request from user.
+Post condition: Game system waiting for request from player(s).
 Alternatives:
 	-If adding the AI player exceeds the maximum number of players allowed in a match, the request is denied.
+
+-------------------------------------------------------------------
+
+Use Case: Start game
+Description: Describes the steps of starting a new Quest game.
+External Actors: players, game system
+Related use cases:
+Precondition: Players in lobby, game system waiting for request from player(s).
+Triggering Event: Game host requests to start a new Quest match.
+1. Game host requests to start a new Quest match.
+2. Game system verifies that there is a sufficient number of participating players in the lobby.
+3. Game system creates and runs a new game.
+4. Game system shuffles the deck of cards(**not sure, in OnStartGame, shuffleDecks is false**) and deals each player 12 cards.
+Resulting events: A new match is created and participating players are dealt 12 cards each.
+Post condition: The match begins and players start drawing the story cards.
+Alternatives:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
