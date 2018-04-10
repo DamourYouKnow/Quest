@@ -203,7 +203,7 @@ namespace Quest.Core.Cards{
                 this.match.Controller.Message(this.match, player.Username + " sponsored " + this.name);
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
-                this.RequestParticipation();
+                this.RequestStage();
             }
             else {
                 this.match.Controller.Message(this.match, player.Username + " did not sponsor " + this.name);
