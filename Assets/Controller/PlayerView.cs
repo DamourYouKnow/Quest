@@ -48,6 +48,7 @@ namespace Quest.Core.View{
 			private Text otherAreaText;
 			private Text confirmationButtonText;
 			private Button confirmationButton;
+			private string confirmationMessage;
 			private Image currentStoryCard;
 			private Text historyScrollText;
 			private GameObject historyScroll;
@@ -90,6 +91,18 @@ namespace Quest.Core.View{
 			On("request_quest_participation", OnRCVRequestQuestParticipation);
 			On("message", OnRCVMessage);
 			On("request_discard", OnRCVRequestDiscard);
+			On("request_stage", OnRCVRequestStage);
+			On("request_play_cards", OnRCVRequestPlayCards);
+			/*
+			>request_quest_sponsor
+			<quest_sponsor_response
+			>request_stage
+			<play_cards, play_cards........
+			<setup_stage
+			>request_play_cards
+			<play_cards, play_cards........
+			<confirm_cards
+			*/
 
 			SceneManager.activeSceneChanged += OnUISceneChanged;
 
@@ -312,8 +325,8 @@ namespace Quest.Core.View{
 			this.newHistory = "";
 		}
 		private void UpdateOtherAreaNames(){
-			this.otherAreaText.text = "Discard Area";
-			this.otherArea.GetComponent<DropArea>().name = "Discard Area";
+			this.otherAreaText.text = this.otherAreaName;
+			this.otherArea.GetComponent<DropArea>().name = this.otherAreaName;
 		}
 		public void OnUISceneChanged(Scene lastScene, Scene nextScene){
 				this.sceneName = nextScene.name;
@@ -375,6 +388,8 @@ namespace Quest.Core.View{
 			}
 
 			confirmationButton.onClick.AddListener(OnUIConfirmation);
+			confirmationMessage = "";
+
 			historyButton.onClick.AddListener(OnUIHistoryButton);
 			//private Dictionary<string, GameObject> opponents;
 		}
@@ -432,9 +447,11 @@ namespace Quest.Core.View{
 				SendMessage(evn.ToString());
 			}
 			public void OnUIConfirmation(){
-				JObject data = new JObject();
-				EventData evn = new EventData("round_end", data);
-				SendMessage(evn.ToString());
+				if(this.confirmationMessage != ""){
+					JObject data = new JObject();
+					EventData evn = new EventData(this.confirmationMessage, data);
+					SendMessage(evn.ToString());
+				}
 			}
 			public void OnUIScenarioOne(){
 				if(isConnected){
@@ -457,12 +474,20 @@ namespace Quest.Core.View{
 				LoadScene("Lobby");
 			}
 			public void OnUIDrop(string areaName, string cardName){
-				if(areaName == "Battle Area" || areaName == "Quest Area"){
+				if(areaName == "Battle Area"){
 					JObject data = new JObject();
 					JArray cards = new JArray();
 					cards.Add(cardName);
 					data["cards"] = cards;
 					EventData evn = new EventData("play_cards", data);
+					SendMessage(evn.ToString());
+				}
+				else if(areaName == "Quest Area"){
+					JObject data = new JObject();
+					JArray cards = new JArray();
+					cards.Add(cardName);
+					data["cards"] = cards;
+					EventData evn = new EventData("play_cards_stage", data);
 					SendMessage(evn.ToString());
 				}
 				else if(areaName == "Discard Area"){
@@ -542,8 +567,19 @@ namespace Quest.Core.View{
 				this.updateQueue.Enqueue(UpdateHistory);
 			}
 			public void OnRCVRequestDiscard(JToken data){
-				otherAreaName = "Discard Area";
+				this.otherAreaName = "Discard Area";
 				this.updateQueue.Enqueue(UpdateOtherAreaNames);
+				//TODO:this.confirmationMessage = ".....";
+			}
+			public void OnRCVRequestStage(JToken data){
+				this.otherAreaName = "Quest Area";
+				this.updateQueue.Enqueue(UpdateOtherAreaNames);
+				this.confirmationMessage = "confirm_stage";
+			}
+			public void OnRCVRequestPlayCards(JToken data){
+				this.otherAreaName = "Stage";
+				this.updateQueue.Enqueue(UpdateOtherAreaNames);
+				this.confirmationMessage = "confirm_cards";
 			}
 			/*
 			public void OnRCVRequestQuestSponsor(JToken data){
