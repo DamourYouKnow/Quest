@@ -38,11 +38,11 @@ namespace Quest.Core.Scenarios {
 			QuestMatch game = new QuestMatch(logger:new Logger("Scenario1"), 
                                              controller:controller);
 
+            game.Setup(shuffleDecks:true);
+
             game.StoryDeck.Push(new ProsperityEvent(game));
             game.StoryDeck.Push(new ChivalrousDeedEvent(game));
             game.StoryDeck.Push(new BoarHunt(game));
-
-            game.Setup(shuffleDecks:true);
 
             return game;
         }

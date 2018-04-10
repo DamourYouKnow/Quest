@@ -143,10 +143,6 @@ namespace Quest.Core {
             }
         }
 
-        private void DiscardCards(Player player, JToken data) {
-
-        }
-
         private void OnDiscard(Player player, JToken data) {
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Discard(player.Hand.GetCards<Card>(cardNames));
@@ -235,7 +231,9 @@ namespace Quest.Core {
 
         public async void UpdateOtherArea(QuestMatch match, List<Card> cards) {
             foreach (Player player in match.Players) {
-                this.UpdateOtherArea(player, cards);
+                if (this.matches.ContainsKey(player)) {
+                    this.UpdateOtherArea(player, cards);
+                }
             }
         }
 
