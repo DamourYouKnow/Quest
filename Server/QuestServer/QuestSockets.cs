@@ -31,7 +31,6 @@ namespace Quest.Utils.Networking {
 
         public override async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer) {
             string message = Encoding.UTF8.GetString(buffer);
-            Console.WriteLine("Message received: " + message.TrimEnd('\0'));
             this.logger.Log("Message received: " + message.TrimEnd('\0'));
             JObject jqe = JObject.Parse(message);
 
@@ -45,7 +44,6 @@ namespace Quest.Utils.Networking {
                     player_socket.Add(newPlayer, socket);
                 }
             }
-
             if (eventHandlers.ContainsKey(eventName)) {
                 eventHandlers[eventName](socket_player[socket], jqe["data"]);
             }

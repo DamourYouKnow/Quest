@@ -9,8 +9,10 @@ namespace Quest.Core.Cards{
 		protected int currentStage;
 		protected Player sponsor;
 		protected List<QuestArea> stages;
+        protected QuestArea stageBuilder;
 		protected List<Type> questFoes;
         protected Dictionary<Player, Stack<List<BattleCard>>> battleHistory;
+        private int nextParticipant = 0;
 
         public QuestCard(QuestMatch match) : base(match) {
             this.questFoes = new List<Type>();
@@ -42,6 +44,10 @@ namespace Quest.Core.Cards{
 			get { return this.questFoes; }
 		}
 
+        public QuestArea StageBuilder {
+            get { return this.stageBuilder; }
+        }
+
         public void AddFoeStage(FoeCard foe, List<WeaponCard> weapons = null) {
             if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
 
@@ -69,6 +75,12 @@ namespace Quest.Core.Cards{
             this.match.Log(this.sponsor.Username + " adding stage " + test.ToString() + " to " + this.name);
         }
 
+        public void AddStage(QuestArea area) { 
+            if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
+            this.stages.Add(area);
+            this.match.Log(this.sponsor.Username + " adding stage with " + Utils.Stringify.CommaList(area.Cards));
+        }
+
         public QuestArea GetStage(int stageNumber) {
             return this.stages[stageNumber - 1];
         }
@@ -94,53 +106,90 @@ namespace Quest.Core.Cards{
             this.currentStage = stageNumber;
         }
 
-        public override void RequestParticipation() {
-            foreach (Player player in this.match.OtherPlayers) {
-                if (player.Behaviour is HumanPlayer) {
-                    // Send participation request to player through sockets.
-                    this.match.Controller.PromptPlayer(player,
-                                                       "request_quest_participation",
-                                                       "Would you like to participate in " + this.name,
-                                                       image: this.imageFilename);
-                } 
-                else if (player.Behaviour != null) {
-                    // Use strategies to determine player participation.
-                    this.ParticipationResponse(player, 
-                                     player.Behaviour.ParticipateInQuest(this, player.Hand));
-                }
+        public override void RequestNextParticipant() {
+            Player player = this.match.Players[this.nextParticipant];
+            this.nextParticipant++;
+
+            if (player == this.sponsor) {
+                this.RequestNextParticipant();
+                return;
+            }
+            
+            if (player.Behaviour is HumanPlayer) {
+                // Send participation request to player through sockets.
+                this.match.Controller.PromptPlayer(player,
+                                                   "request_quest_participation",
+                                                   "Would you like to participate in " + this.name,
+                                                   image: this.imageFilename);
+            }
+            else if (player.Behaviour != null) {
+                // Use strategies to determine player participation.
+                this.ParticipationResponse(player,
+                                 player.Behaviour.ParticipateInQuest(this, player.Hand));
             }
         }
 
         public override void ParticipationResponse(Player player, bool participating) {
             this.responded.Add(player);
             if (participating) {
-                this.match.Controller.Message(this.match, player.Username + " participating");
+                this.match.Controller.Message(this.match, player.Username + " participating in " + this.name);
                 this.participants.Add(player);
+                player.Draw(this.match.AdventureDeck);
+                this.battleHistory.Add(player, new Stack<List<BattleCard>>());
             }
             else {
-                this.match.Controller.Message(this.match, player.Username + " not participating");
+                this.match.Controller.Message(this.match, player.Username + " not participating in" + this.name);
             }
 
             if (this.responded.Count == this.match.Players.Count) {
-                this.RequestStage();
+                this.SetupNextStage();
+            } else {
+                this.RequestNextParticipant();
             }
         }
 
-        public void RequestStage() {
-            this.match.Controller.RequestStage(this.sponsor);
+        public void SetupNextStage() {
+            if (this.participants.Count == 0) {
+                this.Resolve();
+                return;
+            }
+
+            if (this.sponsor.Behaviour is HumanPlayer) {
+                this.stageBuilder = new QuestArea();
+                this.match.Controller.RequestStage(this.sponsor);
+            }
+            else if (this.sponsor.Behaviour != null) {
+                // Player behaviour functions for individual stage setup.
+                List<AdventureCard>[] stages = this.sponsor.Behaviour.SetupQuest(this, this.sponsor.Hand);
+                foreach (List<AdventureCard> stage in stages) {
+                    if (stage.Count == 1 && stage[0] is TestCard) {
+                        this.AddTestStage((TestCard)stage[0]);
+                    }
+                    else {
+                        FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
+                        List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
+                        this.AddFoeStage(foe, weapons);
+                    }
+                }
+            }
         }
 
         public void StageResponse() {
             if (this.stages.Count == this.StageCount) {
-                this.RequestParticipation();
-            } else {
                 this.RequestPlays();
+            } else {
+                this.SetupNextStage();
             }
         }
 
         public override void RequestPlays() {
             // FIXME: Does this require adding the main card to the list?
             this.match.Controller.UpdateOtherArea(this.match, this.stages[this.currentStage - 1].Cards);
+
+            if (this.participants.Count == 0) {
+                this.Resolve();
+                return;
+            }
 
             foreach (Player participant in this.participants) {
                 if (participant.Behaviour is HumanPlayer) {
@@ -174,21 +223,6 @@ namespace Quest.Core.Cards{
                 // Otherwise decide with strategy.
                 bool sponsor = currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand);
                 this.SponsorshipResponse(currentPlayer, sponsor);
-
-                if (sponsor) {
-                    // Player behaviour functions for individual stage setup.
-                    List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
-                    foreach (List<AdventureCard> stage in stages) {
-                        if (stage.Count == 1 && stage[0] is TestCard) {
-                            this.AddTestStage((TestCard)stage[0]);
-                        }
-                        else {
-                            FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
-                            List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
-                            this.AddFoeStage(foe, weapons);
-                        }
-                    }
-                }
             }
         }
 
@@ -200,14 +234,16 @@ namespace Quest.Core.Cards{
         /// <param name="sponsor"></param>
         public void SponsorshipResponse(Player player, bool sponsor) {
             if (sponsor) {
-                this.match.Controller.Message(this.match, player.Username + " sponsored quest");
+                this.match.Controller.Message(this.match, player.Username + " sponsored " + this.name);
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
-                this.RequestParticipation();
+                this.responded.Add(player);
+                this.RequestNextParticipant();
             }
             else {
-                this.match.Controller.Message(this.match, player.Username + " did not sponsor");
+                this.match.Controller.Message(this.match, player.Username + " did not sponsor " + this.name);
                 this.match.Log("Quest not sponsored");
+                this.match.Controller.EndStory(this.match);
             }
         }
 
@@ -216,6 +252,20 @@ namespace Quest.Core.Cards{
         }
 
 		public override void Resolve(){
+            if (this.stages.Count == 0) {
+                this.match.Log("Quest ending since nobody sponsored");
+
+                int numDraw = 0;
+                foreach (var item in this.stages) {
+                    numDraw += item.Count;
+                }
+                numDraw += this.numStages;
+                this.sponsor.Draw(this.match.AdventureDeck, numDraw);
+
+                this.match.Controller.EndStory(this.match);
+                return;
+            }
+
 			List<Player> winners = new List<Player>();
             if (this.stages[currentStage - 1].MainCard is TestCard) {
                 // TODO: Implement Test stage.
@@ -257,7 +307,8 @@ namespace Quest.Core.Cards{
 				}
 				numDraw += this.numStages;
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
-			}
+                this.match.Controller.EndStory(this.match);
+            }
 			else {
 				foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
 					p.Draw (this.match.AdventureDeck);

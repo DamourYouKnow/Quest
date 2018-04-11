@@ -83,13 +83,13 @@ namespace Quest.Core.Cards {
         }
 
         public override void Run() {
-            this.RequestParticipation();
+            this.RequestNextParticipant();
         }
 
         /// <summary>
         /// Send prompts to players requesting their participation.
         /// </summary>
-        public abstract void RequestParticipation();
+        public abstract void RequestNextParticipant();
 
         /// <summary>
         /// Send prompts to players requesting their plays.
@@ -110,10 +110,10 @@ namespace Quest.Core.Cards {
         public virtual void ParticipationResponse(Player player, bool participating) {
             this.responded.Add(player);
             if (participating) {
-                this.match.Controller.Message(this.match, player.Username + " participating");
+                this.match.Controller.Message(this.match, player.Username + " participating in " + this.name);
                 this.participants.Add(player);
             } else {
-                this.match.Controller.Message(this.match, player.Username + " not participating");
+                this.match.Controller.Message(this.match, player.Username + " not participating in " + this.name);
             }
 
             if (this.responded.Count == this.match.Players.Count) {

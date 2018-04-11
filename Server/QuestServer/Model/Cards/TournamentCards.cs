@@ -17,7 +17,7 @@ namespace Quest.Core.Cards{
 			get { return this.participants.Count + this.bonusShields; }
         }
 
-        public override void RequestParticipation() {
+        public override void RequestNextParticipant() {
             throw new NotImplementedException();
         }
 

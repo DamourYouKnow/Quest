@@ -135,6 +135,8 @@ namespace Quest.Core {
             }
         }
 
+
+
         public void RoundEndResponse(Player player) {
             this.roundEnded.Add(player);
             
@@ -271,6 +273,7 @@ namespace Quest.Core {
                 foreach (Card card in this.GetCards<T>().Cast<Card>().ToList()) {
                     if (cardNames.Contains(card.Name) && !found.Contains(card)) {
                         retList.Add((T)(object)card);
+                        found.Add(card);
                     }
                 }
             }
@@ -306,7 +309,7 @@ namespace Quest.Core {
 
         public virtual void Transfer(CardArea target, Card card) {
 			if (target != null && this.cards.Contains(card)) {
-                if (target.GetType().Equals(typeof(QuestArea))) {
+                if (target is QuestArea) {
                     QuestArea qatarget = target as QuestArea;
                     qatarget.Add(card);
                     if (qatarget.cards.Contains(card)) {
