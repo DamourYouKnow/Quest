@@ -139,7 +139,7 @@ namespace Quest.Core {
 
         public void RoundEndResponse(Player player) {
             this.roundEnded.Add(player);
-            
+
             if (this.players.Count == this.roundEnded.Count) {
                 // We can procede to the next turn once all players have ended.
                 if (!this.hasWinner()) {
@@ -267,13 +267,13 @@ namespace Quest.Core {
 
         public List<T> GetCards<T>(List<string> cardNames) {
             List<T> retList = new List<T>();
-            HashSet<Card> found = new HashSet<Card>();
+            Dictionary<string, Card> found = new Dictionary<string, Card>();
 
             foreach (string cardName in cardNames) {
                 foreach (Card card in this.GetCards<T>().Cast<Card>().ToList()) {
-                    if (cardNames.Contains(card.Name) && !found.Contains(card)) {
+                    if (cardNames.Contains(card.Name) && !found.ContainsKey(card.Name)) {
                         retList.Add((T)(object)card);
-                        found.Add(card);
+                        found.Add(card.Name, card);
                     }
                 }
             }
