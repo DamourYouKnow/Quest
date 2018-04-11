@@ -161,6 +161,7 @@ namespace Quest.Core.View{
 				EnableObject("Button_JoinGame");
 				EnableObject("button_Scenario1");
 				EnableObject("button_Scenario2");
+				EnableObject("button_RunSimulation");
 				DisableObject("Canvas_Username");
 				DisableObject("Canvas_Server");
 				DisableObject("Button_Connect");
@@ -213,6 +214,7 @@ namespace Quest.Core.View{
 				DisableObject("Button_JoinNetwork");
 				DisableObject("button_Scenario1");
 				DisableObject("button_Scenario2");
+				DisableObject("button_RunSimulation");
 				EnableObject("Canvas_Username");
 				EnableObject("Canvas_Server");
 				EnableObject("Button_Connect");
@@ -388,6 +390,7 @@ namespace Quest.Core.View{
 			DisableObject("button_HotSeatPlay");
 			DisableObject("button_Scenario1");
 			DisableObject("button_Scenario2");
+			DisableObject("button_RunSimulation");
 		}
 		public void InitLobby(){
 			Button btnAddAI = GameObject.Find("Button_addAI").GetComponent<Button>();
@@ -507,6 +510,13 @@ namespace Quest.Core.View{
 					SendSocketMessage(evn.ToString());
 				}
 				LoadScene("Lobby");
+			}
+			public void OnUIRunSimulation(){
+				if(isConnected){
+					JObject data = new JObject();
+					EventData evn = new EventData("simulate_game", data);
+					SendSocketMessage(evn.ToString());
+				}
 			}
 			public void OnUIDrop(string areaName, string cardName){
 				Debug.Log(areaName);
