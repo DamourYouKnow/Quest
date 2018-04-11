@@ -39,7 +39,7 @@ Post condition: Game system waiting for request from player(s).
 Alternatives:
 	-If adding the AI player exceeds the maximum number of players allowed in a match, the request is denied.
 
--------------------------------------------------------------------
+--------------------------------------------------------------------
 
 Use Case: Start game
 Description: Describes the steps of starting a new Quest game.
@@ -72,8 +72,88 @@ Alternatives:
 
 --------------------------------------------------------------------
 
+maybe wrong, get back to this
+i think this is when the entire quest/tournament ends
+**Use Case: Round end
+Description: Describes the steps of a player ending their turn.
+External Actors: player, game system
+Related use cases: Play cards
+Precondition: Ongoing quest/tournament, current player has decided on the cards he chooses to play for his turn.
+Triggering Event: Current player decides to end his turn.
+1. Player decides to end turn.
+2. Game system verifies that the number of cards the player is holding is not over the limit.
+3. Game system ends the current players turn and waits for the rest of the participating players to end their turn.
+4. Game system proceeds to the next stage of the story card once all participating players have ended their turns.
+Resulting Events: The current quest/tournament phase is resolved and winning players are rewarded accordingly.
+Post Condition: The next quest/tournament phase begins and players select which cards to play for that phase.
+Alternatives:
+	-If a player ends their turn while their number of cards in hand is over the limit, they will be prompted to play or discard cards.
+	-If the quest is over and a player is promoted to a Knight Of The Round Table, he wins the game.
+	
+--------------------------------------------------------------------
+
+Use Case: Play cards (and confirm cards)
+Description: Describes the steps of a player playing their cards for a quest or tournament phase.
+External actors: player, game system
+Related Use cases: Round end
+Precondition: Ongoing quest/tournament. Participants have either just started the quest/tournament or moved on to the next stage.
+Triggering Event: Player is deciding on the cards he wants to play for the current phase.
+1. Player selects cards from his hand that he wishes to use in the current phase.
+2. Game system verifies that the selected cards are currently playable.
+3. Game system verifies that the number of cards in the player's hand is not over the limit.
+4. Game system uses the selected cards for the current phase. The selected cards are moved from the hand to the board.
+5. Player ends turn for the current phase and waits for the rest of the participating players to select their cards.
+Resulting Events: The other players select their cards and the current quest/tournament phase is resolved. Winning players are rewarded accordingly.
+Post Condition: The next quest/tournament phase begins and winning players select which cards to play for that phase.
+Alternatives:
+	-If a player ends their turn while their number of cards in hand is over the limit, they will be prompted to play or discard cards until under the limit.
+
+--------------------------------------------------------------------
+
+Use Case: Play cards stage (and confirm cards stage)
+Description: Describes the steps of a quest sponsoring player selecting the cards to use for the quest stages.
+External Actors: Sponsor player, game system
+Related Use cases: Play cards
+Precondition: A story card has just been resolved, the next story card has not yet been drawn.
+Triggering Event: A Quest card was drawn from the Story deck and a player decides to sponsor it.
+1. Sponsor player selects cards from his hand that he wishes to use for setting up a stage of a quest.
+2. Game system verifies that the selected cards are usable in the quest stage.
+3. **Game system verifies that the number of cards in the player's hand is not over the limit.
+4. Game system uses the selected cards for the current phase. The selected cards are moved from the hand to the board.
+5. Game system repeats the last four steps until each stage is properly set up.
+6. Game system invites other players to join the quest. Game system starts the quest once all players have responded to the invitation.
+Resulting Events: The quest is properly set up. Players may choose to participate or not.
+Post Condition: The quest begins.
+Alternatives:
+	-If no one joins the quest, the quest is resolved and the sponsor draws a number of cards equal to the number used to set up the quest.
+
+--------------------------------------------------------------------
+
+Use Case: Discard
+Description: Describes the steps of a player discarding card.
+External Actors: Discarding playre, game system
+Related Use Cases:
+Precondition: Player draws one or more cards
+Triggering Event: Player's number of cards in hand is over the limit.
+1. Player selects cards from his hand to discard.
+2. Game system moves the selected cards from hand to discard pile.
+3. Game system verifies that the number of cards in the player's hand is not over the limit.
+Resulting Events: Player now has 12 or less cards in their hand.
+Post Condition: The match resumes(?).
+Alternatives:
+	-If the player still has over 12 cards after discarding, he will be prompted to discard more cards.
+
+_________________________________________
+to do:
+-player_join(?)
+-request games
+-request players
+-participation response
+-quest sponsor response
 
 
+*confirm cards is combined w/ play cards
+*confirm stage is combined w/ play cards stage
 
 
 
