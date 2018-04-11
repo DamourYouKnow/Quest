@@ -297,14 +297,14 @@ namespace Quest.Core.Cards{
 				}
 			}
 			this.participants = winners;
+      if (this.participants.Count > 0) {
+          this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
+      }
+      else {
+          this.match.Log("Stage " + this.currentStage + " has no winners");
+      }
 			this.currentStage += 1;
 
-            if (this.participants.Count > 0) {
-                this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
-            }
-            else {
-                this.match.Log("Stage " + this.currentStage + " has no winners");
-            }
 
 						//Update player areas after stage.
 						foreach(Player p in this.match.Players){
