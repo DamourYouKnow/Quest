@@ -251,6 +251,20 @@ namespace Quest.Core.Cards{
         }
 
 		public override void Resolve(){
+            if (this.stages.Count == 0) {
+                this.match.Log("Quest ending since nobody sponsored");
+
+                int numDraw = 0;
+                foreach (var item in this.stages) {
+                    numDraw += item.Count;
+                }
+                numDraw += this.numStages;
+                this.sponsor.Draw(this.match.AdventureDeck, numDraw);
+
+                this.match.Controller.EndStory(this.match);
+                return;
+            }
+
 			List<Player> winners = new List<Player>();
             if (this.stages[currentStage - 1].MainCard is TestCard) {
                 // TODO: Implement Test stage.
