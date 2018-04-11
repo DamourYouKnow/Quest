@@ -1,10 +1,12 @@
-***convert to word document later!!
-**some notes, delete these later
+!!convert to word document later!!
+some notes, delete these later
 events in GameController in server
 the one's in InitHandlers are event from the client sent to the server
 the public one's starting with On are the events from server to client
 
-**************
+** = not too sure about this
+
+_________________________
 
 Use Case: Join game
 Description: Describes the steps of a human player joining a match.
@@ -52,6 +54,25 @@ Triggering Event: Game host requests to start a new Quest match.
 Resulting events: A new match is created and participating players are dealt 12 cards each.
 Post condition: The match begins and players start drawing the story cards.
 Alternatives:
+
+--------------------------------------------------------------------
+
+**Use Case: Create game
+Description: Describes the steps of loading in a pre set game.
+External Actors: player, game system
+Related use cases:
+Precondition: Game system waiting for request from player.
+Triggering Event: Player selects a scenario for a pre set game and requests to load in a match from that scenario state.
+1. Player selects a pre set game scenario from a list of scenarios and requests to create a game in that state.
+2. Game system creates a match and adds the player to it.
+3. Game system loads the specified scenario.
+Resulting events: Player is loaded into the pre set game state according to the scenario he selected.
+Post Condition: A Quest match begins in that scenario state. The game continues to follow a "script" until a certain point is reached (does this sound bad?)
+Alternatives:
+
+--------------------------------------------------------------------
+
+
 
 
 
