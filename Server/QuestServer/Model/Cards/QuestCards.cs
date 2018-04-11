@@ -171,6 +171,8 @@ namespace Quest.Core.Cards{
                         this.AddFoeStage(foe, weapons);
                     }
                 }
+
+                this.StageResponse();
             }
         }
 
