@@ -149,6 +149,11 @@ namespace Quest.Core.Cards{
         }
 
         public void SetupNextStage() {
+            if (this.participants.Count == 0) {
+                this.Resolve();
+                return;
+            }
+
             this.stageBuilder = new QuestArea();
             this.match.Controller.RequestStage(this.sponsor);
         }
@@ -237,7 +242,7 @@ namespace Quest.Core.Cards{
             else {
                 this.match.Controller.Message(this.match, player.Username + " did not sponsor " + this.name);
                 this.match.Log("Quest not sponsored");
-                this.match.RoundEndResponse(player);
+                //this.match.RoundEndResponse(player);
             }
         }
 
