@@ -191,8 +191,6 @@ namespace Quest.Core.View{
 				Action next = this.updateQueue.Dequeue();
 				next();
 			}
-
-			confirmationButtonText.text = "End Turn";
 		}
 
 		/*
