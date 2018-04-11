@@ -224,7 +224,9 @@ namespace Quest.Core {
             EventData evn = new EventData("update_hand", data);
             await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
 
-            this.UpdatePlayers(this.matches[player]);
+            if (this.matches.ContainsKey(player)) {
+                this.UpdatePlayers(this.matches[player]);
+            }
         }
 
         public async void UpdatePlayerArea(Player player) {
