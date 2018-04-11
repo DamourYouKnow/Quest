@@ -22,11 +22,11 @@ namespace Quest.Core.Cards {
 		public string ImageFilename {
 			get { return this.imageFilename; }
 		}
-		
+
 		public QuestMatch Match {
 			get { return match; }
 		}
-		
+
         public virtual int BidValue {
             get { return 1; }
         }
@@ -104,7 +104,7 @@ namespace Quest.Core.Cards {
         /// <summary>
         /// Call this function when a player has responsed to a participartion request for a story.
         /// </summary>
-        /// 
+        ///
         /// <param name="player">Player responding to request.</param>
         /// <param name="participating">Whether player is participating.</param>
         public virtual void ParticipationResponse(Player player, bool participating) {
@@ -124,7 +124,7 @@ namespace Quest.Core.Cards {
         /// <summary>
         /// Call this funtion when a player has made their play in a story.
         /// </summary>
-        /// 
+        ///
         /// <param name="player">Player that was made their play.</param>
         public void AddPlayed(Player player) {
             this.participated.Add(player);
@@ -312,7 +312,7 @@ namespace Quest.Core.Cards {
             this.cards.Push(new SirGawain(this.match));
             this.cards.Push(new SirLancelot(this.match));
             this.cards.Push(new SirPercival(this.match));
-			this.cards.Push(new SirTristan(this.match)); 
+			this.cards.Push(new SirTristan(this.match));
 			for (int i = 0; i < 11; i++) {
 				this.cards.Push (new Horse (this.match));
 			}
@@ -377,7 +377,7 @@ namespace Quest.Core.Cards {
 
 			//this.shuffle(); //comment out for testing deck
 		}
-        
+
     }
 
     public class DiscardPile : Deck {
@@ -390,4 +390,3 @@ namespace Quest.Core.Cards {
         }
     }
 }
-

@@ -165,7 +165,7 @@ namespace Quest.Core.Players {
             foreach (Player player in questCard.Match.Players) {
                 if (player != hand.Player && promotableThroughQuest(player, questCard)) return false;
             }
-            
+
             List<AdventureCard>[] stages = cardsToSponsorQuest(hand, questCard.StageCount);
             bool sponsor = validateCardsToSponsorQuest(stages);
             //logging
@@ -180,15 +180,15 @@ namespace Quest.Core.Players {
 
         private List<AdventureCard>[] cardsToSponsorQuest(Hand hand, int size) {
 			List<AdventureCard>[] stages = new List<AdventureCard>[size];
-            
+
             List<TestCard> tests = new List<TestCard>(hand.GetCards<TestCard>());
             List<FoeCard> foes = new List<FoeCard>(hand.GetCards<FoeCard>());
             List<WeaponCard> weapons = new List<WeaponCard>(hand.GetCards<WeaponCard>());
 			List<WeaponCard> duplicateWeps = new List<WeaponCard>();
-            
+
             foes.Sort((x, y) => x.BattlePoints.CompareTo(y.BattlePoints)); // Ascending BP(strongest last)
             weapons.Sort((x, y) => -x.BattlePoints.CompareTo(y.BattlePoints)); // Descending BP(strongest first)
-            
+
             int prevStageBP = 0;
 
             for(int i = 0; i < stages.Length; i++)
@@ -261,11 +261,11 @@ namespace Quest.Core.Players {
                             currentStageBP += foes[index].BattlePoints;
                             foes.RemoveAt(index);
                         }
-                        
+
 					}
                     //if you can add the weakest duplicate weapon without having more
                     //battle points than the next stage:
-                    
+
                     if (duplicateWeps.Count > 0)
                     {
                         if (currentStageBP + duplicateWeps[duplicateWeps.Count - 1].BattlePoints < prevStageBP)
@@ -276,7 +276,7 @@ namespace Quest.Core.Players {
                         }
                     }
 					prevStageBP = currentStageBP;
-                    
+
 				}
 			}
             return stages;
@@ -349,7 +349,7 @@ namespace Quest.Core.Players {
         }
 
         public override List<AdventureCard> NextBid(TestCard testCard, Hand hand) {
-            int targetBid = testCard.HigestBid;
+            int targetBid = testCard.HighestBid;
             List<AdventureCard> bids = new List<AdventureCard>();
             int bidValue = 0;
 

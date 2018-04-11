@@ -106,7 +106,7 @@ namespace Quest.Core {
         private void OnRoundEnd(Player player, JToken data) {
             if (player.Hand.Count > 12) {
                 this.UpdateHand(player);
-            } 
+            }
             else {
                 this.matches[player].RoundEndResponse(player);
             }
@@ -126,6 +126,8 @@ namespace Quest.Core {
 
             InteractiveStoryCard story = this.matches[player].CurrentStory as InteractiveStoryCard;
             story.AddPlayed(player);
+            this.UpdateHand(player);
+            this.UpdatePlayerArea(player);
         }
 
         private void OnPlayCardStage(Player player, JToken data) {
@@ -143,6 +145,7 @@ namespace Quest.Core {
 
             this.UpdateHand(player);
             this.UpdateOtherArea(player, area.Cards);
+            this.UpdatePlayerArea(player);
         }
 
         private void OnConfirmStage(Player player, JToken data) {
@@ -252,7 +255,7 @@ namespace Quest.Core {
             data["cards"] = cardArray;
             EventData evn = new EventData("update_other_area", data);
             await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
-        } 
+        }
 
         public async void UpdateOtherArea(QuestMatch match, List<Card> cards) {
             foreach (Player player in match.Players) {

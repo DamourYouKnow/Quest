@@ -18,7 +18,7 @@ namespace Quest.Core.Cards {
             }
         }
 
-        public int HigestBid {
+        public int HighestBid {
             get { return this.currentBid; }
         }
 
