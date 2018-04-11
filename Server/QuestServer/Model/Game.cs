@@ -273,6 +273,7 @@ namespace Quest.Core {
                 foreach (Card card in this.GetCards<T>().Cast<Card>().ToList()) {
                     if (cardNames.Contains(card.Name) && !found.Contains(card)) {
                         retList.Add((T)(object)card);
+                        found.Add(card);
                     }
                 }
             }

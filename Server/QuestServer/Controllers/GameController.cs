@@ -223,6 +223,8 @@ namespace Quest.Core {
             data["cards"] = cardArray;
             EventData evn = new EventData("update_hand", data);
             await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
+
+            this.UpdatePlayers(this.matches[player]);
         }
 
         public async void UpdatePlayerArea(Player player) {
