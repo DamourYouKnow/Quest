@@ -130,6 +130,11 @@ namespace Quest.Core {
         }
 
         private void OnPlayCardStage(Player player, JToken data) {
+            if (player.Hand.Count > 12) {
+                this.UpdateHand(player);
+                return;
+            }
+
             QuestCard quest = this.matches[player].CurrentStory as QuestCard;
             QuestArea area = quest.StageBuilder;
 
