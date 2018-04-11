@@ -44,7 +44,6 @@ namespace Quest.Utils.Networking {
                     player_socket.Add(newPlayer, socket);
                 }
             }
-
             if (eventHandlers.ContainsKey(eventName)) {
                 eventHandlers[eventName](socket_player[socket], jqe["data"]);
             }

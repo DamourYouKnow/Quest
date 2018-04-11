@@ -104,7 +104,12 @@ namespace Quest.Core {
         }
 
         private void OnRoundEnd(Player player, JToken data) {
-            this.matches[player].RoundEndResponse(player);
+            if (player.Hand.Count > 12) {
+                this.UpdateHand(player);
+            } 
+            else {
+                this.matches[player].RoundEndResponse(player);
+            }
         }
 
         private void OnPlayCards(Player player, JToken data) {
