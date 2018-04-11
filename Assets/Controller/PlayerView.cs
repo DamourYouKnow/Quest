@@ -44,9 +44,9 @@ namespace Quest.Core.View{
 			private int gameid;
 
 			private GameObject gameCanvas;
-			private GameObject handArea;
 			private GameObject battleArea;
 			private GameObject otherArea;
+			private GameObject handArea;
 			private GameObject historyScroll;
 			private Button historyButton;
 			private Button confirmationButton;
@@ -95,7 +95,7 @@ namespace Quest.Core.View{
 			On("request_quest_sponsor", OnRCVRequestQuestSponsor);
 			On("request_quest_participation", OnRCVRequestQuestParticipation);
 			On("message", OnRCVMessage);
-			On("request_discard", OnRCVRequestDiscard);
+			//On("request_discard", OnRCVRequestDiscard);
 			On("request_stage", OnRCVRequestStage);
 			On("request_play_cards", OnRCVRequestPlayCards);
 			On("end_story", OnRCVEndStory);
@@ -354,11 +354,13 @@ namespace Quest.Core.View{
 			this.confirmationButtonText.text = "Confirm Cards";
 			this.confirmationMessage = "confirm_stage";
 		}
+		/*
 		private void UpdateRequestDiscard(){
 			this.confirmationButton.gameObject.SetActive(false);
 			this.confirmationButtonText.text = "";
 			this.confirmationMessage = "";
 		}
+		*/
 
 		/*
 			Called on new scene.
@@ -603,12 +605,14 @@ namespace Quest.Core.View{
 				this.newHistory = data["message"] + "\n" + this.newHistory;
 				this.updateQueue.Enqueue(UpdateHistory);
 			}
+			/*
 			public void OnRCVRequestDiscard(JToken data){
 				this.otherAreaName = "Discard Area";
 				this.updateQueue.Enqueue(UpdateOtherAreaNames);
 				this.updateQueue.Enqueue(UpdateRequestDiscard);
 				//TODO:this.confirmationMessage = ".....";
 			}
+			*/
 			public void OnRCVRequestStage(JToken data){
 				this.otherAreaName = "Quest Area";
 				this.updateQueue.Enqueue(UpdateOtherAreaNames);
