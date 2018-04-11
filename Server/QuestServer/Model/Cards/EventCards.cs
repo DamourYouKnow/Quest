@@ -21,6 +21,7 @@ namespace Quest.Core.Cards {
             foreach (Player player in lowestRanked) {
                 player.Rank.AddShields(3);
 			}
+      this.match.Controller.EndStory(this.match);
         }
     }
 
@@ -41,6 +42,7 @@ namespace Quest.Core.Cards {
                 player.BattleArea.Transfer(player.Hand, removeCards);
                 player.Discard(removeCards);
 			}
+      this.match.Controller.EndStory(this.match);
         }
     }
 
@@ -77,6 +79,7 @@ namespace Quest.Core.Cards {
             if (drawingPlayer != null) {
                 drawingPlayer.Rank.RemoveShields(2);
 			}
+      this.match.Controller.EndStory(this.match);
         }
     }
 
@@ -93,6 +96,7 @@ namespace Quest.Core.Cards {
                     player.Rank.RemoveShields(1);
                 }
 			}
+      this.match.Controller.EndStory(this.match);
         }
     }
 
@@ -106,6 +110,7 @@ namespace Quest.Core.Cards {
             foreach (Player player in this.match.Players) {
                 player.Draw(this.match.AdventureDeck, 2);
 			}
+      this.match.Controller.EndStory(this.match);
         }
     }
 
@@ -120,6 +125,7 @@ namespace Quest.Core.Cards {
             foreach (Player player in lowestRanked) {
                 player.Draw(this.match.AdventureDeck, 2);
 			}
+      this.match.Controller.EndStory(this.match);
         }
     }
 }

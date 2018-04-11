@@ -30,7 +30,7 @@ namespace Quest.Core.Cards{
 		public int CurrentStage {
 			get { return this.currentStage; }
 		}
-		
+
 		public int StageCount {
 			get { return this.numStages; }
 		}
@@ -75,7 +75,7 @@ namespace Quest.Core.Cards{
             this.match.Log(this.sponsor.Username + " adding stage " + test.ToString() + " to " + this.name);
         }
 
-        public void AddStage(QuestArea area) { 
+        public void AddStage(QuestArea area) {
             if (this.stages.Count >= this.numStages) throw new Exception("Quest stage limit exceeded");
             this.stages.Add(area);
             this.match.Log(this.sponsor.Username + " adding stage with " + Utils.Stringify.CommaList(area.Cards));
@@ -114,7 +114,7 @@ namespace Quest.Core.Cards{
                 this.RequestNextParticipant();
                 return;
             }
-            
+
             if (player.Behaviour is HumanPlayer) {
                 // Send participation request to player through sockets.
                 this.match.Controller.PromptPlayer(player,
@@ -433,4 +433,3 @@ namespace Quest.Core.Cards{
 		}
 	}
 }
-	
