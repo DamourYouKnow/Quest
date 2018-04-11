@@ -154,8 +154,24 @@ namespace Quest.Core.Cards{
                 return;
             }
 
-            this.stageBuilder = new QuestArea();
-            this.match.Controller.RequestStage(this.sponsor);
+            if (this.sponsor.Behaviour is HumanPlayer) {
+                this.stageBuilder = new QuestArea();
+                this.match.Controller.RequestStage(this.sponsor);
+            }
+            else if (this.sponsor.Behaviour != null) {
+                // Player behaviour functions for individual stage setup.
+                List<AdventureCard>[] stages = this.sponsor.Behaviour.SetupQuest(this, this.sponsor.Hand);
+                foreach (List<AdventureCard> stage in stages) {
+                    if (stage.Count == 1 && stage[0] is TestCard) {
+                        this.AddTestStage((TestCard)stage[0]);
+                    }
+                    else {
+                        FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
+                        List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
+                        this.AddFoeStage(foe, weapons);
+                    }
+                }
+            }
         }
 
         public void StageResponse() {
@@ -207,21 +223,6 @@ namespace Quest.Core.Cards{
                 // Otherwise decide with strategy.
                 bool sponsor = currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand);
                 this.SponsorshipResponse(currentPlayer, sponsor);
-
-                if (sponsor) {
-                    // Player behaviour functions for individual stage setup.
-                    List<AdventureCard>[] stages = currentPlayer.Behaviour.SetupQuest(this, this.sponsor.Hand);
-                    foreach (List<AdventureCard> stage in stages) {
-                        if (stage.Count == 1 && stage[0] is TestCard) {
-                            this.AddTestStage((TestCard)stage[0]);
-                        }
-                        else {
-                            FoeCard foe = (FoeCard)stage.Find(x => x is FoeCard);
-                            List<WeaponCard> weapons = stage.FindAll(x => x is WeaponCard).Cast<WeaponCard>().ToList();
-                            this.AddFoeStage(foe, weapons);
-                        }
-                    }
-                }
             }
         }
 
@@ -242,7 +243,7 @@ namespace Quest.Core.Cards{
             else {
                 this.match.Controller.Message(this.match, player.Username + " did not sponsor " + this.name);
                 this.match.Log("Quest not sponsored");
-                //this.match.RoundEndResponse(player);
+                this.match.Controller.EndStory(this.match);
             }
         }
 
