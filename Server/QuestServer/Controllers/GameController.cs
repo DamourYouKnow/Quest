@@ -113,28 +113,22 @@ namespace Quest.Core {
         }
 
         private void OnPlayCards(Player player, JToken data) {
-            if (player.Hand.Count > 12) {
-                // Reject play if player needs to discard.
-                this.UpdateHand(player);
-                this.matches[player].Log("Rejected play by " + player.Username + " until more cards are discarded");
-                return;
-            }
-
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Play(player.Hand.GetCards<BattleCard>(cardNames));
         }
 
         private void OnConfirmCards(Player player, JToken data) {
+            if (player.Hand.Count > 12) {
+                this.UpdateHand(player);
+                this.matches[player].Log("Rejected play by " + player.Username + " until more cards are discarded");
+                return;
+            }
+
             InteractiveStoryCard story = this.matches[player].CurrentStory as InteractiveStoryCard;
             story.AddPlayed(player);
         }
 
         private void OnPlayCardStage(Player player, JToken data) {
-            if (player.Hand.Count > 12) {
-                this.UpdateHand(player);
-                return;
-            }
-
             QuestCard quest = this.matches[player].CurrentStory as QuestCard;
             QuestArea area = quest.StageBuilder;
 
@@ -154,6 +148,12 @@ namespace Quest.Core {
         private void OnConfirmStage(Player player, JToken data) {
             QuestCard quest = this.matches[player].CurrentStory as QuestCard;
             QuestArea area = quest.StageBuilder;
+
+            if (player.Hand.Count > 12) {
+                this.UpdateHand(player);
+                this.matches[player].Log("Rejected play by " + player.Username + " until more cards are discarded");
+                return;
+            }
 
             if (area.MainCard != null) {
                 quest.AddStage(area);
