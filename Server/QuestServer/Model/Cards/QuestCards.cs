@@ -245,6 +245,10 @@ namespace Quest.Core.Cards{
             else {
                 this.match.Controller.Message(this.match, player.Username + " did not sponsor " + this.name);
                 this.match.Log("Quest not sponsored");
+								//Update player areas after quest.
+								foreach(Player p in this.match.Players){
+									this.match.Controller.UpdatePlayerArea(p);
+								}
                 this.match.Controller.EndStory(this.match);
             }
         }
@@ -264,6 +268,10 @@ namespace Quest.Core.Cards{
                 numDraw += this.numStages;
                 this.sponsor.Draw(this.match.AdventureDeck, numDraw);
 
+								//Update player areas after quest.
+								foreach(Player p in this.match.Players){
+									this.match.Controller.UpdatePlayerArea(p);
+								}
                 this.match.Controller.EndStory(this.match);
                 return;
             }
@@ -298,6 +306,11 @@ namespace Quest.Core.Cards{
                 this.match.Log("Stage " + this.currentStage + " has no winners");
             }
 
+						//Update player areas after stage.
+						foreach(Player p in this.match.Players){
+							this.match.Controller.UpdatePlayerArea(p);
+						}
+
             //If no more stages or no more players, resolve quest.
             if (this.participants.Count == 0 || this.currentStage > this.numStages) {
 				foreach (var p in this.participants) {
@@ -309,6 +322,10 @@ namespace Quest.Core.Cards{
 				}
 				numDraw += this.numStages;
 				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
+								//Update player areas after quest.
+								foreach(Player p in this.match.Players){
+									this.match.Controller.UpdatePlayerArea(p);
+								}
                 this.match.Controller.EndStory(this.match);
             }
 			else {
