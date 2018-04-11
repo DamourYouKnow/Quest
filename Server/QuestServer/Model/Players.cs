@@ -206,11 +206,8 @@ namespace Quest.Core.Players {
 
             this.match.Controller.UpdateHand(this);
 
-            if (this.Hand.Count > 12) {
-                if (this.behaviour is HumanPlayer) {
-                    this.match.Controller.RequestDiscard(this);
-                }
-                else if (this.behaviour != null) {
+            if (this.Hand.Count > 12 ) {
+                if (this.behaviour != null &&  !(this.behaviour is HumanPlayer)) {
                     this.Discard(this.behaviour.DiscardExcessCards(this.Hand));
                 }
             }
@@ -220,7 +217,6 @@ namespace Quest.Core.Players {
             this.hand.Remove(card);
             this.match.DiscardPile.Push(card);
             this.match.Controller.UpdateHand(this);
-            this.match.Controller.UpdatePlayerArea(this);
             this.match.Log(this.username + " discarded " + card.ToString());
         }
 

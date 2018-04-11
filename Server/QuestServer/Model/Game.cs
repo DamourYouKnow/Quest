@@ -135,6 +135,8 @@ namespace Quest.Core {
             }
         }
 
+
+
         public void RoundEndResponse(Player player) {
             this.roundEnded.Add(player);
             

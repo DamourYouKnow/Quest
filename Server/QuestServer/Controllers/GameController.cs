@@ -108,6 +108,12 @@ namespace Quest.Core {
         }
 
         private void OnPlayCards(Player player, JToken data) {
+            if (player.Hand.Count > 12) {
+                // Reject play if player needs to discard.
+                this.UpdateHand(player);
+                return;
+            }
+
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Play(player.Hand.GetCards<BattleCard>(cardNames));
         }
@@ -147,12 +153,10 @@ namespace Quest.Core {
         }
 
         private void OnDiscard(Player player, JToken data) {
+            if (player.Hand.Count <= 12) return;
+
             List<string> cardNames = Jsonify.ArrayToList<string>(data["cards"]);
             player.Discard(player.Hand.GetCards<Card>(cardNames));
-
-            if (player.Hand.Count > 12) {
-                this.RequestDiscard(player);
-            }
         }
 
         private void OnParticipationResponse(Player player, JToken data) {
