@@ -279,10 +279,24 @@ namespace Quest.Core.Cards{
             }
 
 			List<Player> winners = new List<Player>();
+					//TODO: Fix temporary local exception handling because of location of test exception.
+					try{
             if (this.stages[currentStage - 1].MainCard is TestCard) {
                 // TODO: Implement Test stage.
                 throw new NotImplementedException();
             }
+					}
+					catch(NotImplementedException){
+						this.match.Log ("Feature not implemented");
+						foreach(Player p in participants){
+							winners.Add(p);
+						}
+					}
+					catch (Exception e){
+						this.match.Log (e.Message);
+						this.match.Log (e.StackTrace);
+					}
+
             if (this.stages [currentStage-1].MainCard is FoeCard) {
 				foreach (var p in participants) {
                     // Update history.
