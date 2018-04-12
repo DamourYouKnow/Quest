@@ -56,10 +56,16 @@ namespace Quest.Core.Cards{
         }
 
         public override void Resolve() {
-            Player winner = this.getWinners()[0];
-            this.match.Log(winner.Username + " has won " + this.name);
+            List<Player> winners = this.getWinners();
+            if (winners.Count == 0) {
+                this.match.Log("No winners for " + this.name);
 
-            winner.Rank.AddShields(this.bonusShields + this.participants.Count);
+            }
+            else {
+                Player winner = winners[0];
+                this.match.Log(winner.Username + " has won " + this.name);
+                winner.Rank.AddShields(this.bonusShields + this.participants.Count);
+            }
 
             this.match.Controller.EndStory(this.match);
         }
