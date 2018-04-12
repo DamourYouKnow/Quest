@@ -18,7 +18,18 @@ namespace Quest.Core.Cards{
         }
 
         public override void RequestNextParticipant() {
-            throw new NotImplementedException();
+            foreach  (Player player in this.match.Players) {
+                if (player.Behaviour is HumanPlayer) {
+                    this.match.Controller.PromptPlayer(player,
+                                                       "request_quest_participation",
+                                                       "Would you like to participate in " + this.name,
+                                                       image: this.imageFilename);
+                }
+                else if (player.Behaviour != null) {
+                    this.ParticipationResponse(player,
+                                               player.Behaviour.ParticipateInTournament(this));
+                }
+            }
         }
 
         public override void RequestPlays() {
