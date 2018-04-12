@@ -40,6 +40,7 @@ namespace Quest.Core.Scenarios {
 
             game.Setup(shuffleDecks:true);
 
+            game.StoryDeck.Push(new TournamentAtCamelot(game));
             game.StoryDeck.Push(new ProsperityEvent(game));
             game.StoryDeck.Push(new ChivalrousDeedEvent(game));
             game.StoryDeck.Push(new BoarHunt(game));
@@ -53,9 +54,7 @@ namespace Quest.Core.Scenarios {
 
             game.Setup(shuffleDecks: true);
 
-            game.StoryDeck.Push(new ProsperityEvent(game));
-            game.StoryDeck.Push(new ChivalrousDeedEvent(game));
-            game.StoryDeck.Push(new SearchForTheHolyGrail(game));
+            game.StoryDeck.Push(new TournamentAtCamelot(game));
 
             return game;
         }
