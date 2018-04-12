@@ -99,6 +99,7 @@ namespace Quest.Core.View{
 			On("request_stage", OnRCVRequestStage);
 			On("request_play_cards", OnRCVRequestPlayCards);
 			On("end_story", OnRCVEndStory);
+			On("request_tournament_participation", OnRCVRequestTournamentParticipation);
 
 			//Unity events
 			SceneManager.activeSceneChanged += OnUISceneChanged;
@@ -230,6 +231,9 @@ namespace Quest.Core.View{
 				case "RequestQuestParticipationPrompt":
 					UpdateRequestQuestParticipationPrompt();
 					break;
+				case "RequestTournamentParticipationPrompt":
+					UpdateRequestTournamentParticipationPrompt();
+					break;
 			}
 			this.prompting = true;
 		}
@@ -257,6 +261,29 @@ namespace Quest.Core.View{
 			};
 		}
 		private void UpdateRequestQuestParticipationPrompt(){
+			GameObject promptObj = new GameObject("SponsorQuestPrompt");
+			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
+			prompt.Message = this.promptMessage;
+			prompt.Quest = this.currentStory;
+
+			prompt.OnNoClick = () => {
+				this.prompting = false;
+				this.promptName = "";
+				JObject data = new JObject();
+				data["participating"] = false;
+				EventData evn = new EventData("participation_response", data);
+				SendSocketMessage(evn.ToString());
+			};
+			prompt.OnYesClick = () => {
+				this.prompting = false;
+				this.promptName = "";
+				JObject data = new JObject();
+				data["participating"] = true;
+				EventData evn = new EventData("participation_response", data);
+				SendSocketMessage(evn.ToString());
+			};
+		}
+		private void UpdateRequestTournamentParticipationPrompt(){
 			GameObject promptObj = new GameObject("SponsorQuestPrompt");
 			SponsorQuestPrompt prompt = promptObj.AddComponent<SponsorQuestPrompt>();
 			prompt.Message = this.promptMessage;
@@ -635,6 +662,12 @@ namespace Quest.Core.View{
 				this.otherAreaName = "";
 				this.updateQueue.Enqueue(UpdateOtherAreaNames);
 				this.updateQueue.Enqueue(UpdateEndStory);
+			}
+			public void OnRCVRequestTournamentParticipation(JToken data){
+				this.promptName = "RequestTournamentParticipationPrompt";
+				this.promptMessage = (string)data["message"];
+				//TODO: receiving image is redundant for all current prompts.
+				//this.promptImage = (string)data["image"];
 			}
 
 			/*

@@ -95,6 +95,7 @@ namespace Quest.Core {
         }
 
         private void OnStartGame(Player player, JToken data) {
+            if (player.Match.Players.Count < 2) return;
             this.matches[player].Setup(shuffleDecks:false);
             this.matches[player].RunGame();
         }

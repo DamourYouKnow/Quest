@@ -19,6 +19,9 @@ public class Player {
 
 	public Player (string username, int card_count, int shields, string rank_image, List<Card> in_play)
 	{
+    if(username == null || username == ""){
+      this.username = "Default";
+    }
     this.username = username;
     this.card_count = card_count;
     this.shields = shields;

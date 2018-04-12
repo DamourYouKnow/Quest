@@ -18,15 +18,56 @@ namespace Quest.Core.Cards{
         }
 
         public override void RequestNextParticipant() {
-            throw new NotImplementedException();
+            foreach  (Player player in this.match.Players) {
+                if (player.Behaviour is HumanPlayer) {
+                    this.match.Controller.PromptPlayer(player,
+                                                       "request_tournament_participation",
+                                                       "Would you like to participate in " + this.name,
+                                                       image: this.imageFilename);
+                }
+                else if (player.Behaviour != null) {
+                    this.ParticipationResponse(player,
+                                               player.Behaviour.ParticipateInTournament(this));
+                }
+            }
         }
 
         public override void RequestPlays() {
-            throw new NotImplementedException();
+            if (this.participants.Count == 0) {
+                this.Resolve();
+                return;
+            }
+
+            foreach (Player participant in this.participants) {
+                if (participant.Behaviour is HumanPlayer) {
+                    // Send play request to player through sockets.
+                    this.match.Controller.PromptPlayer(participant,
+                                                       "request_play_cards",
+                                                       "Please play your cards");
+
+                }
+                else if (participant.Behaviour != null) {
+                    // Use AI strategy to determine play then Set player to played.
+                    List<BattleCard> cards = participant.Behaviour.PlayCardsInTournament(this, participant);
+                    participant.Play(cards);
+                    this.AddPlayed(participant);
+                }
+            }
         }
 
         public override void Resolve() {
-            throw new NotImplementedException();
+            List<Player> winners = this.getWinners();
+            if (winners.Count == 0) {
+                this.match.Log("No winners for " + this.name);
+
+            }
+            else {
+                Player winner = winners[0];
+                this.match.Log(winner.Username + " has won " + this.name);
+                winner.Rank.AddShields(this.bonusShields + this.participants.Count);
+            }
+
+            this.match.Controller.EndStory(this.match);
         }
 
         private List<Player> getWinners() {
