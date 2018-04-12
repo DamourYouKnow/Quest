@@ -62,6 +62,16 @@ var NativeWebSocket = {
 				var array = new Uint8Array(e.data);
 				WebSocketInstances[id].messages.push(array);
 				Runtime.dynCall('vi', action, [id]);
+			}  else if(typeof e.data === "string") {
+				var reader = new FileReader();
+				reader.addEventListener("loadend", function() {
+					var array = new Uint8Array(reader.result);
+					WebSocketInstances[id].messages.push(array);
+					Runtime.dynCall('vi', action, [id]);
+				});
+
+				var blob = new Blob([e.data]); 
+				reader.readAsArrayBuffer(blob);
 			}
     	}
     },
