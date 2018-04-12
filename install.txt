@@ -3,6 +3,8 @@ To run the server (Quest/Server/QuestServer):
     Build and run the ASP Core server with "dotnet run"
     By default the server is accesible on port 3004
 
+The project can be imported as a unity project.
+
 To run the client (Quest/):
     In browser:
         Build the game in Unity as a WebGL project.
