@@ -1,10 +1,3 @@
-!!convert to word document later!!
-some notes, delete these later
-events in GameController in server
-the one's in InitHandlers are event from the client sent to the server
-the public one's starting with On are the events from server to client
-
-** = not too sure about this
 
 _________________________
 
@@ -45,9 +38,9 @@ Use Case: Start game
 Description: Describes the steps of starting a new Quest game.
 External Actors: players, game system
 Related use cases:
-Precondition: Players in lobby, game system waiting for request from player(s).
+Precondition: Players in lobby and ready, game system waiting for request from host player.
 Triggering Event: Game host requests to start a new Quest match.
-1. Game host requests to start a new Quest match.
+1. Host player requests to start a new Quest match.
 2. Game system verifies that there is a sufficient number of participating players in the lobby.
 3. Game system creates and runs a new game.
 4. Game system shuffles the deck of cards(**not sure, in OnStartGame, shuffleDecks is false**) and deals each player 12 cards.
@@ -57,22 +50,25 @@ Alternatives:
 
 --------------------------------------------------------------------
 
-**Use Case: Create game
-Description: Describes the steps of loading in a pre set game.
+Use Case: Create game
+Description: Describes the steps of creating a new game room for players to join.
 External Actors: player, game system
 Related use cases:
-Precondition: Game system waiting for request from player.
-Triggering Event: Player selects a scenario for a pre set game and requests to load in a match from that scenario state.
-1. Player selects a pre set game scenario from a list of scenarios and requests to create a game in that state.
-2. Game system creates a match and adds the player to it.
-3. Game system loads the specified scenario.
-Resulting events: Player is loaded into the pre set game state according to the scenario he selected.
-Post Condition: A Quest match begins in that scenario state. The game continues to follow a "script" until a certain point is reached (does this sound bad?)
+Precondition: Game system is waiting for requests from player.
+Triggering Event: Player requests to host a new game room.
+1. Player requests to host a new game.
+2. Game system creates a new game lobby and adds the requesting player to it.
+3. Player becomes the lobby host and is added to the list of players.
+4. Player waits for other players to join the lobby.
+Resulting events: The host of the lobby now waits for other players to join the lobby.
+Post Condition: A new game lobby is created.
 Alternatives:
-
+	-Player selects a pre set game scenario from a list of scenarios and requests to create a game in that state.
+		-Player is loaded into the pre set game state according to the scenario he selected.
+		-A Quest match begins in that scenario state. The game continues to follow a "script" until a certain point is reached
 --------------------------------------------------------------------
 
-**Use Case: Round end
+Use Case: Round end
 Description: Describes the steps of a player ending their turn.
 External Actors: player, game system
 Related use cases: 
@@ -178,14 +174,6 @@ Alternatives:
 	
 _________________________________________
 
-to do:
--player_join(same as join game?)
--request games
--request players
-
-
-*confirm cards is combined w/ play cards
-*confirm stage is combined w/ play cards stage
 
 
 
