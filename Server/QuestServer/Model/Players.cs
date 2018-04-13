@@ -73,7 +73,7 @@ namespace Quest.Core.Players {
         }
 
         public void RemoveShields(int count) {
-            this.player.Match.Log("Removing " + Math.Max(0, this.shields - count) + " shields from " + this.player.ToString());
+            this.player.Match.Log("Removing " + count + " shields from " + this.player.ToString());
             this.shields = Math.Max(0, this.shields - count);
         }
 
