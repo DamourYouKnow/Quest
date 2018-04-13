@@ -127,7 +127,7 @@ namespace Quest.Core.Cards {
         ///
         /// <param name="player">Player that was made their play.</param>
         public void AddPlayed(Player player) {
-            if (!this.participants.Contains(player)) this.participated.Add(player);
+            if (!this.participated.Contains(player)) this.participated.Add(player);
 
             if (this.participated.Count == this.participants.Count) {
                 this.Resolve();

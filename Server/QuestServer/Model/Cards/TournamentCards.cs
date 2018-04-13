@@ -69,6 +69,7 @@ namespace Quest.Core.Cards{
                 winner.Rank.AddShields(this.bonusShields + this.participants.Count);
             }
 
+            this.match.Controller.UpdatePlayers(this.match);
             this.match.Controller.EndStory(this.match);
         }
 

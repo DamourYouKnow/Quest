@@ -362,6 +362,8 @@ namespace Quest.Core.Cards {
                 // Request plays for next round.
                 this.RequestPlays();
             }
+
+            this.match.Controller.UpdatePlayers(this.match);
         }
     }
 
