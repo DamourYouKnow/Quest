@@ -374,6 +374,9 @@ namespace Quest.Core.Cards {
 			for (int i = 0; i < 2; i++) {
 				this.cards.Push (new TestOfTheQuestingBeast (this.match));
 			}
+			for (int i = 0; i < 8; i++) {
+				this.cards.Push (new Amour (this.match));
+			}
 
 			//this.shuffle(); //comment out for testing deck
 		}
