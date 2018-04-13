@@ -75,7 +75,7 @@ namespace Quest.Core.Cards {
         }
 
         public override void Run() {
-            Player drawingPlayer = this.match.PlayerWithCard(this);
+            Player drawingPlayer = this.match.CurrentPlayer;
             if (drawingPlayer != null) {
                 drawingPlayer.Rank.RemoveShields(2);
 			}
