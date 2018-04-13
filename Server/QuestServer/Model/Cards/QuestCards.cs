@@ -360,7 +360,7 @@ namespace Quest.Core.Cards {
                     p.Discard(discardAmours);
                     this.match.Controller.UpdatePlayerArea(p);
                 }
-                this.match.Controller.UpdateOtherArea(new List<Card>());
+                this.match.Controller.UpdateOtherArea(this.match, new List<Card>());
                 this.match.Controller.EndStory(this.match);
             }
             else {
