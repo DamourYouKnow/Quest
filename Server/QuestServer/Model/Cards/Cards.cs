@@ -249,6 +249,16 @@ namespace Quest.Core.Cards {
             this.cards = new Stack<Card>(shuffleList);
         }
 
+        public List<T> GetCards<T>() {
+            List<T> retList = new List<T>();
+            foreach (Card card in this.cards) {
+                if (card is T) {
+                    retList.Add((T)(object)card);
+                }
+            }
+            return retList;
+        }
+
         public override string ToString() {
             return this.GetType().ToString();
         }
