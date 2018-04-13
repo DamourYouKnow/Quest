@@ -266,6 +266,11 @@ namespace Quest.Core {
             }
         }
 
+        public async void PlayerWait(Player player) {
+            EventData evn = new EventData("wait", new JObject());
+            await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
+        }
+
         public async void RequestDiscard(Player player) {
             EventData evn = new EventData("request_discard", new JObject());
             await this.messageHandler.SendToPlayerAsync(player, evn.ToString());

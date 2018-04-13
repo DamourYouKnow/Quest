@@ -188,6 +188,7 @@ namespace Quest.Core.Cards{
 						List<Card> otherAreaCards = new List<Card>(this.stages[this.currentStage-1].Cards);
 						otherAreaCards.Reverse();
             this.match.Controller.UpdateOtherArea(this.match, otherAreaCards);
+            this.match.Controller.PlayerWait(this.sponsor);
 
             if (this.participants.Count == 0) {
                 this.Resolve();
