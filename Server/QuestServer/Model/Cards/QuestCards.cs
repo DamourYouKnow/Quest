@@ -183,6 +183,7 @@ namespace Quest.Core.Cards {
 
         public override void RequestPlays() {
             List<Card> otherAreaCards = new List<Card>(this.stages[this.currentStage - 1].Cards);
+            otherAreaCards.Add(this.stages[this.currentStage - 1].MainCard);
             otherAreaCards.Reverse();
             this.match.Controller.UpdateOtherArea(this.match, otherAreaCards);
             this.match.Controller.PlayerWait(this.sponsor);

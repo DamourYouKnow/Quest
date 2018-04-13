@@ -372,18 +372,6 @@ namespace Quest.Core.Cards {
 			for (int i = 0; i < 8; i++) {
 				this.cards.Push (new Thieves (this.match));
 			}
-			for (int i = 0; i < 2; i++) {
-				this.cards.Push (new TestOfValor (this.match));
-			}
-			for (int i = 0; i < 2; i++) {
-				this.cards.Push (new TestOfTemptation (this.match));
-			}
-			for (int i = 0; i < 2; i++) {
-				this.cards.Push (new TestOfMorganLeFey (this.match));
-			}
-			for (int i = 0; i < 2; i++) {
-				this.cards.Push (new TestOfTheQuestingBeast (this.match));
-			}
 			for (int i = 0; i < 8; i++) {
 				this.cards.Push (new Amour (this.match));
 			}
