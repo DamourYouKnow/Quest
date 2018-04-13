@@ -3469,7 +3469,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ws://localhost:3004/quest
+  m_Text: localhost:3004
 --- !u!222 &1573368815
 CanvasRenderer:
   m_ObjectHideFlags: 0
