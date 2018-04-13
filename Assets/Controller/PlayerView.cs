@@ -11,7 +11,9 @@ using Newtonsoft.Json.Linq;
 namespace Quest.Core.View{
 	static class Constants
 	{
-	    public const string DEFAULT_SERVER_ADDRESS = "ws://localhost:3004/quest";
+			public const string ACCESS_PROTOCOL = "ws://";
+			public const string GAME_DIRECTORY = "/quest";
+	    public const string DEFAULT_SERVER_ADDRESS = "localhost:3004";
 			public const string DEFAULT_USERNAME = "Default";
 			public const string RESOURCES_CARDS = "Cards/";
 	}
@@ -673,9 +675,9 @@ namespace Quest.Core.View{
 			/*
 				Socket functions.
 			*/
-			private void Connect(string uri=Constants.DEFAULT_SERVER_ADDRESS){
+			private void Connect(string uri=Constants.ACCESS_PROTOCOL+Constants.DEFAULT_SERVER_ADDRESS+Constants.GAME_DIRECTORY){
 				if(uri == ""){
-					uri = this.serverAddress;
+					uri = Constants.ACCESS_PROTOCOL+this.serverAddress+Constants.GAME_DIRECTORY;
 				}
 				if (this.socket != null) {
 					this.socket.Close ();
