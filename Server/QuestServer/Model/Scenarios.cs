@@ -43,6 +43,7 @@ namespace Quest.Core.Scenarios {
                 else{
                   aiPlayer.Behaviour = new Strategy1();
                 }
+                game.AddPlayer(aiPlayer);
             }
             game.Setup();
             return game;
