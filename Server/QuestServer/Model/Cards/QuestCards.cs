@@ -308,6 +308,7 @@ namespace Quest.Core.Cards {
                     List<Card> discardWeapons = p.BattleArea.Cards.FindAll(x => x is WeaponCard);
                     p.BattleArea.Transfer(p.Hand, discardWeapons);
                     p.Discard(discardWeapons);
+                    this.match.Controller.UpdatePlayerArea(p);
                 }
             }
             this.participants = winners;
