@@ -595,7 +595,7 @@ namespace Quest.Core.Players {
                     while (currentStageBP <= lastStageBP && foes.Count > 0) {
                         int index = 0;
                         foreach (AdventureCard card in stages[s]) {
-                            if (card.ToString() == weapons[index].ToString()) {
+                            if (weapons.Count > 0 && card.ToString() == weapons[index].ToString()) {
                                 index += 1;
                             }
 
