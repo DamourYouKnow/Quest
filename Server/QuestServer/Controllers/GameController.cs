@@ -49,6 +49,7 @@ namespace Quest.Core {
             messageHandler.On("discard", OnDiscard);
             messageHandler.On("participation_response", OnParticipationResponse);
             messageHandler.On("quest_sponsor_response", OnQuestSponsorResponse);
+            messageHandler.On("simulate_game", OnSimulateGame);
         }
 
         private void OnPlayerJoined(Player player, JToken data) {
@@ -190,6 +191,10 @@ namespace Quest.Core {
         private void OnQuestSponsorResponse(Player player, JToken data) {
             QuestCard quest = this.matches[player].CurrentStory as QuestCard;
             quest.SponsorshipResponse(player, (bool)data["sponsoring"]);
+        }
+
+        private void OnSimulateGame(Player player, JToken data){
+          ScenarioCreator.AISimGame(3).RunGame();
         }
 
         public async void UpdateGames(Player player) {

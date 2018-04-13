@@ -140,7 +140,7 @@ namespace Quest.Core {
 
 
         public void RoundEndResponse(Player player) {
-            if (!this.roundEnded.Contains(player)) this.roundEnded.Add(player);
+            this.roundEnded.Add(player);
 
             if (this.players.Count == this.roundEnded.Count) {
                 // We can procede to the next turn once all players have ended.

@@ -5,7 +5,7 @@ using Quest.Core.Cards;
 namespace Quest.Core.Scenarios {
     public class ScenarioCreator {
         public static QuestMatch EmptyGame(GameController controller=null) {
-            QuestMatch game = new QuestMatch(logger: new Logger("DefaultGame"), 
+            QuestMatch game = new QuestMatch(logger: new Logger("DefaultGame"),
                                              controller:controller);
             game.Setup();
             return game;
@@ -33,9 +33,23 @@ namespace Quest.Core.Scenarios {
             }
             return game;
         }
+        public static QuestMatch AISimGame(int aiCount) {
+            QuestMatch game = EmptyGame();
+            for (int i = 1; i <= aiCount; i++) {
+                Player aiPlayer = new Player("AI Player " + i, game);
+                if(i%2==1){
+                  aiPlayer.Behaviour = new Strategy2();
+                }
+                else{
+                  aiPlayer.Behaviour = new Strategy1();
+                }
+            }
+            game.Setup();
+            return game;
+        }
 
         public static QuestMatch Scenario1(GameController controller=null) {
-			QuestMatch game = new QuestMatch(logger:new Logger("Scenario1"), 
+			QuestMatch game = new QuestMatch(logger:new Logger("Scenario1"),
                                              controller:controller);
 
             game.Setup(shuffleDecks:true);
@@ -49,12 +63,18 @@ namespace Quest.Core.Scenarios {
         }
 
         public static QuestMatch Scenario2(GameController controller=null) {
-            QuestMatch game = new QuestMatch(logger: new Logger("Scenario1"),
+            QuestMatch game = new QuestMatch(logger: new Logger("Scenario2"),
                                              controller: controller);
 
             game.Setup(shuffleDecks: true);
 
-            game.StoryDeck.Push(new TournamentAtCamelot(game));
+            game.StoryDeck.Push(new QueensFavourEvent(game));
+            game.StoryDeck.Push(new BoarHunt(game));
+
+            game.AdventureDeck.Push(new Boar(game));
+            game.AdventureDeck.Push(new Dagger(game));
+            game.AdventureDeck.Push(new Dagger(game));
+
 
             return game;
         }
