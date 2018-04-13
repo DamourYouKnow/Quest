@@ -52,7 +52,7 @@ namespace Quest.Utils.Networking {
         public virtual async Task SendToPlayerAsync(Player player, string message){
             if (this.player_socket.ContainsKey(player)) {
                 await this.SendMessageAsync(player_socket[player], message);
-                this.logger.Log("Message sent to " + player.Username + ": " + message);
+                this.logger.Log("Message sent to " + player.Username + ": " + message);          
             }
           
         }

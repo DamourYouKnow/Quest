@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Quest.Core.Players;
 
-namespace Quest.Core.Cards{
-	public abstract class QuestCard: InteractiveStoryCard {
-		protected int numStages;
-		protected int currentStage;
-		protected Player sponsor;
-		protected List<QuestArea> stages;
+namespace Quest.Core.Cards {
+    public abstract class QuestCard : InteractiveStoryCard {
+        protected int numStages;
+        protected int currentStage;
+        protected Player sponsor;
+        protected List<QuestArea> stages;
         protected QuestArea stageBuilder;
-		protected List<Type> questFoes;
+        protected List<Type> questFoes;
         protected Dictionary<Player, Stack<List<BattleCard>>> battleHistory;
         private int nextParticipant = 0;
 
@@ -24,25 +24,25 @@ namespace Quest.Core.Cards{
 
         public List<QuestArea> Stages {
             get { return this.stages; }
-			set { this.stages = value; }
+            set { this.stages = value; }
         }
 
-		public int CurrentStage {
-			get { return this.currentStage; }
-		}
+        public int CurrentStage {
+            get { return this.currentStage; }
+        }
 
-		public int StageCount {
-			get { return this.numStages; }
-		}
+        public int StageCount {
+            get { return this.numStages; }
+        }
 
-		public Player Sponsor {
-			get { return this.sponsor; }
-			set { this.sponsor = value; }
-		}
+        public Player Sponsor {
+            get { return this.sponsor; }
+            set { this.sponsor = value; }
+        }
 
-		public List<Type> QuestFoes {
-			get { return this.questFoes; }
-		}
+        public List<Type> QuestFoes {
+            get { return this.questFoes; }
+        }
 
         public QuestArea StageBuilder {
             get { return this.stageBuilder; }
@@ -142,18 +142,14 @@ namespace Quest.Core.Cards{
             }
 
             if (this.responded.Count == this.match.Players.Count) {
-                this.SetupNextStage();
-            } else {
+                this.RequestPlays();
+            }
+            else {
                 this.RequestNextParticipant();
             }
         }
 
         public void SetupNextStage() {
-            if (this.participants.Count == 0) {
-                this.Resolve();
-                return;
-            }
-
             if (this.sponsor.Behaviour is HumanPlayer) {
                 this.stageBuilder = new QuestArea();
                 this.match.Controller.RequestStage(this.sponsor);
@@ -178,15 +174,16 @@ namespace Quest.Core.Cards{
 
         public void StageResponse() {
             if (this.stages.Count == this.StageCount) {
-                this.RequestPlays();
-            } else {
+                this.RequestNextParticipant();
+            }
+            else {
                 this.SetupNextStage();
             }
         }
 
         public override void RequestPlays() {
-						List<Card> otherAreaCards = new List<Card>(this.stages[this.currentStage-1].Cards);
-						otherAreaCards.Reverse();
+            List<Card> otherAreaCards = new List<Card>(this.stages[this.currentStage - 1].Cards);
+            otherAreaCards.Reverse();
             this.match.Controller.UpdateOtherArea(this.match, otherAreaCards);
             this.match.Controller.PlayerWait(this.sponsor);
 
@@ -203,7 +200,7 @@ namespace Quest.Core.Cards{
                                                        "Please play your cards");
 
                 }
-                else if (participant.Behaviour != null){
+                else if (participant.Behaviour != null) {
                     // Use AI strategy to determine play then Set player to played.
                     List<BattleCard> cards = participant.Behaviour.PlayCardsInQuest(this, participant.Hand);
                     participant.Play(cards);
@@ -223,7 +220,7 @@ namespace Quest.Core.Cards{
                                                    "Would you like to sponsor " + this.name,
                                                    image: this.imageFilename);
             }
-            else  if (currentPlayer.Behaviour != null) {
+            else if (currentPlayer.Behaviour != null) {
                 // Otherwise decide with strategy.
                 bool sponsor = currentPlayer.Behaviour.SponsorQuest(this, currentPlayer.Hand);
                 this.SponsorshipResponse(currentPlayer, sponsor);
@@ -242,15 +239,15 @@ namespace Quest.Core.Cards{
                 this.match.Log("Quest sponsored");
                 this.sponsor = player;
                 this.responded.Add(player);
-                this.RequestNextParticipant();
+                this.SetupNextStage();
             }
             else {
                 this.match.Controller.Message(this.match, player.Username + " did not sponsor " + this.name);
                 this.match.Log("Quest not sponsored");
-								//Update player areas after quest.
-								foreach(Player p in this.match.Players){
-									this.match.Controller.UpdatePlayerArea(p);
-								}
+                //Update player areas after quest.
+                foreach (Player p in this.match.Players) {
+                    this.match.Controller.UpdatePlayerArea(p);
+                }
                 this.match.Controller.EndStory(this.match);
             }
         }
@@ -259,9 +256,9 @@ namespace Quest.Core.Cards{
             this.RequestSponsorship();
         }
 
-		public override void Resolve(){
+        public override void Resolve() {
             if (this.stages.Count == 0) {
-								this.match.Controller.Message(this.match, "Quest ending since nobody sponsored.");
+                this.match.Controller.Message(this.match, "Quest ending since nobody sponsored.");
                 this.match.Log("Quest ending since nobody sponsored");
 
                 int numDraw = 0;
@@ -271,209 +268,209 @@ namespace Quest.Core.Cards{
                 numDraw += this.numStages;
                 this.sponsor.Draw(this.match.AdventureDeck, numDraw);
 
-								//Update player areas after quest.
-								foreach(Player p in this.match.Players){
-									this.match.Controller.UpdatePlayerArea(p);
-								}
+                //Update player areas after quest.
+                foreach (Player p in this.match.Players) {
+                    this.match.Controller.UpdatePlayerArea(p);
+                }
                 this.match.Controller.EndStory(this.match);
                 return;
             }
 
-			List<Player> winners = new List<Player>();
-					//TODO: Fix temporary local exception handling because of location of test exception.
-					try{
-            if (this.stages[currentStage - 1].MainCard is TestCard) {
-                // TODO: Implement Test stage.
-                throw new NotImplementedException();
+            List<Player> winners = new List<Player>();
+            //TODO: Fix temporary local exception handling because of location of test exception.
+            try {
+                if (this.stages[currentStage - 1].MainCard is TestCard) {
+                    // TODO: Implement Test stage.
+                    throw new NotImplementedException();
+                }
             }
-					}
-					catch(NotImplementedException){
-						this.match.Log ("Feature not implemented");
-						foreach(Player p in participants){
-							winners.Add(p);
-						}
-					}
-					catch (Exception e){
-						this.match.Log (e.Message);
-						this.match.Log (e.StackTrace);
-					}
+            catch (NotImplementedException) {
+                this.match.Log("Feature not implemented");
+                foreach (Player p in participants) {
+                    winners.Add(p);
+                }
+            }
+            catch (Exception e) {
+                this.match.Log(e.Message);
+                this.match.Log(e.StackTrace);
+            }
 
-            if (this.stages [currentStage-1].MainCard is FoeCard) {
-				foreach (var p in participants) {
+            if (this.stages[currentStage - 1].MainCard is FoeCard) {
+                foreach (var p in participants) {
                     // Update history.
                     this.battleHistory[p].Push(p.BattleArea.BattleCards);
 
-					if (p.BattleArea.BattlePoints() >= this.stages [currentStage-1].BattlePoints()) {
-						winners.Add (p);
-					}
+                    if (p.BattleArea.BattlePoints() >= this.stages[currentStage - 1].BattlePoints()) {
+                        winners.Add(p);
+                    }
 
                     // Discard weapons.
                     List<Card> discardWeapons = p.BattleArea.Cards.FindAll(x => x is WeaponCard);
                     p.BattleArea.Transfer(p.Hand, discardWeapons);
                     p.Discard(discardWeapons);
-				}
-			}
-			this.participants = winners;
-      if (this.participants.Count > 0) {
-					this.match.Controller.Message(this.match, Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
-          this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
-      }
-      else {
-					this.match.Controller.Message(this.match, "Stage " + this.currentStage + " has no winners");
-				  this.match.Log("Stage " + this.currentStage + " has no winners");
-      }
-			this.currentStage += 1;
+                }
+            }
+            this.participants = winners;
+            if (this.participants.Count > 0) {
+                this.match.Controller.Message(this.match, Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
+                this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
+            }
+            else {
+                this.match.Controller.Message(this.match, "Stage " + this.currentStage + " has no winners");
+                this.match.Log("Stage " + this.currentStage + " has no winners");
+            }
+            this.currentStage += 1;
 
 
-						//Update player areas after stage.
-						foreach(Player p in this.match.Players){
-							this.match.Controller.UpdatePlayerArea(p);
-						}
+            //Update player areas after stage.
+            foreach (Player p in this.match.Players) {
+                this.match.Controller.UpdatePlayerArea(p);
+            }
 
             //If no more stages or no more players, resolve quest.
             if (this.participants.Count == 0 || this.currentStage > this.numStages) {
-							if(this.participants.Count == 0){
-								this.match.Controller.Message(this.match, "Quest " + this.name + " has no winners.");
-						  	this.match.Log("Quest " + this.name + " has no winners.");
-							}
-							else{
-								this.match.Controller.Message(this.match, Utils.Stringify.CommaList<Player>(this.participants) + " have won quest " + this.name);
-								this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won quest " + this.name);
-							}
-							foreach (var p in this.participants) {
-					p.Rank.AddShields (this.numStages);
-				}
-				int numDraw = 0;
-				foreach (var item in this.stages) {
-					numDraw += item.Count;
-				}
-				numDraw += this.numStages;
-				this.sponsor.Draw (this.match.AdventureDeck, numDraw);
-								//Update player areas after quest.
-								foreach(Player p in this.match.Players){
-									this.match.Controller.UpdatePlayerArea(p);
-								}
+                if (this.participants.Count == 0) {
+                    this.match.Controller.Message(this.match, "Quest " + this.name + " has no winners.");
+                    this.match.Log("Quest " + this.name + " has no winners.");
+                }
+                else {
+                    this.match.Controller.Message(this.match, Utils.Stringify.CommaList<Player>(this.participants) + " have won quest " + this.name);
+                    this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won quest " + this.name);
+                }
+                foreach (var p in this.participants) {
+                    p.Rank.AddShields(this.numStages);
+                }
+                int numDraw = 0;
+                foreach (var item in this.stages) {
+                    numDraw += item.Count;
+                }
+                numDraw += this.numStages;
+                this.sponsor.Draw(this.match.AdventureDeck, numDraw);
+                //Update player areas after quest.
+                foreach (Player p in this.match.Players) {
+                    this.match.Controller.UpdatePlayerArea(p);
+                }
                 this.match.Controller.EndStory(this.match);
             }
-			else {
-				foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
-					p.Draw (this.match.AdventureDeck);
-				}
+            else {
+                foreach (Player p in (this.match.CurrentStory as QuestCard).participants) {
+                    p.Draw(this.match.AdventureDeck);
+                }
 
                 this.participated.Clear();
 
                 // Request plays for next round.
                 this.RequestPlays();
-			}
-		}
-	}
+            }
+        }
+    }
 
-	public class BoarHunt : QuestCard{
-		public BoarHunt(QuestMatch match) : base(match) {
-			this.name = "Boar Hunt";
-			this.imageFilename = "quest_boar_hunt";
-			this.numStages = 2;
-			this.questFoes.Add (typeof(Boar));
-		}
-	}
+    public class BoarHunt : QuestCard {
+        public BoarHunt(QuestMatch match) : base(match) {
+            this.name = "Boar Hunt";
+            this.imageFilename = "quest_boar_hunt";
+            this.numStages = 2;
+            this.questFoes.Add(typeof(Boar));
+        }
+    }
 
-	public class DefendTheQueensHonor : QuestCard{
-		public DefendTheQueensHonor(QuestMatch match) : base(match) {
-			this.name = "Defend The Queen's Honor";
-			this.imageFilename = "quest_defend_the_queens_honor";
-			this.numStages = 4;
-			this.questFoes.Add (typeof(BlackKnight));
-			this.questFoes.Add (typeof(Boar));
-			this.questFoes.Add (typeof(Dragon));
-			this.questFoes.Add (typeof(EvilKnight));
-			this.questFoes.Add (typeof(Giant));
-			this.questFoes.Add (typeof(GreenKnight));
-			this.questFoes.Add (typeof(Mordred));
-			this.questFoes.Add (typeof(RobberKnight));
-			this.questFoes.Add (typeof(SaxonKnight));
-			this.questFoes.Add (typeof(Saxons));
-			this.questFoes.Add (typeof(Thieves));
-		}
-	}
+    public class DefendTheQueensHonor : QuestCard {
+        public DefendTheQueensHonor(QuestMatch match) : base(match) {
+            this.name = "Defend The Queen's Honor";
+            this.imageFilename = "quest_defend_the_queens_honor";
+            this.numStages = 4;
+            this.questFoes.Add(typeof(BlackKnight));
+            this.questFoes.Add(typeof(Boar));
+            this.questFoes.Add(typeof(Dragon));
+            this.questFoes.Add(typeof(EvilKnight));
+            this.questFoes.Add(typeof(Giant));
+            this.questFoes.Add(typeof(GreenKnight));
+            this.questFoes.Add(typeof(Mordred));
+            this.questFoes.Add(typeof(RobberKnight));
+            this.questFoes.Add(typeof(SaxonKnight));
+            this.questFoes.Add(typeof(Saxons));
+            this.questFoes.Add(typeof(Thieves));
+        }
+    }
 
-	public class JourneyThroughTheEnchantedForest : QuestCard{
-		public JourneyThroughTheEnchantedForest(QuestMatch match) : base(match) {
-			this.name = "Journey Through The Enchanted Forest";
-			this.imageFilename = "quest_journey_through_the_enchanted_forest";
-			this.numStages = 3;
-			this.questFoes.Add (typeof(EvilKnight));
-		}
-	}
+    public class JourneyThroughTheEnchantedForest : QuestCard {
+        public JourneyThroughTheEnchantedForest(QuestMatch match) : base(match) {
+            this.name = "Journey Through The Enchanted Forest";
+            this.imageFilename = "quest_journey_through_the_enchanted_forest";
+            this.numStages = 3;
+            this.questFoes.Add(typeof(EvilKnight));
+        }
+    }
 
-	public class RepelTheSaxonRaiders : QuestCard{
-		public RepelTheSaxonRaiders(QuestMatch match) : base(match) {
-			this.name = "Repel The Saxon Raiders";
-			this.imageFilename = "quest_repel_the_saxon_raiders";
-			this.numStages = 2;
-			this.questFoes.Add (typeof(SaxonKnight));
-			this.questFoes.Add (typeof(Saxons));
-		}
-	}
+    public class RepelTheSaxonRaiders : QuestCard {
+        public RepelTheSaxonRaiders(QuestMatch match) : base(match) {
+            this.name = "Repel The Saxon Raiders";
+            this.imageFilename = "quest_repel_the_saxon_raiders";
+            this.numStages = 2;
+            this.questFoes.Add(typeof(SaxonKnight));
+            this.questFoes.Add(typeof(Saxons));
+        }
+    }
 
-	public class RescueTheFairMaiden : QuestCard{
-		public RescueTheFairMaiden(QuestMatch match) : base(match) {
-			this.name = "Rescue The Fair Maiden";
-			this.imageFilename = "quest_rescue_the_fair_maiden";
-			this.numStages = 3;
-			this.questFoes.Add (typeof(BlackKnight));
-		}
-	}
+    public class RescueTheFairMaiden : QuestCard {
+        public RescueTheFairMaiden(QuestMatch match) : base(match) {
+            this.name = "Rescue The Fair Maiden";
+            this.imageFilename = "quest_rescue_the_fair_maiden";
+            this.numStages = 3;
+            this.questFoes.Add(typeof(BlackKnight));
+        }
+    }
 
-	public class SearchForTheHolyGrail : QuestCard{
-		public SearchForTheHolyGrail(QuestMatch match) : base(match) {
-			this.name = "Search For The Holy Grail";
-			this.imageFilename = "quest_search_for_the_holy_grail";
-			this.numStages = 5;
-			this.questFoes.Add (typeof(BlackKnight));
-			this.questFoes.Add (typeof(Boar));
-			this.questFoes.Add (typeof(Dragon));
-			this.questFoes.Add (typeof(EvilKnight));
-			this.questFoes.Add (typeof(Giant));
-			this.questFoes.Add (typeof(GreenKnight));
-			this.questFoes.Add (typeof(Mordred));
-			this.questFoes.Add (typeof(RobberKnight));
-			this.questFoes.Add (typeof(SaxonKnight));
-			this.questFoes.Add (typeof(Saxons));
-			this.questFoes.Add (typeof(Thieves));
-		}
-	}
+    public class SearchForTheHolyGrail : QuestCard {
+        public SearchForTheHolyGrail(QuestMatch match) : base(match) {
+            this.name = "Search For The Holy Grail";
+            this.imageFilename = "quest_search_for_the_holy_grail";
+            this.numStages = 5;
+            this.questFoes.Add(typeof(BlackKnight));
+            this.questFoes.Add(typeof(Boar));
+            this.questFoes.Add(typeof(Dragon));
+            this.questFoes.Add(typeof(EvilKnight));
+            this.questFoes.Add(typeof(Giant));
+            this.questFoes.Add(typeof(GreenKnight));
+            this.questFoes.Add(typeof(Mordred));
+            this.questFoes.Add(typeof(RobberKnight));
+            this.questFoes.Add(typeof(SaxonKnight));
+            this.questFoes.Add(typeof(Saxons));
+            this.questFoes.Add(typeof(Thieves));
+        }
+    }
 
-	public class SearchForTheQuestingBeast : QuestCard{
-		public SearchForTheQuestingBeast(QuestMatch match) : base(match) {
-			this.name = "Search For The Questing Beast";
-			this.imageFilename = "quest_search_for_the_questing_beast";
-			this.numStages = 4;
-		}
-	}
+    public class SearchForTheQuestingBeast : QuestCard {
+        public SearchForTheQuestingBeast(QuestMatch match) : base(match) {
+            this.name = "Search For The Questing Beast";
+            this.imageFilename = "quest_search_for_the_questing_beast";
+            this.numStages = 4;
+        }
+    }
 
-	public class SlayTheDragon : QuestCard{
-		public SlayTheDragon(QuestMatch match) : base(match) {
-			this.name = "Slay The Dragon";
-			this.imageFilename = "quest_slay_the_dragon";
-			this.numStages = 3;
-			this.questFoes.Add (typeof(Dragon));
-		}
-	}
+    public class SlayTheDragon : QuestCard {
+        public SlayTheDragon(QuestMatch match) : base(match) {
+            this.name = "Slay The Dragon";
+            this.imageFilename = "quest_slay_the_dragon";
+            this.numStages = 3;
+            this.questFoes.Add(typeof(Dragon));
+        }
+    }
 
-	public class TestOfTheGreenKnight : QuestCard{
-		public TestOfTheGreenKnight(QuestMatch match) : base(match) {
-			this.name = "Test Of The Green Knight";
-			this.imageFilename = "quest_test_of_the_green_knight";
-			this.numStages = 4;
-			this.questFoes.Add (typeof(GreenKnight));
-		}
-	}
+    public class TestOfTheGreenKnight : QuestCard {
+        public TestOfTheGreenKnight(QuestMatch match) : base(match) {
+            this.name = "Test Of The Green Knight";
+            this.imageFilename = "quest_test_of_the_green_knight";
+            this.numStages = 4;
+            this.questFoes.Add(typeof(GreenKnight));
+        }
+    }
 
-	public class VanquishKingArthursEnemies : QuestCard{
-		public VanquishKingArthursEnemies(QuestMatch match) : base(match) {
-			this.name = "Vanquish King Arthur's Enemies";
-			this.imageFilename = "quest_vanquish_king_arthurs_enemies";
-			this.numStages = 3;
-		}
-	}
+    public class VanquishKingArthursEnemies : QuestCard {
+        public VanquishKingArthursEnemies(QuestMatch match) : base(match) {
+            this.name = "Vanquish King Arthur's Enemies";
+            this.imageFilename = "quest_vanquish_king_arthurs_enemies";
+            this.numStages = 3;
+        }
+    }
 }
