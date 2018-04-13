@@ -1,3 +1,6 @@
+To keep things simple, we have already included a WebGL build of the game in the server's wwwroot folder.
+you can run the server and request the game in browser using http://localhost:3004/index.html
+
 To run the server (Quest/Server/QuestServer): 
     Install .NET
     Build and run the ASP Core server with "dotnet run"

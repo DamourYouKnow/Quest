@@ -159,7 +159,7 @@ namespace Quest.Core {
                 return;
             }
 
-            if (area.MainCard != null) {
+            if (area.MainCard != null && quest.Stages.Count < quest.StageCount) {
                 quest.AddStage(area);
                 quest.StageResponse();
             }
@@ -264,6 +264,11 @@ namespace Quest.Core {
                     this.UpdateOtherArea(player, cards);
                 }
             }
+        }
+
+        public async void PlayerWait(Player player) {
+            EventData evn = new EventData("wait", new JObject());
+            await this.messageHandler.SendToPlayerAsync(player, evn.ToString());
         }
 
         public async void RequestDiscard(Player player) {
