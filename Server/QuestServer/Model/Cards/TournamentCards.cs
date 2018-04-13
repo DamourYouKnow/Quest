@@ -65,7 +65,7 @@ namespace Quest.Core.Cards{
             else {
                 Player winner = winners[0];
 								this.match.Controller.Message(this.match, winner.Username + " has won " + this.name);
-								this.match.Controller.Message(this.match, winner.Username + " played " + Utils.Stringify.CommaList<Cards>(winner.Hand.Cards));
+								this.match.Controller.Message(this.match, winner.Username + " played " + Utils.Stringify.CommaList<Card>(winner.Hand.Cards));
                 this.match.Log(winner.Username + " has won " + this.name);
                 winner.Rank.AddShields(this.bonusShields + this.participants.Count);
             }
