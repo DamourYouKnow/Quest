@@ -102,6 +102,7 @@ namespace Quest.Core.View{
 			On("request_play_cards", OnRCVRequestPlayCards);
 			On("end_story", OnRCVEndStory);
 			On("request_tournament_participation", OnRCVRequestTournamentParticipation);
+			On("wait", OnRCVWait);
 
 			//Unity events
 			SceneManager.activeSceneChanged += OnUISceneChanged;
@@ -372,6 +373,11 @@ namespace Quest.Core.View{
 			this.confirmationButton.gameObject.SetActive(true);
 			this.confirmationButtonText.text = "End Turn";
 			this.confirmationMessage = "round_end";
+		}
+		private void UpdateWait(){
+			this.confirmationButton.gameObject.SetActive(false);
+			this.confirmationButtonText.text = "";
+			this.confirmationMessage = "";
 		}
 		private void UpdateRequestPlayCards(){
 			this.confirmationButton.gameObject.SetActive(true);
@@ -670,6 +676,9 @@ namespace Quest.Core.View{
 				this.promptMessage = (string)data["message"];
 				//TODO: receiving image is redundant for all current prompts.
 				//this.promptImage = (string)data["image"];
+			}
+			public void OnRCVWait(JToken data){
+				this.updateQueue.Enqueue(UpdateWait);
 			}
 
 			/*
