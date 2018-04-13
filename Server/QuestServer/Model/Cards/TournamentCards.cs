@@ -69,9 +69,18 @@ namespace Quest.Core.Cards{
                 winner.Rank.AddShields(this.bonusShields + this.participants.Count);
             }
 
-            foreach (Player player in this.match.Players) {
-                this.match.Controller.UpdatePlayerArea(player);
-            }
+          	foreach (Player p in participants) {
+            	// Discard weapons.
+	            List<Card> discardWeapons = p.BattleArea.Cards.FindAll(x => x is WeaponCard);
+	            p.BattleArea.Transfer(p.Hand, discardWeapons);
+	            p.Discard(discardWeapons);
+							// Discard amours.
+							List<Card> discardAmours = p.BattleArea.Cards.FindAll(x => x.Name == "Amour");
+							p.BattleArea.Transfer(p.Hand, discardAmours);
+							p.Discard(discardAmours);
+							this.match.Controller.UpdatePlayerArea(p);
+						}
+
             this.match.Controller.UpdatePlayers(this.match);
             this.match.Controller.EndStory(this.match);
         }
