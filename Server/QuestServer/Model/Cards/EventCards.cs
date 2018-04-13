@@ -90,7 +90,7 @@ namespace Quest.Core.Cards {
         }
 
         public override void Run() {
-            Player drawingPlayer = this.match.PlayerWithCard(this);
+            Player drawingPlayer = this.match.CurrentPlayer;
             foreach (Player player in this.match.Players) {
                 if (player != drawingPlayer) {
                     player.Rank.RemoveShields(1);
