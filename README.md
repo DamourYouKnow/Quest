@@ -8,4 +8,5 @@ The source code for the game can be found in Quest/Server/QuestServer.
 The UI code can be found in Quest/Assets.  
   
 Logs:  
+Logs referenced in the correction grid are in Quest/Logs.  
 Logs are written to Quest/Server/QuestServer/Logs.  
