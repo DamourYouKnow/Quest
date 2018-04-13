@@ -350,12 +350,17 @@ namespace Quest.Core.Cards {
                 this.sponsor.Draw(this.match.AdventureDeck, numDraw);
                 //Update player areas after quest.
                 foreach (Player p in this.match.Players) {
+                    // Discard weapons.
+                    List<Card> discardWeapons = p.BattleArea.Cards.FindAll(x => x is WeaponCard);
+                    p.BattleArea.Transfer(p.Hand, discardWeapons);
+                    p.Discard(discardWeapons);
                     // Discard amours.
                     List<Card> discardAmours = p.BattleArea.Cards.FindAll(x => x.Name == "Amour");
                     p.BattleArea.Transfer(p.Hand, discardAmours);
                     p.Discard(discardAmours);
                     this.match.Controller.UpdatePlayerArea(p);
                 }
+                this.match.Controller.UpdateOtherArea(new List<Card>());
                 this.match.Controller.EndStory(this.match);
             }
             else {
