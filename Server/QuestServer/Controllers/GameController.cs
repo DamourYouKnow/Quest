@@ -159,7 +159,7 @@ namespace Quest.Core {
                 return;
             }
 
-            if (area.MainCard != null) {
+            if (area.MainCard != null && quest.Stages.Count < quest.StageCount) {
                 quest.AddStage(area);
                 quest.StageResponse();
             }
