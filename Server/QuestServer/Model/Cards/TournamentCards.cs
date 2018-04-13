@@ -58,11 +58,14 @@ namespace Quest.Core.Cards{
         public override void Resolve() {
             List<Player> winners = this.getWinners();
             if (winners.Count == 0) {
+							this.match.Controller.Message(this.match, "No winners for " + this.name);
                 this.match.Log("No winners for " + this.name);
 
             }
             else {
                 Player winner = winners[0];
+								this.match.Controller.Message(this.match, winner.Username + " has won " + this.name);
+								this.match.Controller.Message(this.match, winner.Username + " played " + Utils.Stringify.CommaList<Cards>(winner.Hand.Cards));
                 this.match.Log(winner.Username + " has won " + this.name);
                 winner.Rank.AddShields(this.bonusShields + this.participants.Count);
             }

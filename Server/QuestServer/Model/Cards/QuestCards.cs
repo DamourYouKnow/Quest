@@ -318,7 +318,7 @@ namespace Quest.Core.Cards{
           this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won stage " + this.currentStage);
       }
       else {
-					this.match.Controller.Message("Stage " + this.currentStage + " has no winners");
+					this.match.Controller.Message(this.match, "Stage " + this.currentStage + " has no winners");
 				  this.match.Log("Stage " + this.currentStage + " has no winners");
       }
 			this.currentStage += 1;
@@ -332,11 +332,11 @@ namespace Quest.Core.Cards{
             //If no more stages or no more players, resolve quest.
             if (this.participants.Count == 0 || this.currentStage > this.numStages) {
 							if(this.participants.Count == 0){
-								this.match.Controller.Message("Quest " + this.name + " has no winners.");
+								this.match.Controller.Message(this.match, "Quest " + this.name + " has no winners.");
 						  	this.match.Log("Quest " + this.name + " has no winners.");
 							}
 							else{
-								this.match.Controller.Message(Utils.Stringify.CommaList<Player>(this.participants) + " have won quest " + this.name);
+								this.match.Controller.Message(this.match, Utils.Stringify.CommaList<Player>(this.participants) + " have won quest " + this.name);
 								this.match.Log(Utils.Stringify.CommaList<Player>(this.participants) + " have won quest " + this.name);
 							}
 							foreach (var p in this.participants) {
