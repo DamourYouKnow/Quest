@@ -48,7 +48,7 @@ namespace Quest.Core.Players {
 
         public void AddShields(int count) {
             this.player.Match.Log("Adding " + count + " shields to " + this.player.ToString());
- 
+
             while (count > 0) {
                 this.addShield();
                 count--;
@@ -196,7 +196,7 @@ namespace Quest.Core.Players {
         public override string ToString() {
             return this.username;
         }
-	
+
         public void Draw(Deck deck, int count=1) {
             for (int i = 0; i < count; i++) {
                 Card drawnCard = deck.Draw();
@@ -237,7 +237,7 @@ namespace Quest.Core.Players {
         public Boolean CardInHand(Card card) {
             return this.hand.Cards.Contains(card);
         }
-		
+
 		public void Play(BattleCard card){
 			this.hand.Transfer(this.battleArea, card);
 
@@ -256,7 +256,7 @@ namespace Quest.Core.Players {
             this.match.Controller.UpdatePlayerArea(this);
             this.match.Controller.UpdateHand(this);
 
-            this.match.Log(this.username + " played " + Utils.Stringify.CommaList(cards));
+            this.match.Log(this.username + " played " + Utils.Stringify.CommaList(cards) + " for " + this.battleArea.BattlePoints() + "BP.");
         }
 
         public static List<Player> LowestShields(List<Player> players) {
@@ -354,6 +354,6 @@ namespace Quest.Core.Players {
             }
 
             return maxList;
-        } 
+        }
     }
 }
