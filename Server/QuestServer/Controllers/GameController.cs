@@ -106,6 +106,9 @@ namespace Quest.Core {
 
         private void OnRoundEnd(Player player, JToken data) {
             if (player.Hand.Count > 12) {
+                this.Message(this.GetMatch(player), "You have too many cards, please discard");
+                this.matches[player].Log("Rejected play by " + player.Username + " until more cards are discarded");
+
                 this.UpdateHand(player);
             }
             else {
@@ -121,6 +124,7 @@ namespace Quest.Core {
         private void OnConfirmCards(Player player, JToken data) {
             if (player.Hand.Count > 12) {
                 this.UpdateHand(player);
+                this.Message(this.GetMatch(player), "You have too many cards, please discard");
                 this.matches[player].Log("Rejected play by " + player.Username + " until more cards are discarded");
                 return;
             }
@@ -155,6 +159,7 @@ namespace Quest.Core {
 
             if (player.Hand.Count > 12) {
                 this.UpdateHand(player);
+                this.Message(this.GetMatch(player), "You have too many cards, please discard");
                 this.matches[player].Log("Rejected play by " + player.Username + " until more cards are discarded");
                 return;
             }
